@@ -1,0 +1,72 @@
+<?php
+
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ClinicAccessController;
+use App\Http\Controllers\ClinicSetupController;
+use App\Http\Controllers\PlatformClinicController;
+use App\Http\Controllers\PublicBookingController;
+use App\Http\Controllers\SessionSetupController;
+use App\Http\Controllers\TeamController;
+use App\Http\Middleware\ResolveBookingActor;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/clinics/{clinic}/book', [PublicBookingController::class, 'show'])->whereUuid('clinic')->middleware('throttle:120,1')->name('public.booking');
+Route::post('/v1/booking-requests', [BookingController::class, 'create'])->middleware([ResolveBookingActor::class, 'throttle:30,1'])->name('bookings.request');
+
+Route::get('/', fn () => Inertia::render('Welcome'))->name('welcome');
+Route::get('/login', [AccountController::class, 'loginPage'])->name('login');
+Route::post('/login', [AccountController::class, 'login'])->middleware('throttle:30,1');
+Route::get('/login/challenge', [AccountController::class, 'challengePage'])->name('challenge');
+Route::post('/login/challenge', [AccountController::class, 'challenge']);
+Route::get('/recover', [AccountController::class, 'recoveryPage'])->name('recovery');
+Route::post('/recover', [AccountController::class, 'recover']);
+Route::get('/account-access', [AccountController::class, 'accessPage'])->name('account.access');
+Route::post('/account-access', [AccountController::class, 'activate']);
+
+Route::middleware('auth')->group(function (): void {
+    Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
+    Route::get('/account/security', [AccountController::class, 'security'])->name('security');
+    Route::post('/account/mfa/start', [AccountController::class, 'beginMfa'])->name('mfa.start');
+    Route::post('/account/mfa/confirm', [AccountController::class, 'confirmMfa'])->name('mfa.confirm');
+    Route::post('/account/recovery-code', [AccountController::class, 'rotateRecovery'])->name('recovery.rotate');
+    Route::post('/account/password', [AccountController::class, 'password'])->name('password.change');
+    Route::post('/account/confirm', [AccountController::class, 'confirm'])->name('account.confirm');
+    Route::middleware('mfa')->group(function (): void {
+        Route::get('/workspace', [ClinicAccessController::class, 'dashboard'])->name('dashboard');
+        Route::post('/workspace/select', [ClinicAccessController::class, 'select'])->name('clinic.select');
+        Route::get('/platform/accounts', [TeamController::class, 'platform'])->name('platform');
+        Route::post('/platform/accounts/{user}/access', [TeamController::class, 'accountLink'])->whereUuid('user')->name('platform.account.link')->middleware('throttle:10,1');
+        Route::get('/platform/clinics', [PlatformClinicController::class, 'index'])->name('platform.clinics');
+        Route::post('/platform/clinics', [PlatformClinicController::class, 'create'])->name('platform.clinic.create')->middleware('throttle:10,1');
+        Route::middleware('clinic')->group(function (): void {
+            Route::get('/workspace/clinic', [ClinicSetupController::class, 'index'])->name('clinic.settings');
+            Route::post('/workspace/clinic', [ClinicSetupController::class, 'update'])->name('clinic.settings.update');
+            Route::post('/workspace/doctors', [ClinicSetupController::class, 'createDoctor'])->name('clinic.doctor.create');
+            Route::post('/workspace/doctors/{doctor}', [ClinicSetupController::class, 'updateDoctor'])->whereUuid('doctor')->name('clinic.doctor.update');
+            Route::get('/workspace/sessions', [SessionSetupController::class, 'index'])->name('sessions.index');
+            Route::post('/workspace/sessions', [SessionSetupController::class, 'create'])->name('sessions.create');
+            Route::get('/workspace/sessions/{session}', [SessionSetupController::class, 'show'])->whereUuid('session')->name('sessions.show');
+            Route::post('/workspace/sessions/{session}/schedule', [SessionSetupController::class, 'correct'])->whereUuid('session')->name('session.schedule.correct');
+            Route::get('/v1/sessions', [SessionSetupController::class, 'index'])->name('sessions.api');
+            Route::get('/v1/sessions/{session}', [SessionSetupController::class, 'show'])->whereUuid('session')->name('session.api.show');
+            Route::post('/v1/sessions/{session}/capacity/preview', [SessionSetupController::class, 'preview'])->whereUuid('session')->name('session.capacity.preview');
+            Route::post('/v1/sessions/{session}/{command}', [SessionSetupController::class, 'command'])->whereUuid('session')->whereIn('command', ['open', 'pause', 'resume', 'close', 'capacity', 'extend'])->name('session.command');
+
+            Route::get('/workspace/bookings', [BookingController::class, 'index'])->name('bookings.index');
+            Route::get('/v1/bookings', [BookingController::class, 'index'])->name('bookings.api');
+            Route::get('/v1/bookings/{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('bookings.show');
+            Route::post('/v1/bookings/{booking}/{command}', [BookingController::class, 'command'])->whereUuid('booking')->whereIn('command', ['confirm', 'reject', 'cancel', 'reschedule'])->name('booking.command');
+
+            Route::get('/workspace/team', [TeamController::class, 'index'])->name('team');
+            Route::post('/workspace/team', [TeamController::class, 'create'])->name('team.create');
+            Route::post('/workspace/team/{membership}/access', [TeamController::class, 'issue'])->whereUuid('membership')->name('team.link');
+            Route::post('/workspace/team/{membership}/suspend', [TeamController::class, 'suspend'])->whereUuid('membership')->name('team.suspend');
+            Route::get('/v1/patients', [ClinicAccessController::class, 'patients'])->name('patients.index');
+            Route::get('/v1/patients/export', [ClinicAccessController::class, 'export'])->name('patients.export');
+            Route::get('/v1/patients/{patient}', [ClinicAccessController::class, 'patient'])->whereUuid('patient')->name('patients.show');
+            Route::patch('/v1/patients/{patient}', [ClinicAccessController::class, 'updatePatient'])->whereUuid('patient')->name('patients.update');
+        });
+    });
+});

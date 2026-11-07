@@ -1,0 +1,15 @@
+{
+  "PHP": "8.4.27",
+  "Composer": "2.11.1",
+  "Node": "v24.22.1",
+  "PostgreSQL": "17.11",
+  "Laravel": "v13.40.0",
+  "InertiaPHP": "v3.7.0",
+  "React": "19.3.1",
+  "ReactDOM": "19.3.1",
+  "Vite": "8.3.6",
+  "TypeScript": "7.0.2",
+  "PHPUnit": "12.5.43",
+  "Google2FA": "9.1.0",
+  "BaconQrCode": "3.1.1"
+}
