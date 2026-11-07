@@ -75,6 +75,7 @@ jobs:
       - name: Verify committed PHP formatting
         run: git diff --exit-code
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: nobteek-p07-evidence
           retention-days: 14

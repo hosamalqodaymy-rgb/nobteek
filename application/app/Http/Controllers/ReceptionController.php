@@ -95,7 +95,7 @@ class ReceptionController extends Controller
             $commands = match ($row->visit_state) {
                 'waiting' => ['mark-away', 'leave', ...(app(TenantContext::class)->role() === 'owner' && ! $row->priority ? ['defer'] : [])],
                 'called' => ['mark-away', 'leave'],
-                'away' => ['return', 'leave'],
+                'away' => [...(app(TenantContext::class)->role() !== 'doctor' ? ['return'] : []), 'leave'],
                 default => [],
             };
             foreach ($commands as $command) {

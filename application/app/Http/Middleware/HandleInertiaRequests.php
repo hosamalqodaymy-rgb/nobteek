@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => $request->user() ? ['display_name' => $request->user()->display_name, 'username' => $request->user()->username, 'platform_admin' => $request->user()->platform_role === 'platform_admin'] : null,
-            'links' => collect(['welcome', 'login', 'challenge', 'recovery', 'account.access', 'security', 'logout', 'dashboard', 'clinic.select', 'team', 'team.create', 'platform', 'mfa.start', 'mfa.confirm', 'recovery.rotate', 'password.change', 'account.confirm', 'platform.clinics', 'platform.clinic.create', 'clinic.settings', 'clinic.settings.update', 'clinic.doctor.create', 'sessions.index', 'sessions.create', 'bookings.index', 'bookings.request'])->mapWithKeys(fn ($name) => [$name => route($name)])->all(),
+            'links' => collect(['welcome', 'login', 'challenge', 'recovery', 'account.access', 'security', 'logout', 'dashboard', 'clinic.select', 'team', 'team.create', 'platform', 'mfa.start', 'mfa.confirm', 'recovery.rotate', 'password.change', 'account.confirm', 'platform.clinics', 'platform.clinic.create', 'clinic.settings', 'clinic.settings.update', 'clinic.doctor.create', 'sessions.index', 'sessions.create', 'bookings.index', 'bookings.request', 'reception.index'])->mapWithKeys(fn ($name) => [$name => route($name)])->all(),
             'status' => fn () => $request->session()->get('status'),
             'privateNotice' => function () use ($request) {
                 $encrypted = $request->session()->pull('private_notice');

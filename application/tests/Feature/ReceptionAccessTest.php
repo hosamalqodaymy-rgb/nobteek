@@ -91,7 +91,7 @@ class ReceptionAccessTest extends ReceptionTestCase
     public function test_owner_without_mfa_cannot_use_reception(): void
     {
         $this->signIn('OWNER_A');
-        $this->getJson('/v1/reception')->assertForbidden();
-        $this->arrival()->assertForbidden();
+        $this->getJson('/v1/reception')->assertStatus(423);
+        $this->arrival()->assertStatus(423);
     }
 }

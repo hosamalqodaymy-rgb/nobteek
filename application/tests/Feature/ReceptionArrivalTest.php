@@ -49,7 +49,7 @@ class ReceptionArrivalTest extends ReceptionTestCase
     {
         DB::table('bookings')->where('id', $this->id('BOOK_A2'))->update(['state' => 'confirmed']);
         $this->arrival($this->id('BOOK_A2'))->assertConflict();
-        $this->travelTo(now()->setTime(14, 10));
+        $this->travelTo(\Carbon\CarbonImmutable::parse('2026-11-07T14:10:00Z'));
         DB::table('bookings')->where('id', $this->id('BOOK_A2'))->update(['window_id' => $this->id('W1_A')]);
         $late = $this->arrival($this->id('BOOK_A2'))->assertCreated()->assertJsonPath('ticket_number', 2)->assertJsonPath('ready_sequence', 2);
         $this->assertDatabaseHas('audit_events', ['entity_id' => $late->json('id'), 'event_type' => 'visit_check_in', 'reason_code' => 'late_arrival']);
@@ -64,7 +64,7 @@ class ReceptionArrivalTest extends ReceptionTestCase
         }
         DB::table('clinic_sessions')->where('id', $this->id('SESSION_C'))->update(['state' => 'paused']);
         $this->arrival()->assertCreated();
-        $this->travelTo(now()->setTime(15, 0));
+        $this->travelTo(\Carbon\CarbonImmutable::parse('2026-11-07T15:00:00Z'));
         DB::table('bookings')->where('id', $this->id('BOOK_A2'))->update(['state' => 'confirmed']);
         $this->arrival($this->id('BOOK_A2'))->assertConflict();
         $this->walkIn()->assertConflict();
