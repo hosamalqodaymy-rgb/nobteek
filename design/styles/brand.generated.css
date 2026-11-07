@@ -1,0 +1,52 @@
+/* Generated from brand.config.json; do not edit by hand. */
+@font-face{font-family:Tajawal;src:url("../fonts/Tajawal-Regular.woff") format("woff");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Tajawal;src:url("../fonts/Tajawal-Medium.woff") format("woff");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Tajawal;src:url("../fonts/Tajawal-Bold.woff") format("woff");font-weight:700;font-style:normal;font-display:swap}
+:root{
+--color-primary:#0F766E;
+--color-navy:#14364B;
+--color-background:#F5F8FA;
+--color-surface:#FFFFFF;
+--color-text:#172B3A;
+--color-muted:#526575;
+--color-border:#D7E2E8;
+--color-border-control:#6B7D89;
+--color-success:#166534;
+--color-success-bg:#DCFCE7;
+--color-warning:#92400E;
+--color-warning-bg:#FEF3C7;
+--color-danger:#B42318;
+--color-danger-bg:#FEF3F2;
+--color-focus:#14364B;
+--color-neutral-bg:#EAF0F4;
+--color-disabled-bg:#E9EFF2;
+--color-on-primary:#FFFFFF;
+--color-primary-hover:#0D635C;
+--color-primary-active:#0A504B;
+--color-tint:#E7F1F1;
+--font-family:"Tajawal",Tahoma, Arial, sans-serif;
+--font-body:1rem;
+--font-small:0.875rem;
+--font-heading:1.75rem;
+--font-hero:3rem;
+--line-height:1.7;
+--control-min-height:3rem;
+--control-min-width:3rem;
+--radius-control:0.5rem;
+--radius-card:1rem;
+--focus-width:2px;
+--focus-offset:3px;
+--max-content:1200px;
+--space-0:0.0rem;
+--space-1:0.25rem;
+--space-2:0.5rem;
+--space-3:0.75rem;
+--space-4:1.0rem;
+--space-5:1.25rem;
+--space-6:1.5rem;
+--space-8:2.0rem;
+--space-10:2.5rem;
+--space-12:3.0rem;
+--space-16:4.0rem;
+--space-20:5.0rem;
+}

@@ -8,8 +8,8 @@
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
   "source_files_expected": 334,
-  "source_files_uploaded": 308,
-  "completed_batches": 17,
+  "source_files_uploaded": 316,
+  "completed_batches": 18,
   "total_batches": 24,
   "uploaded_source_paths": [
     ".gitignore",
@@ -319,9 +319,7 @@
     "design/guide/page-2.svg",
     "design/guide/page-3.svg",
     "design/guide/page-4.svg",
-    "design/guide/page-5.svg"
-  ],
-  "next_batch_paths": [
+    "design/guide/page-5.svg",
     "design/guide/page-6.svg",
     "design/preview/index.html",
     "design/styles/brand.generated.css",
@@ -331,8 +329,13 @@
     "preview/p04/assets/Tajawal-Regular-ChrqF7BL.woff",
     "preview/p04/assets/preview-frame-DtYB5uU8.css"
   ],
+  "next_batch_paths": [
+    "preview/p04/assets/preview-frame-R1o7d4VZ.js",
+    "preview/p04/index.html",
+    "preview/p04/preview-frame.html"
+  ],
   "resume_instruction": "Compare the recovered archive with docs/P06_SOURCE_RELEASE.json and the remote tree. Skip every matching uploaded source path; upload only missing or mismatched paths. Preserve README.md and existing history.",
-  "previous_checkpoint_commit": "fe3a445bb056cb6377f646f9cf551652127819fb",
+  "previous_checkpoint_commit": "5712d9fa17ef3ea83347f58714bd27dce0dba26a",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -352,7 +355,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Continue source batch 18 of 24. Skip all verified batches.",
+  "next_action": "Continue source batch 19 of 24. Skip all verified batches.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",

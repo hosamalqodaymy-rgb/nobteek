@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar-YE" dir="rtl">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="color-scheme" content="light"><title>معاينة الهوية والمكونات</title>
+ <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="../styles/brand.generated.css"><link rel="stylesheet" href="../styles/components.css">
+ <script defer src="../brand.generated.js"></script><script defer src="../components.js"></script>
+</head>
+<body>
+ <a class="skip-link" href="#component-library">الانتقال إلى المكونات</a>
+ <header class="site-header"><div class="wrap header-row">
+  <a class="brand" href="#cover" aria-label="العودة إلى الغلاف">
+   <img class="brand-mark" src="../assets/symbol-primary.svg" width="40" height="40" alt="">
+   <span><span class="brand-name" data-brand-name-ar></span><span class="brand-en" dir="ltr" style="display:block" data-brand-name-en></span></span>
+  </a>
+  <nav class="header-links" aria-label="أقسام المعاينة"><a class="nav-link" href="#component-library">المكونات</a><a class="nav-link" href="#identity">الهوية</a></nav>
+ </div></header>
+ <main class="wrap" id="cover">
+  <section class="hero-grid" aria-labelledby="cover-title">
+   <div><p class="eyebrow" data-cover="eyebrow"></p><h1 class="hero-title" id="cover-title" data-cover="headline"></h1>
+    <p class="lead" data-cover="description"></p>
+    <div class="actions"><a class="btn" href="#component-library" data-cover="primaryAction"></a><a class="btn btn--secondary" href="#component-library" data-cover="secondaryAction"></a></div>
+   </div>
+   <div class="mock"><div class="mock-header"><p class="mock-title" data-cover="demoClinic"></p><p class="mock-caption" data-cover="demoLabel"></p></div>
+    <div class="queue-demo"><div class="queue-current"><span class="queue-label">المستدعى الآن</span><strong class="queue-number">12</strong><span data-state-badge data-entity="visit" data-state="called"></span></div>
+     <div class="queue-list"><div class="queue-row"><span data-state-label data-entity="visit" data-state="waiting"></span><strong>13</strong></div><div class="queue-row"><span data-state-label data-entity="visit" data-state="waiting"></span><strong>14</strong></div><div class="queue-row"><span data-state-label data-entity="visit" data-state="waiting"></span><strong>15</strong></div></div>
+    </div><p class="mock-footer">أرقام تجريبية دون أسماء مراجعين</p>
+   </div>
+  </section>
+  <div class="feature-row"><span><i class="feature-dot" aria-hidden="true"></i>حجز واضح</span><span><i class="feature-dot" aria-hidden="true"></i>حضور مسجل</span><span><i class="feature-dot" aria-hidden="true"></i>دور متابع</span></div>
+  <section class="section" id="component-library" aria-labelledby="component-title">
+   <div class="section-head"><p class="eyebrow">معاينة P01</p><h2 id="component-title">مكونات الواجهة</h2><p>نماذج بصرية وتفاعلات بسيطة لتثبيت الهوية قبل تصميم الرحلات الكاملة.</p></div>
+   <div class="sample-grid">
+    <article class="card"><h3>الأزرار وحالاتها</h3><div class="stack">
+     <div class="row-wrap"><button class="btn" type="button" data-preview-button><span data-ui-icon="check"></span>تأكيد الحجز</button><button class="btn btn--secondary" type="button" data-preview-button>تعديل الحجز</button></div>
+     <div class="row-wrap"><button class="btn btn--danger" type="button" data-preview-button>إلغاء الحجز</button><button class="btn btn--quiet" type="button" data-preview-button>رجوع</button></div>
+     <div class="row-wrap"><button class="btn btn--loading" type="button" disabled aria-busy="true"><span class="spinner" aria-hidden="true"></span>جاري الحفظ</button><button class="btn" type="button" disabled>غير متاح الآن</button></div>
+     <p class="field-help">مؤشر واضح عند التنقل بلوحة المفاتيح، ونص أثناء التحميل والتعطيل.</p>
+    </div><p class="state-result" id="component-result" role="status" aria-live="polite"></p></article>
+    <article class="card"><h3>الحقول والتوضيح</h3><div class="stack">
+     <div class="field"><label for="patient-name">اسم المراجع</label><input id="patient-name" type="text" placeholder="اكتب الاسم" autocomplete="off"></div>
+     <div class="field"><label for="contact-phone">رقم التواصل</label><input id="contact-phone" type="tel" inputmode="tel" dir="ltr" placeholder="+967 7XXXXXXXX" autocomplete="off" aria-describedby="phone-help"><p class="field-help" id="phone-help">يمكن استخدام رقم الأسرة نفسه لأكثر من مراجع.</p></div>
+     <div class="field"><label for="arrival-window">فترة الحضور</label><select id="arrival-window"><option>اختر فترة الحضور</option><option>4:00 إلى 4:30 مساء</option></select></div>
+     <label class="check-label"><input id="consent-demo" type="checkbox">فهمت أن الفترة للحضور وليست وقت كشف مضمونا</label>
+    </div></article>
+    <article class="card"><h3>حالة الخطأ في الحقل</h3><div class="field"><label for="invalid-phone">رقم التواصل</label><input id="invalid-phone" type="tel" dir="ltr" value="123" aria-invalid="true" aria-describedby="invalid-phone-error"><p class="field-error" id="invalid-phone-error"><span data-ui-icon="info"></span>اكتب تسعة أرقام محلية تبدأ بسبعة</p></div><p class="small muted">يتصل الخطأ بالحقل نصيا، ويظهر معه رمز وحد واضح.</p></article>
+    <article class="card"><h3>حالات الحجز</h3><div class="row-wrap" data-state-gallery="booking"></div><h3 style="margin-block-start:1.5rem">حالات الزيارة</h3><div class="row-wrap" data-state-gallery="visit"></div><h3 style="margin-block-start:1.5rem">حالات الجلسة</h3><div class="row-wrap" data-state-gallery="session"></div></article>
+   </div>
+  </section>
+  <section class="section" aria-labelledby="screen-states-title"><div class="section-head"><h2 id="screen-states-title">حالات الشاشة</h2><p>رسائل تميز التحميل والفراغ والنجاح والتعذر والصلاحيات والتعارض.</p></div>
+   <div class="sample-grid" id="screen-states">
+    <div class="message message--neutral" data-preview-state="loading"><span data-ui-icon="clock"></span><div><h3>جاري تحميل الحالة</h3><p>انتظر حتى يظهر آخر تحديث.</p></div></div>
+    <div class="message message--neutral" data-preview-state="empty"><span data-ui-icon="queue"></span><div><h3>القائمة فارغة</h3><p>لا يوجد مراجعون منتظرون في هذه المعاينة.</p></div></div>
+    <div class="message message--success" data-preview-state="success"><span data-ui-icon="check"></span><div><h3>تم تسجيل الحضور</h3><p>مثال لرسالة النجاح بعد تأكيد الخادم.</p></div></div>
+    <div class="message message--danger" data-preview-state="error"><span data-ui-icon="info"></span><div><h3>تعذر إكمال الإجراء</h3><p>راجع الرسالة ثم حاول مجددا.</p></div></div>
+    <div class="message message--warning" data-preview-state="offline"><span data-ui-icon="offline"></span><div><h3>الاتصال متوقف</h3><p>الحالة المعروضة قديمة. لا يوجد تأكيد للحفظ حتى عودة الاتصال والتحقق.</p></div></div>
+    <div class="message message--neutral" data-preview-state="forbidden"><span data-ui-icon="lock"></span><div><h3>هذا الإجراء غير مصرح لك</h3><p>تواصل مع المسؤول المخول في العيادة.</p></div></div>
+    <div class="message message--warning" data-preview-state="conflict"><span data-ui-icon="refresh"></span><div><h3>تغيرت الحالة</h3><p>حدث البيانات قبل متابعة الإجراء.</p></div></div>
+   </div>
+  </section>
+  <section class="section" id="identity" aria-labelledby="identity-title"><div class="section-head"><h2 id="identity-title">الهوية والألوان</h2><p data-brand-tagline></p></div>
+   <div class="card section"><div class="logo-strip"><div class="logo-sample"><img src="../assets/logo-ar.svg" width="284" height="92" alt="العلامة الأساسية"></div><div class="logo-sample logo-sample--inverse"><img src="../assets/logo-ar-inverse.svg" width="284" height="92" alt="العلامة البيضاء على خلفية كحلية"></div></div></div>
+   <div class="palette" data-palette></div>
+   <div class="card" style="margin-block-start:1.5rem"><h3>الرمز في الأحجام الصغيرة</h3><div class="symbol-proof"><figure><img src="../assets/symbol-primary.svg" width="24" height="24" alt="الرمز بحجم 24 بكسل"><figcaption dir="ltr">24 px</figcaption></figure><figure><img src="../assets/symbol-primary.svg" width="48" height="48" alt="الرمز بحجم 48 بكسل"><figcaption dir="ltr">48 px</figcaption></figure></div></div>
+  </section>
+  <footer class="preview-note">معاينة هوية <span data-brand-name-ar></span> فقط. جميع البيانات تجريبية، وأزرار المكونات لا تنشئ حجوزات فعلية.</footer>
+ </main>
+</body>
+</html>
