@@ -1,0 +1,500 @@
+{
+  "classification": "synthetic_only_disabled_accounts_no_external_messages",
+  "source": "fixtures/clinics_demo.json",
+  "ids": {
+    "OWNER_A": "ae2911cb-dd5a-5df3-900e-2bf3bc687064",
+    "RECEPTION_A": "598b69fb-5688-5ff5-8998-6ed1c9beaf0b",
+    "DOCTOR_A": "1bfc9c49-18d4-5e8b-817c-83888732ef51",
+    "DOCTOR_C": "3a7f6c4b-92ea-5893-8d3a-77adc10a5768",
+    "OWNER_B": "c0f8171c-9712-53fc-b468-2e5f2232d6fa",
+    "RECEPTION_B": "ede1fa33-5d79-5267-b6d7-39d439846a50",
+    "DOCTOR_B": "0be3f155-b670-5423-845f-c4daff44231f",
+    "PLATFORM": "d17c88d1-93cc-5762-aa00-155153505bc4",
+    "CLINIC_A": "10101923-eeb8-5aba-9627-57be7229cf49",
+    "CLINIC_B": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+    "MEM_OWNER_A": "7a892f88-77ca-599e-9251-228d58a8caf5",
+    "MEM_RECEPTION_A": "e1d0a4b9-b6e4-5e3b-8901-f8b1f91adb0f",
+    "MEM_DOCTOR_A": "6d7b40a0-d5be-5e18-bbdb-5081a6e00530",
+    "MEM_DOCTOR_C": "b8b19cc9-32c8-5aec-bbbe-bfc39af2a3ad",
+    "MEM_OWNER_B": "7be47dc4-96f4-57d0-b24a-e0d15ff86bbb",
+    "MEM_RECEPTION_B": "146f61a8-3d1f-5f25-aa32-ae77dc1a07c7",
+    "MEM_DOCTOR_B": "9a757313-b588-57a4-834f-3529f27f067d",
+    "DR_A": "7f285a7b-83cf-5038-a003-8a2804b35d2f",
+    "DR_B": "ec241dbe-d9f5-52ac-a42e-0268e7d6c1b1",
+    "DR_C": "df817cd0-ecd2-5641-8ed9-c72e1de7e9a5",
+    "SESSION_A": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+    "SESSION_B": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+    "SESSION_C": "ec79224f-d370-51b9-a54a-c2e534d67396",
+    "W1_A": "de8ac227-4dba-518a-a1a9-0d07772d643a",
+    "W2_A": "3748b562-1964-5bd6-9f13-c7af9f59567f",
+    "W1_B": "5a9e36c0-a61e-56b1-8b32-e2fecdbe8e71",
+    "W2_B": "2f21d659-dce4-59d2-92d2-b65f242b193a",
+    "W1_C": "1a91c7f6-8f80-50f3-bc55-7e6d7692178f",
+    "W2_C": "cb83b479-5c42-5319-9feb-da135da7f645",
+    "PAT_A1": "900071c3-ea78-5669-a4f8-24fb7fa05713",
+    "PAT_A2": "902f8e91-dc36-5079-a4f6-b776ab165a15",
+    "PAT_A3": "21b3d8bf-1b6b-5d03-9797-b51f53530965",
+    "PAT_B1": "9e413304-3e0b-5313-bc32-c5fe834f6386",
+    "BOOK_A1": "68bdde28-3bcd-52d5-8640-7941052f5aee",
+    "VISIT_A1": "3a961675-e2fa-5da4-b31d-561318851e17",
+    "BOOK_A2": "bd862a19-6106-5610-99fc-b108a5662a9e",
+    "BOOK_C1": "45e9a723-3865-5092-a43d-9cf125f9c938",
+    "BOOK_B1": "ab9a2266-3aa2-5659-bdb8-4d690f9ce383",
+    "VISIT_B1": "10ed8f89-18f9-5e1e-be27-eae507654474",
+    "EVENT_CLINIC_A": "7f55fe12-6dd1-5e4b-8d44-69c55ff60a1f",
+    "REQUEST_CLINIC_A": "aec2a335-693c-5bbb-8f7b-51b622d4230e",
+    "EVENT_CLINIC_B": "f58da4a1-3b8e-5b93-b77a-d5b21d4a9a15",
+    "REQUEST_CLINIC_B": "04c3ebb4-94fb-5133-831b-03b07909e7c0",
+    "OUTBOX_CLINIC_A": "8d88845b-d4fc-5813-a444-bb40a37dfe6e",
+    "OUTBOX_CLINIC_B": "2fb05576-30b9-53e9-9dca-7bbedd8baaf3"
+  },
+  "tables": {
+    "users": [
+      {
+        "id": "ae2911cb-dd5a-5df3-900e-2bf3bc687064",
+        "username": "demo_owner_a",
+        "display_name": "حساب تجريبي OWNER_A",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "598b69fb-5688-5ff5-8998-6ed1c9beaf0b",
+        "username": "demo_reception_a",
+        "display_name": "حساب تجريبي RECEPTION_A",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "1bfc9c49-18d4-5e8b-817c-83888732ef51",
+        "username": "demo_doctor_a",
+        "display_name": "حساب تجريبي DOCTOR_A",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "3a7f6c4b-92ea-5893-8d3a-77adc10a5768",
+        "username": "demo_doctor_c",
+        "display_name": "حساب تجريبي DOCTOR_C",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "c0f8171c-9712-53fc-b468-2e5f2232d6fa",
+        "username": "demo_owner_b",
+        "display_name": "حساب تجريبي OWNER_B",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "ede1fa33-5d79-5267-b6d7-39d439846a50",
+        "username": "demo_reception_b",
+        "display_name": "حساب تجريبي RECEPTION_B",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "0be3f155-b670-5423-845f-c4daff44231f",
+        "username": "demo_doctor_b",
+        "display_name": "حساب تجريبي DOCTOR_B",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": null
+      },
+      {
+        "id": "d17c88d1-93cc-5762-aa00-155153505bc4",
+        "username": "demo_platform",
+        "display_name": "حساب تجريبي PLATFORM",
+        "password": null,
+        "login_enabled": false,
+        "platform_role": "platform_admin"
+      }
+    ],
+    "clinics": [
+      {
+        "id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "demo_code": "CLINIC_A",
+        "display_name": "عيادة تجريبية ألف",
+        "city": "صنعاء - بيانات وهمية",
+        "address_landmark": "عنوان تجريبي",
+        "timezone": "Asia/Aden",
+        "operational_state": "active"
+      },
+      {
+        "id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "demo_code": "CLINIC_B",
+        "display_name": "عيادة تجريبية باء",
+        "city": "صنعاء - بيانات وهمية",
+        "address_landmark": "عنوان تجريبي",
+        "timezone": "Asia/Aden",
+        "operational_state": "active"
+      }
+    ],
+    "memberships": [
+      {
+        "id": "7a892f88-77ca-599e-9251-228d58a8caf5",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "ae2911cb-dd5a-5df3-900e-2bf3bc687064",
+        "role": "owner",
+        "active": true,
+        "delegated_permissions": {}
+      },
+      {
+        "id": "e1d0a4b9-b6e4-5e3b-8901-f8b1f91adb0f",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "598b69fb-5688-5ff5-8998-6ed1c9beaf0b",
+        "role": "reception",
+        "active": true,
+        "delegated_permissions": {
+          "call_next": false
+        }
+      },
+      {
+        "id": "6d7b40a0-d5be-5e18-bbdb-5081a6e00530",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "1bfc9c49-18d4-5e8b-817c-83888732ef51",
+        "role": "doctor",
+        "active": true,
+        "delegated_permissions": {}
+      },
+      {
+        "id": "b8b19cc9-32c8-5aec-bbbe-bfc39af2a3ad",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "3a7f6c4b-92ea-5893-8d3a-77adc10a5768",
+        "role": "doctor",
+        "active": true,
+        "delegated_permissions": {}
+      },
+      {
+        "id": "7be47dc4-96f4-57d0-b24a-e0d15ff86bbb",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "user_id": "c0f8171c-9712-53fc-b468-2e5f2232d6fa",
+        "role": "owner",
+        "active": true,
+        "delegated_permissions": {}
+      },
+      {
+        "id": "146f61a8-3d1f-5f25-aa32-ae77dc1a07c7",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "user_id": "ede1fa33-5d79-5267-b6d7-39d439846a50",
+        "role": "reception",
+        "active": true,
+        "delegated_permissions": {
+          "call_next": false
+        }
+      },
+      {
+        "id": "9a757313-b588-57a4-834f-3529f27f067d",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "user_id": "0be3f155-b670-5423-845f-c4daff44231f",
+        "role": "doctor",
+        "active": true,
+        "delegated_permissions": {}
+      }
+    ],
+    "doctors": [
+      {
+        "id": "7f285a7b-83cf-5038-a003-8a2804b35d2f",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "1bfc9c49-18d4-5e8b-817c-83888732ef51",
+        "demo_code": "DR_A",
+        "display_name": "طبيب تجريبي DR_A"
+      },
+      {
+        "id": "ec241dbe-d9f5-52ac-a42e-0268e7d6c1b1",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "user_id": "0be3f155-b670-5423-845f-c4daff44231f",
+        "demo_code": "DR_B",
+        "display_name": "طبيب تجريبي DR_B"
+      },
+      {
+        "id": "df817cd0-ecd2-5641-8ed9-c72e1de7e9a5",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "user_id": "3a7f6c4b-92ea-5893-8d3a-77adc10a5768",
+        "demo_code": "DR_C",
+        "display_name": "طبيب تجريبي DR_C"
+      }
+    ],
+    "clinic_sessions": [
+      {
+        "id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "doctor_id": "7f285a7b-83cf-5038-a003-8a2804b35d2f",
+        "demo_code": "SESSION_A",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "state": "open",
+        "version": 1,
+        "ticket_counter": 1,
+        "ready_counter": 1
+      },
+      {
+        "id": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "doctor_id": "ec241dbe-d9f5-52ac-a42e-0268e7d6c1b1",
+        "demo_code": "SESSION_B",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "state": "open",
+        "version": 1,
+        "ticket_counter": 1,
+        "ready_counter": 1
+      },
+      {
+        "id": "ec79224f-d370-51b9-a54a-c2e534d67396",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "doctor_id": "df817cd0-ecd2-5641-8ed9-c72e1de7e9a5",
+        "demo_code": "SESSION_C",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "state": "open",
+        "version": 1,
+        "ticket_counter": 0,
+        "ready_counter": 0
+      }
+    ],
+    "arrival_windows": [
+      {
+        "id": "de8ac227-4dba-518a-a1a9-0d07772d643a",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "session_id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "demo_code": "W1_A",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T14:00:00Z",
+        "capacity": 2
+      },
+      {
+        "id": "3748b562-1964-5bd6-9f13-c7af9f59567f",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "session_id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "demo_code": "W2_A",
+        "starts_at": "2026-11-07T14:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "capacity": 2
+      },
+      {
+        "id": "5a9e36c0-a61e-56b1-8b32-e2fecdbe8e71",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "session_id": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+        "demo_code": "W1_B",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T14:00:00Z",
+        "capacity": 2
+      },
+      {
+        "id": "2f21d659-dce4-59d2-92d2-b65f242b193a",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "session_id": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+        "demo_code": "W2_B",
+        "starts_at": "2026-11-07T14:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "capacity": 2
+      },
+      {
+        "id": "1a91c7f6-8f80-50f3-bc55-7e6d7692178f",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "session_id": "ec79224f-d370-51b9-a54a-c2e534d67396",
+        "demo_code": "W1_C",
+        "starts_at": "2026-11-07T13:00:00Z",
+        "ends_at": "2026-11-07T14:00:00Z",
+        "capacity": 2
+      },
+      {
+        "id": "cb83b479-5c42-5319-9feb-da135da7f645",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "session_id": "ec79224f-d370-51b9-a54a-c2e534d67396",
+        "demo_code": "W2_C",
+        "starts_at": "2026-11-07T14:00:00Z",
+        "ends_at": "2026-11-07T15:00:00Z",
+        "capacity": 2
+      }
+    ],
+    "patients": [
+      {
+        "id": "900071c3-ea78-5669-a4f8-24fb7fa05713",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "demo_code": "PAT_A1",
+        "display_name": "مراجع تجريبي ألف",
+        "contact_phone": "+967700000001"
+      },
+      {
+        "id": "902f8e91-dc36-5079-a4f6-b776ab165a15",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "demo_code": "PAT_A2",
+        "display_name": "مراجع تجريبي من الأسرة",
+        "contact_phone": "+967700000001"
+      },
+      {
+        "id": "21b3d8bf-1b6b-5d03-9797-b51f53530965",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "demo_code": "PAT_A3",
+        "display_name": "مراجع تجريبي دون هاتف",
+        "contact_phone": null
+      },
+      {
+        "id": "9e413304-3e0b-5313-bc32-c5fe834f6386",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "demo_code": "PAT_B1",
+        "display_name": "مراجع تجريبي باء",
+        "contact_phone": "+967700000003"
+      }
+    ],
+    "bookings": [
+      {
+        "id": "68bdde28-3bcd-52d5-8640-7941052f5aee",
+        "demo_code": "BOOK_A1",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "patient_id": "900071c3-ea78-5669-a4f8-24fb7fa05713",
+        "session_id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "window_id": "de8ac227-4dba-518a-a1a9-0d07772d643a",
+        "source": "phone",
+        "state": "confirmed",
+        "version": 1,
+        "visit_id": "3a961675-e2fa-5da4-b31d-561318851e17"
+      },
+      {
+        "id": "bd862a19-6106-5610-99fc-b108a5662a9e",
+        "demo_code": "BOOK_A2",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "patient_id": "902f8e91-dc36-5079-a4f6-b776ab165a15",
+        "session_id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "window_id": "3748b562-1964-5bd6-9f13-c7af9f59567f",
+        "source": "web",
+        "state": "pending",
+        "version": 1,
+        "visit_id": null
+      },
+      {
+        "id": "45e9a723-3865-5092-a43d-9cf125f9c938",
+        "demo_code": "BOOK_C1",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "patient_id": "902f8e91-dc36-5079-a4f6-b776ab165a15",
+        "session_id": "ec79224f-d370-51b9-a54a-c2e534d67396",
+        "window_id": "1a91c7f6-8f80-50f3-bc55-7e6d7692178f",
+        "source": "web",
+        "state": "confirmed",
+        "version": 1,
+        "visit_id": null
+      },
+      {
+        "id": "ab9a2266-3aa2-5659-bdb8-4d690f9ce383",
+        "demo_code": "BOOK_B1",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "patient_id": "9e413304-3e0b-5313-bc32-c5fe834f6386",
+        "session_id": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+        "window_id": "5a9e36c0-a61e-56b1-8b32-e2fecdbe8e71",
+        "source": "phone",
+        "state": "confirmed",
+        "version": 1,
+        "visit_id": "10ed8f89-18f9-5e1e-be27-eae507654474"
+      }
+    ],
+    "visits": [
+      {
+        "id": "3a961675-e2fa-5da4-b31d-561318851e17",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "booking_id": "68bdde28-3bcd-52d5-8640-7941052f5aee",
+        "session_id": "03c9cafc-4c96-5f89-a7aa-cf1c18e95cb4",
+        "doctor_id": "7f285a7b-83cf-5038-a003-8a2804b35d2f",
+        "ticket_number": 1,
+        "ready_sequence": 1,
+        "priority": false,
+        "state": "waiting",
+        "version": 1,
+        "arrived_at": "2026-11-07T13:10:00Z"
+      },
+      {
+        "id": "10ed8f89-18f9-5e1e-be27-eae507654474",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "booking_id": "ab9a2266-3aa2-5659-bdb8-4d690f9ce383",
+        "session_id": "24be0293-4689-5c4d-9c31-cb91c8f0acff",
+        "doctor_id": "ec241dbe-d9f5-52ac-a42e-0268e7d6c1b1",
+        "ticket_number": 1,
+        "ready_sequence": 1,
+        "priority": false,
+        "state": "waiting",
+        "version": 1,
+        "arrived_at": "2026-11-07T13:10:00Z"
+      }
+    ],
+    "ticket_tokens": [
+      {
+        "digest": "160d4f31a9cddeac78e484a8245b1a3085577e4ba93099a0905e50248409be21",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "booking_id": "68bdde28-3bcd-52d5-8640-7941052f5aee",
+        "expires_at": "2026-11-09T15:00:00+00:00",
+        "revoked_at": null
+      },
+      {
+        "digest": "586c6f3f6e514039d205eb83571a47c8dbe3f7a3b5c10a89ee36702f89688fea",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "booking_id": "bd862a19-6106-5610-99fc-b108a5662a9e",
+        "expires_at": "2026-11-09T15:00:00+00:00",
+        "revoked_at": null
+      },
+      {
+        "digest": "31dc94089815592fb5c1a617273de35715cf4f1c98cc01dc6fe4d8bfca649f41",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "booking_id": "45e9a723-3865-5092-a43d-9cf125f9c938",
+        "expires_at": "2026-11-09T15:00:00+00:00",
+        "revoked_at": null
+      },
+      {
+        "digest": "64df02fa8d5d4182b102aaf66965b609e4dd9aa19ee1ec2f98eee2928c05e38e",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "booking_id": "ab9a2266-3aa2-5659-bdb8-4d690f9ce383",
+        "expires_at": "2026-11-09T15:00:00+00:00",
+        "revoked_at": null
+      }
+    ],
+    "audit_events": [
+      {
+        "id": "7f55fe12-6dd1-5e4b-8d44-69c55ff60a1f",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "actor_membership_id": "e1d0a4b9-b6e4-5e3b-8901-f8b1f91adb0f",
+        "entity_type": "clinic",
+        "entity_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "event_type": "demo.seed",
+        "at": "2026-11-07T13:10:00Z",
+        "reason_code": "synthetic_fixture",
+        "request_id": "aec2a335-693c-5bbb-8f7b-51b622d4230e",
+        "safe_changes": {}
+      },
+      {
+        "id": "f58da4a1-3b8e-5b93-b77a-d5b21d4a9a15",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "actor_membership_id": "146f61a8-3d1f-5f25-aa32-ae77dc1a07c7",
+        "entity_type": "clinic",
+        "entity_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "event_type": "demo.seed",
+        "at": "2026-11-07T13:10:00Z",
+        "reason_code": "synthetic_fixture",
+        "request_id": "04c3ebb4-94fb-5133-831b-03b07909e7c0",
+        "safe_changes": {}
+      }
+    ],
+    "outbox_messages": [
+      {
+        "id": "8d88845b-d4fc-5813-a444-bb40a37dfe6e",
+        "clinic_id": "10101923-eeb8-5aba-9627-57be7229cf49",
+        "event_id": "7f55fe12-6dd1-5e4b-8d44-69c55ff60a1f",
+        "channel": "internal",
+        "status": "disabled",
+        "attempts": 0
+      },
+      {
+        "id": "2fb05576-30b9-53e9-9dca-7bbedd8baaf3",
+        "clinic_id": "188f0e9f-09cf-5c79-af8f-6dda6566acbb",
+        "event_id": "f58da4a1-3b8e-5b93-b77a-d5b21d4a9a15",
+        "channel": "internal",
+        "status": "disabled",
+        "attempts": 0
+      }
+    ]
+  }
+}
