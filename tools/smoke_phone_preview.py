@@ -8,11 +8,15 @@ def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,timeout=60)
 def tree():
     adb('shell','uiautomator','dump','/sdcard/nobteek-ui.xml')
-    return ET.fromstring(adb('exec-out','cat','/sdcard/nobteek-ui.xml'))
+    data=adb('exec-out','cat','/sdcard/nobteek-ui.xml')
+    start=data.find('<?xml')
+    if start<0:return None
+    try:return ET.fromstring(data[start:])
+    except ET.ParseError:return None
 def wait_text(text):
     for _ in range(20):
         t=tree()
-        if any(text in n.get('text','') for n in t.iter('node')):return t
+        if t is not None and any(text in n.get('text','') for n in t.iter('node')):return t
         time.sleep(1)
     raise AssertionError('Missing Android screen text: '+text)
 def tap(node):
@@ -21,6 +25,7 @@ def tap(node):
 report={'installed':False,'publicScreen':False,'staffScreen':False,'text200':False,'physicalPhoneTested':False,'scope':'Android emulator startup and local WebView rendering'}
 try:
     adb('install','-r',str(out/'Nobteek_P06_Interface_Test.apk'));report['installed']=True
+    adb('shell','wm','dismiss-keyguard')
     adb('shell','am','start','-W','-n','com.nobteek.preview/.MainActivity')
     t=wait_text('عيادة العرض التجريبية');report['publicScreen']=True
     (out/'android-public.png').write_bytes(subprocess.check_output(['adb','exec-out','screencap','-p']))
@@ -34,5 +39,9 @@ try:
     report['sdk']=adb('shell','getprop','ro.build.version.sdk').strip()
     report['passed']=True
 finally:
+    try:
+        (out/'android-last-screen.png').write_bytes(subprocess.check_output(['adb','exec-out','screencap','-p']))
+        (out/'android-diagnostics.txt').write_text(adb('logcat','-d','-t','300'),encoding='utf-8')
+    except Exception:pass
     (out/'ANDROID_SMOKE_REPORT.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(report,ensure_ascii=False))
