@@ -95,8 +95,7 @@ async function capture(page, name) {
 async function layout(page, name) {
   activePage = page;
   await page.evaluate(async () => { await document.fonts.ready; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
-  const metrics = await page.evaluate(() => {
-    const width = innerWidth;
+  const metrics = await page.evaluate(width => {
     const bad = [...document.querySelectorAll('main input, main select, main button, main article, main section, header nav')].filter(e => {
       const r = e.getBoundingClientRect(); return r.width && (r.left < -1 || r.right > width + 1);
     }).map(e => ({ tag: e.tagName, text: (e.getAttribute('aria-label') || e.textContent || '').slice(0, 100), left: e.getBoundingClientRect().left, width: e.getBoundingClientRect().width }));
@@ -104,12 +103,13 @@ async function layout(page, name) {
       if (e.closest('.skip-link') || getComputedStyle(e).display === 'none') return false;
       const r = e.getBoundingClientRect(); return r.width && r.height && (r.left < -1 || r.right > width + 1);
     }).map(e => ({ tag: e.tagName, className: String(e.className).slice(0, 100), text: (e.textContent || '').slice(0, 100), left: e.getBoundingClientRect().left, right: e.getBoundingClientRect().right }));
-    return { viewport: width, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth, direction: getComputedStyle(document.documentElement).direction, bad, overflow: overflow.slice(0, 12), h1: document.querySelectorAll('main h1').length };
-  });
+    return { viewport: width, actualViewport: innerWidth, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth, direction: getComputedStyle(document.documentElement).direction, bad, overflow: overflow.slice(0, 12), h1: document.querySelectorAll('main h1').length };
+  }, page.viewportSize().width);
   await capture(page, name);
   const png = fs.readFileSync(path.join(output, name + '.png'));
   metrics.screenshotWidth = png.readUInt32BE(16);
   assert.equal(metrics.direction, 'rtl'); assert.equal(metrics.h1, 1);
+  assert.ok(Math.abs(metrics.actualViewport - metrics.viewport) <= 1, JSON.stringify(metrics));
   assert.ok(metrics.scrollWidth <= metrics.viewport + 1, JSON.stringify(metrics));
   assert.ok(metrics.bodyScrollWidth <= metrics.viewport + 1, JSON.stringify(metrics));
   assert.ok(metrics.screenshotWidth <= metrics.viewport + 1, JSON.stringify(metrics));
@@ -245,7 +245,7 @@ async function layout(page, name) {
     assert.equal(await card(staff, patient).locator('.state-pill').innerText(), 'ملغى');
     await staff.goto(bookingsUrl);
   });
-  report.layoutMatrix = [];
+  report.layoutMatrix = []; report.textResizeMatrix = [];
   for (const width of [360, 768, 1440]) {
     await step('B17-' + width, 'RTL public and staff layout at ' + width, async () => {
       await staff.setViewportSize({ width, height: 1000 }); await guest.setViewportSize({ width, height: 1000 });
@@ -260,7 +260,7 @@ async function layout(page, name) {
         await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
         const after = await page.evaluate(() => parseFloat(getComputedStyle(document.body).fontSize));
         assert.ok(after >= before * 1.95);
-        await layout(page, name + '-' + width + '-text200');
+        report.textResizeMatrix.push({ page: name, ...await layout(page, name + '-' + width + '-text200') });
         await page.getByLabel('الطبيب والجلسة', { exact: true }).first().selectOption(sid);
         await page.getByLabel('نافذة الوصول', { exact: true }).first().selectOption(w1);
         await page.getByLabel('اسم المراجع', { exact: true }).fill('اختبار تكبير النص');
