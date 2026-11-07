@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.6",
-  "as_of": "2026-11-07",
-  "status": "P06_core_bookings_and_automated_browser_verified_physical_device_pending",
+  "schema_version": "1.7",
+  "as_of": "2026-11-08",
+  "status": "P07_reception_and_queue_automated_verified_physical_device_pending",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -10,9 +10,9 @@
     "delivery": "web_pwa",
     "locale": "ar-YE",
     "timezone": "Asia/Aden",
-    "application_implementation_status": "accounts_clinic_setup_and_booking_commands_verified",
-    "design_implementation_status": "P01_identity_with_P06_booking_forms",
-    "production_implementation_status": "pre_release_synthetic_only_P06_browser_verified_remaining_phases_and_real_device_pending",
+    "application_implementation_status": "accounts_clinic_setup_bookings_and_reception_commands_verified",
+    "design_implementation_status": "P01_identity_with_P07_reception_and_queue_forms",
+    "production_implementation_status": "pre_release_synthetic_only_P07_verified_remaining_phases_deployment_and_real_device_pending",
     "prototype_implementation_status": "frozen_interactive_prototype"
   },
   "billing_policy": {
@@ -366,18 +366,32 @@
         {
           "id": "T07A",
           "expected": "موظفان يسجلان الوصول في اللحظة نفسها دون أرقام دور مكررة.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p07_validation.json",
+            "acceptance_id": "T07A",
+            "source_commit": "1f8c3be4bbeb61c3f6b3b416ac6d877a23df7bf6",
+            "scope": "real_Laravel_PostgreSQL_HTTP_and_browser",
+            "application_integration_test": true,
+            "run_id": 42426242755
+          }
         },
         {
           "id": "T07B",
           "expected": "المتأخر يعود إلى نهاية المنتظرين مع حفظ رقم تذكرته وأسباب الاستثناءات.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p07_validation.json",
+            "acceptance_id": "T07B",
+            "source_commit": "1f8c3be4bbeb61c3f6b3b416ac6d877a23df7bf6",
+            "scope": "real_Laravel_PostgreSQL_HTTP_and_browser",
+            "application_integration_test": true,
+            "run_id": 42426242755
+          }
         }
       ],
       "next": "تغذي قائمة جاهزة للطبيب وعدد من أمام المراجع دون إظهار الأسماء.",
-      "status": "not_started"
+      "status": "completed_synthetic_automated_physical_device_pending"
     },
     {
       "id": "P08",
@@ -770,6 +784,36 @@
       "path": "POST /v1/payment-proofs/{id}/approve",
       "purpose": "تنفيذ P13 مرة واحدة لفاتورة محددة",
       "state": "approved"
+    },
+    {
+      "path": "GET /v1/reception",
+      "purpose": "قائمة اليوم وبحث مقيد للمالك والاستقبال",
+      "state": "role_limited"
+    },
+    {
+      "path": "POST /v1/sessions/{id}/walk-ins",
+      "purpose": "حجز مؤكد ووصول مباشر في معاملة واحدة",
+      "state": "waiting"
+    },
+    {
+      "path": "POST /v1/visits/{id}/mark-away",
+      "purpose": "غياب مؤقت بسبب مسجل",
+      "state": "away"
+    },
+    {
+      "path": "POST /v1/visits/{id}/return",
+      "purpose": "العودة إلى نهاية الانتظار بنفس التذكرة",
+      "state": "waiting"
+    },
+    {
+      "path": "POST /v1/visits/{id}/leave",
+      "purpose": "مغادرة نهائية تحفظ الرقم والتاريخ",
+      "state": "left"
+    },
+    {
+      "path": "POST /v1/visits/{id}/defer",
+      "purpose": "إرجاء إداري مسبب إلى النهاية للمالك فقط",
+      "state": "waiting"
     }
   ],
   "release_policy": {
@@ -829,8 +873,8 @@
       "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
     }
   ],
-  "baseline_id": "NOBTEEK-P06-1.0",
-  "next_stage": "P07",
+  "baseline_id": "NOBTEEK-P07-1.0",
+  "next_stage": "P08",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -939,5 +983,24 @@
     "browser_acceptance_checks_passed": 24,
     "browser_report": "results/p06_browser_ci_validation.json",
     "real_phone_tested": false
+  },
+  "reception_baseline": {
+    "id": "NOBTEEK-P07-1.0",
+    "report": "results/p07_validation.json",
+    "laravel_tests_passed": 139,
+    "new_phase_tests": 30,
+    "laravel_assertions": 945,
+    "browser_checks_passed": 14,
+    "responsive_layout_cases_passed": 12,
+    "text_resize_200_percent_tested": true,
+    "distinct_staff_arrival_race_passed": true,
+    "same_booking_race_one_visit": true,
+    "return_tail_preserves_ticket": true,
+    "atomic_walk_in": true,
+    "real_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "next_stage": "P08",
+    "financial_phase": "P13"
   }
 }
