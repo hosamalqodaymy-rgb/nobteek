@@ -30,7 +30,6 @@ jobs:
       APP_ENV: testing
       APP_DEBUG: "false"
       APP_URL: http://127.0.0.1:8000
-      NOBTEEK_BROWSER_CLOCK: "2026-11-07T13:30:00Z"
       DB_CONNECTION: pgsql
       DB_HOST: 127.0.0.1
       DB_PORT: 5432
@@ -81,11 +80,13 @@ jobs:
       - name: Prepare ephemeral test credentials
         run: |
           python3 - <<'PY'
-          import base64, os, secrets
-          values = {'NOBTEEK_BROWSER_PASSWORD': secrets.token_urlsafe(32), 'NOBTEEK_BROWSER_MFA_SECRET': base64.b32encode(secrets.token_bytes(20)).decode(), 'NOBTEEK_BROWSER_TOOLS': os.path.join(os.environ['RUNNER_TEMP'], 'nobteek-browser-tools')}
+          import base64, os, secrets, datetime
+          now = datetime.datetime.now(datetime.timezone.utc)
+          clock = now.replace(minute=(now.minute // 15) * 15, second=0, microsecond=0).strftime('%Y-%m-%dT%H:%M:%SZ')
+          values = {'NOBTEEK_BROWSER_CLOCK': clock, 'NOBTEEK_BROWSER_PASSWORD': secrets.token_urlsafe(32), 'NOBTEEK_BROWSER_MFA_SECRET': base64.b32encode(secrets.token_bytes(20)).decode(), 'NOBTEEK_BROWSER_TOOLS': os.path.join(os.environ['RUNNER_TEMP'], 'nobteek-browser-tools')}
           with open(os.environ['GITHUB_ENV'], 'a') as f:
               for key, value in values.items():
-                  if key != 'NOBTEEK_BROWSER_TOOLS': print('::add-mask::' + value)
+                  if key in {'NOBTEEK_BROWSER_PASSWORD', 'NOBTEEK_BROWSER_MFA_SECRET'}: print('::add-mask::' + value)
                   f.write(key + '=' + value + '\n')
           PY
       - name: Install pinned browser tools outside application dependencies

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 require __DIR__.'/prepare_p06_browser.php';
 
 $clock = getenv('NOBTEEK_BROWSER_CLOCK');
-if ($clock !== '2026-11-07T13:30:00Z') {
+if (! is_string($clock) || ! preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00Z$/D', $clock) || abs(time() - strtotime($clock)) > 3600) {
     throw new RuntimeException('P07 browser fixtures require the explicit synthetic clock.');
 }
 Carbon::setTestNow(CarbonImmutable::parse($clock));

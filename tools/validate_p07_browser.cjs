@@ -8,7 +8,8 @@ const root = path.resolve(__dirname, '..');
 const base = 'http://127.0.0.1:8000';
 assert.equal(process.env.APP_ENV, 'testing');
 assert.equal(process.env.DB_DATABASE, 'nobteek_test_browser');
-assert.equal(process.env.NOBTEEK_BROWSER_CLOCK, '2026-11-07T13:30:00Z');
+assert.ok(Math.abs(Date.now() - Date.parse(process.env.NOBTEEK_BROWSER_CLOCK)) < 3600000);
+const day = new Date(Date.parse(process.env.NOBTEEK_BROWSER_CLOCK) + 3 * 3600000).toISOString().slice(0, 10);
 const password = process.env.NOBTEEK_BROWSER_PASSWORD;
 const secret = process.env.NOBTEEK_BROWSER_MFA_SECRET;
 assert.ok(password && secret);
@@ -99,7 +100,7 @@ async function captureLayout(p, name) {
   const owner = await pageFor(await browser.newContext({ ...opts, viewport: { width: 1440, height: 1000 } }));
   const staff = await pageFor(await browser.newContext({ ...opts, viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true }));
   let sid, wid, entries = [], lost, direct;
-  const url = () => base + '/workspace/reception?date=2026-11-07&session_id=' + sid;
+  const url = () => base + '/workspace/reception?date=' + day + '&session_id=' + sid;
   async function booked(name) {
     const created = await post(owner, '/v1/booking-requests', { session_id: sid, window_id: wid, display_name: name, contact_phone: '700000099', source: 'phone' });
     assert.equal(created.status, 201);
@@ -111,7 +112,7 @@ async function captureLayout(p, name) {
   });
   await step('R02', 'Open synthetic current session using real application commands', async () => {
     const doctor = JSON.parse(fs.readFileSync(path.join(output, 'fixture.json'))).doctor_id;
-    const r = await post(owner, '/workspace/sessions', { doctor_id: doctor, starts_at: '2026-11-07T16:00', ends_at: '2026-11-07T18:00', windows: [{ starts_at: '2026-11-07T16:00', ends_at: '2026-11-07T17:00', capacity: 20 }, { starts_at: '2026-11-07T17:00', ends_at: '2026-11-07T18:00', capacity: 20 }] });
+    const r = await post(owner, '/workspace/sessions', { doctor_id: doctor, starts_at: day + 'T00:00', ends_at: day + 'T23:59', windows: [{ starts_at: day + 'T00:00', ends_at: day + 'T23:59', capacity: 20 }] });
     assert.equal(r.status, 201); sid = r.body.data.id; wid = r.body.data.windows[0].id;
     assert.equal((await post(owner, '/v1/sessions/' + sid + '/open', { reason_code: 'scheduled_start' }, 1)).status, 200);
     entries = [await booked('وصول متزامن أول'), await booked('وصول متزامن ثان')];
@@ -207,9 +208,9 @@ async function captureLayout(p, name) {
     await staff.getByRole('button', { name: 'عرض قائمة الاستقبال', exact: true }).click();
     await staff.waitForURL(/search=/);
     await staff.waitForFunction(() => document.querySelectorAll('article.reception-card').length === 1);
-    const result = await get(staff, '/v1/reception?date=2026-11-07&session_id=' + sid + '&search=' + encodeURIComponent(entries[1].name));
+    const result = await get(staff, '/v1/reception?date=' + day + '&session_id=' + sid + '&search=' + encodeURIComponent(entries[1].name));
     assert.equal(result.arrivals[0].visit.ticket_number, entries[1].ticket_number); assert.equal(result.arrivals[0].visit.waiting_position, 4);
-    const ticket = await get(staff, '/v1/reception?date=2026-11-07&session_id=' + sid + '&search=٢');
+    const ticket = await get(staff, '/v1/reception?date=' + day + '&session_id=' + sid + '&search=٢');
     assert.equal(ticket.arrivals.length, 1); assert.equal(ticket.arrivals[0].visit.ticket_number, 2);
   });
   await step('R12', 'CSRF, cross-clinic access and phone lookup restrictions remain enforced', async () => {
@@ -241,7 +242,7 @@ async function captureLayout(p, name) {
   report.passed = true;
 })().catch(async e => {
   process.exitCode = 1; console.error(String(e.stack));
-  if (activePage) { try { await activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true }); } catch {} }
+  if (activePage) { try { report.failure = { path: new URL(activePage.url()).pathname, body: (await activePage.locator('body').innerText()).slice(0, 2000) }; await activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true }); } catch {} }
 }).finally(async () => {
   fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
   if (browser) await browser.close();

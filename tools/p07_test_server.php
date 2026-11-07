@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
-if (PHP_SAPI !== 'cli-server' || getenv('APP_ENV') !== 'testing' || getenv('DB_DATABASE') !== 'nobteek_test_browser' || getenv('NOBTEEK_BROWSER_CLOCK') !== '2026-11-07T13:30:00Z') {
+if (PHP_SAPI !== 'cli-server' || getenv('APP_ENV') !== 'testing' || getenv('DB_DATABASE') !== 'nobteek_test_browser' || ! preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00Z$/D', (string) getenv('NOBTEEK_BROWSER_CLOCK')) || abs(time() - strtotime(getenv('NOBTEEK_BROWSER_CLOCK'))) > 3600) {
     http_response_code(503);
     exit('Synthetic localhost browser server only.');
 }
