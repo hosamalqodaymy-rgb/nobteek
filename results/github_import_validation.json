@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07",
+  "repository": "hosamalqodaymy-rgb/nobteek",
+  "branch": "main",
+  "result": "source_import_verified_and_ci_passed",
+  "baseline": "NOBTEEK-P06-1.0",
+  "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
+  "original_source_commit_metadata": "860da7309f2ba94799cf59bbba2267e365752a35",
+  "source_snapshot_commit": "caf9bb0f99a573f49b7a9206c56479512556dc62",
+  "ci_fix_commit": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
+  "verified_tree_before_final_notes": "da3165dfb482af91f1788ef2870e819c2b397d21",
+  "original_source_files_verified": 334,
+  "original_source_hash_mismatches": [],
+  "frozen_business_design_files_verified": 57,
+  "original_readme_preserved": true,
+  "existing_remote_git_history_preserved": true,
+  "original_local_git_objects_in_recovered_archive": false,
+  "history_note": "The archive contains the cumulative source and phase artifacts, plus release commit metadata. It does not include the original local Git object database; that original object history was not reconstructed or claimed restored.",
+  "backup_branch": "backup/pre-p06-import-20261107",
+  "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
+  "source_import_batches": 24,
+  "source_import_commits": [
+    {
+      "batch": 1,
+      "sha": "e123c53e57e90e6eec3324aa909dd621b1baafbf",
+      "files": 15
+    },
+    {
+      "batch": 2,
+      "sha": "84d7c50542cd37d7f012438afcdd9f0e560003e9",
+      "files": 1
+    },
+    {
+      "batch": 3,
+      "sha": "0a042d6eb99487e76bae2f02afc61dc98c05b208",
+      "files": 3
+    },
+    {
+      "batch": 4,
+      "sha": "51de369ce8ac3bf30a517e85d653537e2f9911db",
+      "files": 40
+    },
+    {
+      "batch": 5,
+      "sha": "428390685546d36f1f27b43d69a7ff1de54e0929",
+      "files": 28
+    },
+    {
+      "batch": 6,
+      "sha": "a8f3715887ac50adcd6259cb0db08f70ec1dfaa8",
+      "files": 17
+    },
+    {
+      "batch": 7,
+      "sha": "e11d7cc870466ffa9e9311c1705e83f1dabaf282",
+      "files": 40
+    },
+    {
+      "batch": 8,
+      "sha": "3a48d4728e80e7796468f50a70f6f3521d8f2776",
+      "files": 40
+    },
+    {
+      "batch": 9,
+      "sha": "93683a35a4881c365cd8b25250c019a754158f31",
+      "files": 40
+    },
+    {
+      "batch": 10,
+      "sha": "8045b1216be7e63e18f83d85fd9308930ba33b9f",
+      "files": 29
+    },
+    {
+      "batch": 11,
+      "sha": "7c4f11b63e24fac58e3c3cd4ff6a723c04c6624a",
+      "files": 8
+    },
+    {
+      "batch": 12,
+      "sha": "cd2b3903cc644c0c56bd8b9186d86e803606dcc9",
+      "files": 5
+    },
+    {
+      "batch": 13,
+      "sha": "3a50570dd749c6c774a66b2a62cbbb63d48cb2c2",
+      "files": 10
+    },
+    {
+      "batch": 14,
+      "sha": "3d7175d4aedadb150d0aff9bc03d95a3fb9517e5",
+      "files": 25
+    },
+    {
+      "batch": 15,
+      "sha": "d32126fe66921ba2b979dbf0d02032db704d831e",
+      "files": 4
+    },
+    {
+      "batch": 16,
+      "sha": "fe3a445bb056cb6377f646f9cf551652127819fb",
+      "files": 2
+    },
+    {
+      "batch": 17,
+      "sha": "5712d9fa17ef3ea83347f58714bd27dce0dba26a",
+      "files": 1
+    },
+    {
+      "batch": 18,
+      "sha": "b00818d81669a41a943d69a0b86a3bc1d9f26f12",
+      "files": 8
+    },
+    {
+      "batch": 19,
+      "sha": "8550f6c8047bca339ea64c54bddf9088059e7dc3",
+      "files": 3
+    },
+    {
+      "batch": 20,
+      "sha": "fd5492104dc43dde37417c81b8ff247d425ce76d",
+      "files": 3
+    },
+    {
+      "batch": 21,
+      "sha": "c4619c24413f1c1d3ec7b739de6ee5ac6b490fa8",
+      "files": 1
+    },
+    {
+      "batch": 22,
+      "sha": "6dde5e0be773ca4dd58712712f0e3c0c762e990c",
+      "files": 7
+    },
+    {
+      "batch": 23,
+      "sha": "9c9ffcfb79fd11037ebde18d92c6023b3c08d2f5",
+      "files": 3
+    },
+    {
+      "batch": 24,
+      "sha": "caf9bb0f99a573f49b7a9206c56479512556dc62",
+      "files": 1
+    }
+  ],
+  "tests_this_session": {
+    "python_reference_model": {
+      "tests": 51,
+      "result": "passed"
+    },
+    "github_actions": {
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 42385132233,
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42385132233",
+      "head_sha": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
+      "phpunit_tests": 109,
+      "phpunit_assertions": 749,
+      "build_migrate_seed_passed": true,
+      "environment": "isolated GitHub Actions PostgreSQL test database"
+    }
+  },
+  "additional_fix": {
+    "path": "application/tests/Unit/.gitkeep",
+    "bytes": 0,
+    "reason": "The configured PHPUnit Unit suite directory was empty and absent from GitHub. An empty marker preserves the directory; no application PHP code or locked dependencies changed."
+  },
+  "credential_scan": {
+    "text_files_scanned": 304,
+    "detected_live_key_or_token_patterns": 0,
+    "operational_env_files_included": false,
+    "reviewed_assignment_findings": 15,
+    "reviewed_classification": "synthetic test fixtures, environment references, field names and casts",
+    "foundation_sql_is_schema_not_data_dump": true,
+    "independent_security_audit": false
+  },
+  "browser_verification": {
+    "full_staff_journey": false,
+    "responsive_matrix_360_768_1440": false,
+    "text_zoom_and_real_mobile": false,
+    "source_report": "results/p06_browser_validation.json"
+  },
+  "next_development_stage": "P07 after completing the recorded P06 browser checks",
+  "production_deployment_performed": false,
+  "real_patient_data_used": false
+}

@@ -3,7 +3,7 @@
   "repository": "hosamalqodaymy-rgb/nobteek",
   "branch": "main",
   "task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "status": "source_import_verified_ci_fix_applied",
+  "status": "source_import_verified_ci_passed",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
@@ -349,7 +349,7 @@
   ],
   "next_batch_paths": [],
   "resume_instruction": "Compare the recovered archive with docs/P06_SOURCE_RELEASE.json and the remote tree. Skip every matching uploaded source path; upload only missing or mismatched paths. Preserve README.md and existing history.",
-  "previous_checkpoint_commit": "caf9bb0f99a573f49b7a9206c56479512556dc62",
+  "previous_checkpoint_commit": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -369,7 +369,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Inspect the new GitHub Actions run, then record final import verification and P06 browser gaps.",
+  "next_action": "Use docs/RESUME_AR.md. Complete the recorded P06 authenticated browser journey and responsive/text-zoom checks in a separate bounded task before developing P07.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",
@@ -377,8 +377,23 @@
     "text zoom and real mobile verification"
   ],
   "source_verified_at_commit": "caf9bb0f99a573f49b7a9206c56479512556dc62",
-  "ci_fix": {
-    "path": "application/tests/Unit/.gitkeep",
-    "reason": "PHPUnit references tests/Unit; GitHub does not contain the empty directory. Track it with an empty marker."
-  }
+  "current_ci": {
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 42385132233,
+    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42385132233",
+    "head_sha": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
+    "phpunit_tests": 109,
+    "phpunit_assertions": 749,
+    "build_migrate_seed_passed": true,
+    "environment": "isolated GitHub Actions PostgreSQL test database"
+  },
+  "additional_files": [
+    {
+      "path": "application/tests/Unit/.gitkeep",
+      "reason": "Track the empty Unit suite directory required by application/phpunit.xml."
+    }
+  ],
+  "readable_handoff": "docs/RESUME_AR.md",
+  "verification_report": "results/github_import_validation.json"
 }
