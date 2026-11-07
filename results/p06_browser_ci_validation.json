@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "scope": "real_Laravel_PostgreSQL_authenticated_browser_and_public_flow",
+  "browser": "Chromium",
+  "passed": true,
+  "checks": [
+    {
+      "id": "B01",
+      "name": "Owner enters password and real TOTP challenge",
+      "status": "passed"
+    },
+    {
+      "id": "B02",
+      "name": "Owner creates a future session and two windows through UI",
+      "status": "passed"
+    },
+    {
+      "id": "B03",
+      "name": "Reception logs in normally on mobile viewport and opens bookings",
+      "status": "passed"
+    },
+    {
+      "id": "B04",
+      "name": "Public form rejects invalid Yemeni phone via real server validation",
+      "status": "passed"
+    },
+    {
+      "id": "B05",
+      "name": "Public Arabic-digit phone creates pending request through keyboard",
+      "status": "passed"
+    },
+    {
+      "id": "B06",
+      "name": "Reception refreshes and confirms the public request",
+      "status": "passed"
+    },
+    {
+      "id": "B07",
+      "name": "Reception reschedules confirmed booking to the second window",
+      "status": "passed"
+    },
+    {
+      "id": "B08",
+      "name": "Reception cancels and cancellation persists after reload",
+      "status": "passed"
+    },
+    {
+      "id": "B09",
+      "name": "Walk-in request accepts no phone and does not register arrival",
+      "status": "passed"
+    },
+    {
+      "id": "B10",
+      "name": "Reception rejects the walk-in pending request with reason",
+      "status": "passed"
+    },
+    {
+      "id": "B11",
+      "name": "Two relatives sharing a phone remain distinct patients",
+      "status": "passed"
+    },
+    {
+      "id": "B12",
+      "name": "Guest cannot read history and reception cannot cross clinics",
+      "status": "passed"
+    },
+    {
+      "id": "B13",
+      "name": "Doctor cannot open booking management",
+      "status": "passed"
+    },
+    {
+      "id": "B14",
+      "name": "Offline form disables submission and recovers on reconnect",
+      "status": "passed"
+    },
+    {
+      "id": "B15",
+      "name": "Lost real response retries once without duplicate record",
+      "status": "passed"
+    },
+    {
+      "id": "B16",
+      "name": "Booking filters display cancelled requests correctly",
+      "status": "passed"
+    },
+    {
+      "id": "B17-360",
+      "name": "RTL public and staff layout at 360",
+      "status": "passed"
+    },
+    {
+      "id": "B18-360",
+      "name": "200 percent text resize and usable controls at 360",
+      "status": "passed"
+    },
+    {
+      "id": "B17-768",
+      "name": "RTL public and staff layout at 768",
+      "status": "passed"
+    },
+    {
+      "id": "B18-768",
+      "name": "200 percent text resize and usable controls at 768",
+      "status": "passed"
+    },
+    {
+      "id": "B17-1440",
+      "name": "RTL public and staff layout at 1440",
+      "status": "passed"
+    },
+    {
+      "id": "B18-1440",
+      "name": "200 percent text resize and usable controls at 1440",
+      "status": "passed"
+    },
+    {
+      "id": "B19",
+      "name": "Logout ends the reception browser session",
+      "status": "passed"
+    },
+    {
+      "id": "B20",
+      "name": "No uncaught browser errors or server failures",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    "staff-360.png",
+    "public-360.png",
+    "staff-360-text200.png",
+    "public-360-text200.png",
+    "staff-768.png",
+    "public-768.png",
+    "staff-768-text200.png",
+    "public-768-text200.png",
+    "staff-1440.png",
+    "public-1440.png",
+    "staff-1440-text200.png",
+    "public-1440-text200.png"
+  ],
+  "runtimeErrors": [],
+  "serverErrors": [],
+  "syntheticOnly": true,
+  "realPhoneTested": false,
+  "mobileEmulationTested": true,
+  "fullBrowserPageZoomTested": false,
+  "textResizePercent": 200,
+  "apiResponsesMocked": false,
+  "layoutMatrix": [
+    {
+      "page": "staff",
+      "viewport": 360,
+      "actualViewport": 360,
+      "scrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 360
+    },
+    {
+      "page": "public",
+      "viewport": 360,
+      "actualViewport": 360,
+      "scrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 360
+    },
+    {
+      "page": "staff",
+      "viewport": 768,
+      "actualViewport": 768,
+      "scrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 768
+    },
+    {
+      "page": "public",
+      "viewport": 768,
+      "actualViewport": 768,
+      "scrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 768
+    },
+    {
+      "page": "staff",
+      "viewport": 1440,
+      "actualViewport": 1440,
+      "scrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 1440
+    },
+    {
+      "page": "public",
+      "viewport": 1440,
+      "actualViewport": 1440,
+      "scrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 1440
+    }
+  ],
+  "textResizeMatrix": [
+    {
+      "page": "staff",
+      "viewport": 360,
+      "actualViewport": 360,
+      "scrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 360
+    },
+    {
+      "page": "public",
+      "viewport": 360,
+      "actualViewport": 360,
+      "scrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 360
+    },
+    {
+      "page": "staff",
+      "viewport": 768,
+      "actualViewport": 768,
+      "scrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 768
+    },
+    {
+      "page": "public",
+      "viewport": 768,
+      "actualViewport": 768,
+      "scrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 768
+    },
+    {
+      "page": "staff",
+      "viewport": 1440,
+      "actualViewport": 1440,
+      "scrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 1440
+    },
+    {
+      "page": "public",
+      "viewport": 1440,
+      "actualViewport": 1440,
+      "scrollWidth": 1440,
+      "bodyScrollWidth": 1440,
+      "direction": "rtl",
+      "bad": [],
+      "overflow": [],
+      "h1": 1,
+      "screenshotWidth": 1440
+    }
+  ],
+  "date": "2026-11-07",
+  "baselineId": "NOBTEEK-P06-BROWSER-QA-1.0",
+  "testedCommit": "f64aba61846e810ee2172289b31d23634f0310d9",
+  "playwrightVersion": "1.65.0",
+  "workflowUrl": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42406910807",
+  "workflowRunId": 42406910807,
+  "artifactId": 13588260054,
+  "foundation": {
+    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42406910815",
+    "runId": 42406910815,
+    "tests": 109,
+    "assertions": 749,
+    "result": "passed"
+  },
+  "manualVisualReview": {
+    "completed": true,
+    "scope": "Samples of 360, 768 and 1440 layouts, plus before/after 360px 200% text-resize screenshots.",
+    "originalZoomedMobileScreenshotWidth": 379,
+    "fixedZoomedMobileScreenshotWidth": 360
+  },
+  "fix": {
+    "path": "application/resources/css/app.css",
+    "selector": ".booking-filters input[type=date]",
+    "cause": "Native date input intrinsic minimum width widened the mobile layout from 360px to 379px at 200% text size.",
+    "change": "min-width:0; max-width:100%",
+    "layoutGuard": "Assert requested viewport, actual viewport, body/root scroll widths, and screenshot width after fonts settle."
+  },
+  "limitations": [
+    "No physical phone was attached; mobile/touch was emulated in Chromium.",
+    "Firefox and WebKit were not tested.",
+    "200% root text resize was tested; browser UI page zoom was not tested."
+  ],
+  "productionReleaseTested": false,
+  "realPatientDataUsed": false,
+  "externalMessagesSent": false,
+  "nextStage": "P07"
+}
