@@ -1,0 +1,58 @@
+<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><title>فحص نموذج نوبتيك P02</title>
+<style>body{font:16px system-ui;background:#edf5f5;color:#14364b;margin:20px}button{font:inherit;min-height:48px;padding:10px 20px}pre{direction:ltr;text-align:left;background:white;padding:20px;white-space:pre-wrap}section{margin:24px 0;overflow:auto}iframe{border:1px solid #9bbbbb;height:900px;background:white;display:block;max-width:none}h2{font-size:20px}</style>
+<h1>فحص الرحلات عبر عناصر الواجهة</h1><p>بيانات وهمية. الاختبارات تضغط عناصر الصفحة وتقرأ العرض دون الوصول إلى متغيرات البرنامج.</p><button id="run">تشغيل الفحص</button><pre id="qa-result">جاهز</pre>
+<section><h2>عرض 360 بكسل</h2><iframe id="f360" title="معاينة عرض 360" src="index.html"></iframe></section>
+<section><h2>عرض 768 بكسل</h2><iframe id="f768" title="معاينة عرض 768" src="index.html"></iframe></section>
+<section><h2>عرض 1440 بكسل</h2><iframe id="f1440" title="معاينة عرض 1440" src="index.html"></iframe></section>
+<section><h2>عرض 360 مع نص 200 بالمئة</h2><iframe id="fzoom" title="معاينة النص المكبر" src="text-200.html"></iframe></section>
+<script>
+'use strict';
+const frames=[['f360',360],['f768',768],['f1440',1440],['fzoom',360]];
+frames.forEach(([id,w])=>document.getElementById(id).style.width=w+'px');
+const result={baselineId:'NOBTEEK-P02-1.0',scope:'rendered_ui_in_browser',productionDatabaseTested:false,productionAuthenticationTested:false,checks:[]};
+const out=document.getElementById('qa-result');
+function update(){out.textContent=JSON.stringify({...result,checksRun:result.checks.length,failures:result.checks.filter(x=>x.status==='failed').length},null,2)}
+function record(id,ok,detail){result.checks.push({id,status:ok?'passed':'failed',...(detail?{detail}: {})});update();if(!ok)throw Error(id+' '+(detail||''))}
+function next(){return new Promise(r=>setTimeout(r,10))}
+async function until(test,what){const end=performance.now()+7000;while(performance.now()<end){if(test())return;await next()}throw Error('timeout '+what)}
+function ui(id){const frame=document.getElementById(id),d=frame.contentDocument;return {
+ d,frame,q:s=>d.querySelector(s),all:s=>[...d.querySelectorAll(s)],text:()=>d.getElementById('main-content')?.textContent||'',
+ async click(s){const e=d.querySelector(s);if(!e||e.disabled)throw Error('unavailable '+s);e.click();await next()},
+ async select(s,v){const e=d.querySelector(s);if(!e||e.disabled)throw Error('unavailable '+s);e.value=v;e.dispatchEvent(new Event('change',{bubbles:true}));await next()},
+ input(s,v){const e=d.querySelector(s);if(!e)throw Error('missing '+s);e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}))},
+ async submit(s){const f=d.querySelector(s);if(!f.reportValidity())throw Error('invalid '+s);f.requestSubmit();const locked=d.getElementById('demo-role').disabled&&[...d.querySelectorAll('[data-write],[data-delegate]')].every(e=>e.disabled);await next();return locked},
+ async ready(){await until(()=>d.getElementById('demo-role')&&!d.getElementById('demo-role').disabled,'command completion')},
+ async role(r){await this.select('#demo-role',r);await this.ready()},
+ async go(route){const link=[...d.querySelectorAll('a')].find(a=>a.getAttribute('href')==='#/'+route);if(!link)throw Error('missing route '+route);link.click();await next()},
+ async reset(){if(!d.querySelector('details').open)d.querySelector('summary').click();await this.click('[data-action="reset-empty"]');await this.ready()},
+ async command(s){await this.click(s);await this.ready()},
+ async phone(name,window='W1_A'){await this.click('[data-action="new-phone"]');this.input('#modal-display_name',name);this.input('#modal-contact_phone','700000001');await this.select('#modal-window_id',window);await this.submit('#modal-form');await this.ready()},
+ async reason(s){await this.click(s);await this.submit('#modal-form');await this.ready()},
+ async fit(){await next();const sw=d.documentElement.scrollWidth,cw=d.documentElement.clientWidth;return {ok:sw<=cw+1,width:cw,scrollWidth:sw}}
+}}
+async function journey(id,width){const a=ui(id),p=id+'_';await until(()=>a.q('#demo-role'),'app load');await a.reset();await a.role('public');a.input('#patient-name','تجربة واجهة '+width);a.input('#patient-phone','700000001');const locked=await a.submit('#booking-form');record(p+'context_locked_while_saving',locked);await a.ready();await until(()=>a.text().includes('طلبك قيد المراجعة'),'pending ticket');record(p+'pending_has_no_ticket',!a.q('.ticket-big'));
+ let fit=await a.fit();record(p+'patient_reflows',fit.ok,fit);
+ await a.role('reception');await a.command('[data-action="confirm"]');record(p+'confirmation_before_arrival',!!a.q('[data-action="check_in"]')&&!a.q('[data-visit-id]'));await a.command('[data-action="check_in"]');record(p+'arrival_assigns_ticket',a.q('.queue-position b')?.textContent==='1');fit=await a.fit();record(p+'reception_reflows',fit.ok,fit);
+ await a.role('public');await a.go('ticket');record(p+'private_waiting_visible',a.q('.ticket-big')?.textContent==='1'&&a.text().includes('أنت التالي للاستدعاء'));
+ await a.role('doctor');await a.command('[data-action="call_next"]');record(p+'called_reserves_doctor',!!a.q('[data-action="start"]')&&!a.q('[data-action="call_next"]'));await a.role('public');await a.go('ticket');record(p+'private_called_visible',a.text().includes('تم استدعاؤك'));
+ await a.role('doctor');await a.command('[data-action="start"]');record(p+'service_started',!!a.q('[data-action="complete"]'));await a.command('[data-action="complete"]');await a.role('public');await a.go('ticket');record(p+'completion_visible',a.text().includes('اكتملت الزيارة'));
+ await a.role('owner');record(p+'owner_counts_completed',a.q('.stat strong')?.textContent==='1');fit=await a.fit();record(p+'owner_reflows',fit.ok,fit);
+}
+async function exceptions(){const a=ui('f360');await a.role('reception');await a.phone('تجربة تعديل');await a.click('[data-action="reschedule"]');await a.select('#modal-window_id','W2_A');await a.submit('#modal-form');await a.ready();record('E01_reschedule_visible',a.q('[data-booking-id] .record-meta')?.textContent.includes('٥:٠٠'));
+ await a.reason('[data-command="cancel"]');record('E02_cancel_visible',a.text().includes('ملغى'));
+ await a.click('[data-action="new-walkin"]');a.input('#modal-display_name','تجربة مباشر أول');await a.submit('#modal-form');await a.ready();record('E03_walkin_without_phone',a.text().includes('دون هاتف')&&a.q('.queue-position b')?.textContent==='2');
+ await a.click('[data-action="advance-hour"]');await a.click('[data-action="new-walkin"]');a.input('#modal-display_name','تجربة مباشر ثان');await a.submit('#modal-form');await a.ready();record('E04_ticket_sequence',a.all('.queue-position b').slice(0,2).map(x=>x.textContent).join(',')==='2,3');
+ const first=a.q('[data-visit-id]');await a.reason('[data-visit-id="'+first.dataset.visitId+'"] [data-command="mark_away"]');await a.command('[data-action="return"]');record('E05_return_keeps_ticket_moves_to_end',a.all('.queue-position b').slice(0,2).map(x=>x.textContent).join(',')==='3,2');
+ await a.go('wall');record('E06_wall_has_numbers_no_names',!a.text().includes('تجربة مباشر')&&!a.text().includes('700000001')&&a.all('.wall-next span').some(x=>x.textContent==='3'));
+ await a.role('reception');await a.select('#demo-state','offline');record('E07_offline_writes_disabled',a.text().includes('المعلومات المعروضة قديمة')&&a.all('[data-write]').length>0&&a.all('[data-write]').every(e=>e.disabled));await a.select('#demo-state','normal');
+ for(const [mode,text] of [['loading','جاري تحميل البيانات'],['empty','القائمة فارغة'],['error','تعذر تحديث البيانات'],['conflict','تغيرت الحالة'],['forbidden','ليس لديك صلاحية لهذه الشاشة']]){await a.select('#demo-state',mode);record('E08_state_'+mode,a.text().includes(text));if(mode!=='loading'){await a.click('[data-action="refresh"]');record('E09_recover_'+mode,!!a.q('[data-action="new-phone"]'))}}
+ await a.select('#demo-state','normal');await a.select('#demo-clinic','CLINIC_B');record('E10_other_clinic_not_rendered',!a.text().includes('تجربة مباشر')&&!a.text().includes('تجربة واجهة'));await a.role('platform_admin');record('E11_admin_no_patient_details',!a.text().includes('تجربة مباشر')&&!a.text().includes('700000001')&&a.text().includes('إدارة العيادات'));
+ await a.role('owner');await a.go('setup');a.input('#clinic-name','عيادة اختبار الواجهة');const locked=await a.submit('#clinic-form');record('E12_owner_save_locks_actions',locked);await a.ready();record('E13_owner_name_saved',a.q('#clinic-name').value==='عيادة اختبار الواجهة');
+ a.q('[data-delegate]').click();record('E14_delegation_locks_next_action',a.q('[data-action="new-session"]').disabled);a.q('[data-action="new-session"]').click();record('E15_pending_action_does_not_open_new_dialog',!a.q('dialog').open);await a.ready();record('E16_delegation_saved',a.q('[data-delegate]').checked);
+ await a.click('[data-action="new-session"]');await a.submit('#modal-form');await a.ready();record('E17_session_created',!!a.q('[data-action="open"]'));await a.click('[data-action="advance-hour"]');await a.command('[data-action="open"]');record('E18_new_session_opened',!a.q('[data-action="open"]'));
+}
+async function zoom(){const a=ui('fzoom');await until(()=>a.q('#demo-role'),'zoom load');await a.reset();await a.role('reception');await a.phone('تجربة تكبير النص');await a.command('[data-action="confirm"]');let fit=await a.fit();record('Z01_200pct_360_no_overflow',fit.ok,fit);for(const action of ['check_in','reschedule','reason']){const e=a.q('[data-action="'+action+'"]'),r=e.getBoundingClientRect();record('Z02_reachable_'+action,r.width>0&&r.height>=48&&r.left>=-1&&r.right<=360)}
+ await a.click('[data-command="cancel"]');const dialog=a.q('dialog'),r=dialog.getBoundingClientRect(),buttons=a.all('.dialog-actions button');record('Z03_modal_fits_width',r.left>=-1&&r.right<=360&&dialog.scrollWidth<=dialog.clientWidth+1);record('Z04_modal_actions_reachable',buttons.length===2&&buttons.every(b=>{b.scrollIntoView();const r=b.getBoundingClientRect();return r.height>=48&&r.left>=-1&&r.right<=360&&r.top>=0&&r.bottom<=900}));await a.click('[data-action="close-dialog"]');
+}
+document.getElementById('run').onclick=async()=>{document.getElementById('run').disabled=true;result.checks=[];update();try{for(const [id,w] of frames.filter(x=>x[0]!=='fzoom'))await journey(id,w);await exceptions();await zoom();result.complete=true;result.passed=result.checks.every(x=>x.status==='passed')}catch(e){result.complete=true;result.passed=false;result.error=e.message}update();document.getElementById('run').disabled=false};
+</script></html>

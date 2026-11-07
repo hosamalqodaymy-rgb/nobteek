@@ -8,8 +8,8 @@
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
   "source_files_expected": 334,
-  "source_files_uploaded": 224,
-  "completed_batches": 9,
+  "source_files_uploaded": 253,
+  "completed_batches": 10,
   "total_batches": 24,
   "uploaded_source_paths": [
     ".gitignore",
@@ -235,9 +235,7 @@
     "results/p06_browser_validation.json",
     "results/p06_clean_build_validation.json",
     "results/p06_http_validation.json",
-    "results/p06_p04_http_regression.json"
-  ],
-  "next_batch_paths": [
+    "results/p06_p04_http_regression.json",
     "results/p06_source_validation.json",
     "results/p06_validation.json",
     "tools/build_p01.py",
@@ -268,8 +266,18 @@
     "tools/validate_p06_http.py",
     "tools/validate_p06_source.py"
   ],
+  "next_batch_paths": [
+    "prototype/Nobteek_P02_Prototype_AR.html",
+    "prototype/P02_CONTRACTS.json",
+    "prototype/README_AR.txt",
+    "prototype/app.css",
+    "prototype/app.js",
+    "prototype/domain.js",
+    "prototype/fixture.generated.js",
+    "prototype/index.html"
+  ],
   "resume_instruction": "Compare the recovered archive with docs/P06_SOURCE_RELEASE.json and the remote tree. Skip every matching uploaded source path; upload only missing or mismatched paths. Preserve README.md and existing history.",
-  "previous_checkpoint_commit": "3a48d4728e80e7796468f50a70f6f3521d8f2776",
+  "previous_checkpoint_commit": "93683a35a4881c365cd8b25250c019a754158f31",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -289,7 +297,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Continue source batch 10 of 24. Skip all verified batches.",
+  "next_action": "Continue source batch 11 of 24. Skip all verified batches.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",

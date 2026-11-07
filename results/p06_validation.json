@@ -1,0 +1,62 @@
+{
+  "baselineId": "NOBTEEK-P06-1.0",
+  "phase": "P06",
+  "status": "completed_core_booking_scope_synthetic_with_partial_browser_verification",
+  "completedAt": "2026-11-06T18:10:49.008568+00:00",
+  "acceptance": {
+    "T06A": "passed_real_distinct_staff_concurrent_HTTP_last_slot",
+    "T06B": "passed_real_retry_and_shared_family_contact"
+  },
+  "counts": {
+    "phpunitTests": 109,
+    "newP06Tests": 29,
+    "phpunitAssertions": 749,
+    "phaseHTTPChecks": 28,
+    "accountHTTPRegressions": 15,
+    "totalHTTPChecks": 43,
+    "cleanBuildSteps": 7,
+    "publicBrowserChecksObserved": 7,
+    "responsiveViewportCasesExecuted": 0
+  },
+  "lastSlotRace": {
+    "distinctAuthenticatedActors": true,
+    "actorRoles": [
+      "owner",
+      "reception"
+    ],
+    "requestStartDeltaMilliseconds": 0.517,
+    "httpStatuses": [
+      200,
+      409
+    ],
+    "confirmed": 1,
+    "pending": 1,
+    "bookingConfirmEvents": 1
+  },
+  "evidence": {
+    "application": "results/p06_application_validation.json",
+    "http": "results/p06_http_validation.json",
+    "accountHTTPRegression": "results/p06_p04_http_regression.json",
+    "cleanBuild": "results/p06_clean_build_validation.json",
+    "browser": "results/p06_browser_validation.json",
+    "source": "results/p06_source_validation.json"
+  },
+  "notVerified": [
+    "full_authenticated_staff_browser_journey",
+    "responsive_browser_matrix",
+    "text_scale_browser_matrix",
+    "real_mobile_hardware",
+    "production_deployment",
+    "independent_security_audit",
+    "CI_execution",
+    "Docker_execution",
+    "commercial_adoption"
+  ],
+  "realPatientDataUsed": false,
+  "externalMessagesSent": false,
+  "paymentsImplemented": false,
+  "nextStage": "P07",
+  "financialPhase": "P13",
+  "sourcePackage": "Nobteek_P06_Bookings_Source_v1.zip",
+  "guide": "Nobteek_P06_Setup_and_Test_AR.txt"
+}
