@@ -1,5 +1,8 @@
 name: Nobteek P06 phone APK
 on: [push, pull_request]
+concurrency:
+  group: p06-phone-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:

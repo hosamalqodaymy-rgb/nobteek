@@ -7,8 +7,10 @@ out=root/'dist-phone'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,timeout=60)
 def tree():
-    adb('shell','uiautomator','dump','/sdcard/nobteek-ui.xml')
-    data=adb('exec-out','cat','/sdcard/nobteek-ui.xml')
+    try:
+        adb('shell','uiautomator','dump','/sdcard/nobteek-ui.xml')
+        data=adb('exec-out','cat','/sdcard/nobteek-ui.xml')
+    except (subprocess.CalledProcessError,subprocess.TimeoutExpired):return None
     start=data.find('<?xml')
     if start<0:return None
     try:return ET.fromstring(data[start:])
