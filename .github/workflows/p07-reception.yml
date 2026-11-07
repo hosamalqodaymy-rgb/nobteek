@@ -1,0 +1,74 @@
+name: Nobteek P07 reception
+on:
+  push:
+    branches: [main, 'work/p07-*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: p07-reception-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  reception:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: application
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nobteek_ci_only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nobteek_test_ci
+      DB_USERNAME: nobteek_test
+      DB_PASSWORD: nobteek_ci_only
+      NOBTEEK_DEMO_SEED: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, dom, curl, zip, pdo_pgsql
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - name: Install locked dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          composer show --direct
+          npm ci --no-audit --no-fund
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+      - name: Generate initial P07 scaffolds with Artisan
+        run: |
+          php artisan make:class Services/ReceptionCommands --no-interaction
+          php artisan make:controller ReceptionController --no-interaction
+          php artisan make:policy VisitPolicy --model=Visit --no-interaction
+          php artisan make:test ReceptionArrivalTest --phpunit --no-interaction
+          php artisan make:test ReceptionVisitTest --phpunit --no-interaction
+          php artisan make:test ReceptionAccessTest --phpunit --no-interaction
+          php artisan make:test ReceptionConcurrencyTest --phpunit --no-interaction
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nobteek-p07-scaffolds
+          retention-days: 3
+          path: |
+            application/app/Services/ReceptionCommands.php
+            application/app/Http/Controllers/ReceptionController.php
+            application/app/Policies/VisitPolicy.php
+            application/tests/Feature/Reception*Test.php
