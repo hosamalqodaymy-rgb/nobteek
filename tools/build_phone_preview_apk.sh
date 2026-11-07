@@ -12,7 +12,7 @@ cp "$project_root/design/assets/icon-512.png" "$phone_build/res/drawable/icon.pn
 cp -R "$project_root/dist-phone/web/." "$phone_build/assets/web/"
 "$build_tools/aapt2" compile --dir "$phone_build/res" -o "$phone_build/resources.zip"
 "$build_tools/aapt2" link -o "$phone_build/unsigned.apk" --manifest "$project_root/android-preview/AndroidManifest.xml" -I "$android_jar" -A "$phone_build/assets" "$phone_build/resources.zip"
-javac -encoding UTF-8 -source 8 -target 8 -bootclasspath "$android_jar" -d "$phone_build/classes" "$project_root/android-preview/src/com/nobteek/preview/MainActivity.java"
+javac -encoding UTF-8 --release 8 -classpath "$android_jar" -d "$phone_build/classes" "$project_root/android-preview/src/com/nobteek/preview/MainActivity.java"
 jar cf "$phone_build/classes.jar" -C "$phone_build/classes" .
 "$build_tools/d8" --lib "$android_jar" --min-api 26 --output "$phone_build/dex" "$phone_build/classes.jar"
 python3 - "$phone_build" <<'PY'
