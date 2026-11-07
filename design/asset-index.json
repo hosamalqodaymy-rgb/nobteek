@@ -1,0 +1,22 @@
+{
+  "baselineId": "NOBTEEK-P01-1.0",
+  "nameAr": "نوبتيك",
+  "nameEn": "Nobteek",
+  "assets": [
+    "symbol-primary.svg",
+    "symbol-white.svg",
+    "favicon.svg",
+    "logo-ar.svg",
+    "logo-ar-inverse.svg",
+    "logo-mono.svg",
+    "logo-en.svg",
+    "icon-192.svg",
+    "icon-512.svg",
+    "icon-1024.svg",
+    "cover-desktop.svg",
+    "cover-mobile.svg",
+    "identity-board.svg",
+    "symbol-small-proof.svg"
+  ],
+  "source": "brand.config.json"
+}
