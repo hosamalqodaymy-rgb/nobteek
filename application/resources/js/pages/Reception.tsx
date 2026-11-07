@@ -7,7 +7,7 @@ import { dateLabel, timeLabel } from '../components/ScheduleForm';
 import { OfflineNotice, Pagination } from '../components/SetupForm';
 import { postJSON } from '../components/SessionTransport';
 
-type ReceptionSession = BookingOption & { state: string; accepting_arrivals: boolean; walk_in_url: string; windows: (BookingOption['windows'][number] & { capacity: number; reserved: number })[] };
+type ReceptionSession = Omit<BookingOption, 'windows'> & { state: string; accepting_arrivals: boolean; walk_in_url: string; windows: (BookingOption['windows'][number] & { capacity: number; reserved: number })[] };
 type Arrival = {
   booking_id: string; booking_state: string; booking_version: number; source: string; session_id: string;
   display_name: string; contact_phone: string | null; doctor_name: string; window_starts_at: string; window_ends_at: string;
