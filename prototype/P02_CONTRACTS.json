@@ -1,0 +1,306 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "scope": "interactive_browser_prototype",
+  "businessRules": "NOBTEEK-P00-1.0",
+  "design": "NOBTEEK-P01-1.0",
+  "screens": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S12"
+  ],
+  "excludedScreen": {
+    "S11": "P13"
+  },
+  "transport": "prototype/domain.js",
+  "productionHttp": false,
+  "productionAuth": false,
+  "productionDatabase": false,
+  "localStorageUsed": false,
+  "states": [
+    "loading",
+    "empty",
+    "success",
+    "error",
+    "offline",
+    "forbidden",
+    "conflict"
+  ],
+  "criticalCommands": [
+    {
+      "id": "request",
+      "path": "POST /v1/booking-requests",
+      "owner_phase": "P06",
+      "actors": [
+        "public",
+        "owner",
+        "reception"
+      ],
+      "result": "pending",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": false
+    },
+    {
+      "id": "confirm",
+      "path": "POST /v1/bookings/{id}/confirm",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "confirmed",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "reject",
+      "path": "POST /v1/bookings/{id}/reject",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "rejected",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "cancel",
+      "path": "POST /v1/bookings/{id}/cancel",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "cancelled",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "reschedule",
+      "path": "POST /v1/bookings/{id}/reschedule",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "unchanged_booking_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "check_in",
+      "path": "POST /v1/bookings/{id}/check-in",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "waiting",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "walk_in",
+      "path": "POST /v1/sessions/{id}/walk-ins",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "confirmed_booking_and_waiting_visit",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": false
+    },
+    {
+      "id": "call_next",
+      "path": "POST /v1/sessions/{id}/call-next",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor",
+        "delegated_reception"
+      ],
+      "result": "called",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "start",
+      "path": "POST /v1/visits/{id}/start",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "in_service",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "complete",
+      "path": "POST /v1/visits/{id}/complete",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "completed_and_fulfilled",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "mark_away",
+      "path": "POST /v1/visits/{id}/mark-away",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception",
+        "doctor"
+      ],
+      "result": "away",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "return",
+      "path": "POST /v1/visits/{id}/return",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "waiting",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "leave",
+      "path": "POST /v1/visits/{id}/leave",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception",
+        "doctor"
+      ],
+      "result": "left",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "priority",
+      "path": "POST /v1/visits/{id}/priority",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "waiting_with_recorded_priority",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "open",
+      "path": "POST /v1/sessions/{id}/open",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "open",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "pause",
+      "path": "POST /v1/sessions/{id}/pause",
+      "owner_phase": "P05",
+      "actors": [
+        "owner",
+        "doctor"
+      ],
+      "result": "paused",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "resume",
+      "path": "POST /v1/sessions/{id}/resume",
+      "owner_phase": "P05",
+      "actors": [
+        "owner",
+        "doctor"
+      ],
+      "result": "open",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "close",
+      "path": "POST /v1/sessions/{id}/close",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "closed",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "capacity",
+      "path": "POST /v1/sessions/{id}/capacity",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "unchanged_session_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "extend",
+      "path": "POST /v1/sessions/{id}/extend",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "unchanged_session_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "ticket",
+      "path": "GET /v1/tickets/{secret}",
+      "owner_phase": "P09",
+      "actors": [
+        "token_holder"
+      ],
+      "result": "limited_DTO",
+      "http_success": 200,
+      "idempotency_required": false,
+      "expected_version_required": false
+    }
+  ]
+}
