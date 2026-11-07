@@ -24,7 +24,7 @@ jobs:
           npm run typecheck
           npx vite build --config vite.phone-preview.config.ts
       - name: Install Android build tools
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"' 
       - name: Build and verify signed APK
         run: bash tools/build_phone_preview_apk.sh
       - name: Enable emulator acceleration
