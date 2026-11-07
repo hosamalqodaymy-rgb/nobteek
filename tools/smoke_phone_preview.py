@@ -27,8 +27,11 @@ def tap(node):
 report={'installed':False,'publicScreen':False,'staffScreen':False,'text200':False,'physicalPhoneTested':False,'scope':'Android emulator startup and local WebView rendering'}
 try:
     adb('install','-r',str(out/'Nobteek_P06_Interface_Test.apk'));report['installed']=True
+    adb('shell','input','keyevent','KEYCODE_WAKEUP')
+    adb('shell','am','force-stop','com.google.android.apps.nexuslauncher')
     adb('shell','wm','dismiss-keyguard')
     adb('shell','am','start','-W','-n','com.nobteek.preview/.MainActivity')
+    adb('shell','am','force-stop','com.google.android.apps.nexuslauncher')
     t=wait_text('عيادة العرض التجريبية');report['publicScreen']=True
     (out/'android-public.png').write_bytes(subprocess.check_output(['adb','exec-out','screencap','-p']))
     tap(next(n for n in t.iter('node') if n.get('class')=='android.widget.Spinner'))
