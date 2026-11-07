@@ -1,0 +1,26 @@
+[
+  {
+    "name": "OFL.txt",
+    "sha": "76c01b50a1da8b3ae44a6f05c2e0d6ccb1cac5b9",
+    "source": "https://github.com/google/fonts/blob/main/ofl/tajawal/OFL.txt",
+    "size": 4464
+  },
+  {
+    "name": "Tajawal-Bold.ttf",
+    "sha": "71e1488e90215abcc8aedc541d94a2bcbec574f3",
+    "source": "https://github.com/google/fonts/blob/main/ofl/tajawal/Tajawal-Bold.ttf",
+    "size": 59988
+  },
+  {
+    "name": "Tajawal-Medium.ttf",
+    "sha": "96dee5410d185adfa57475bb02695c11f8836208",
+    "source": "https://github.com/google/fonts/blob/main/ofl/tajawal/Tajawal-Medium.ttf",
+    "size": 62280
+  },
+  {
+    "name": "Tajawal-Regular.ttf",
+    "sha": "d23d25b8b68db86d5b727d181c2008fd874216eb",
+    "source": "https://github.com/google/fonts/blob/main/ofl/tajawal/Tajawal-Regular.ttf",
+    "size": 60364
+  }
+]

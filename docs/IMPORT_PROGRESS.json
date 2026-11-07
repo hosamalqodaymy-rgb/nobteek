@@ -8,8 +8,8 @@
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
   "source_files_expected": 334,
-  "source_files_uploaded": 276,
-  "completed_batches": 13,
+  "source_files_uploaded": 301,
+  "completed_batches": 14,
   "total_batches": 24,
   "uploaded_source_paths": [
     ".gitignore",
@@ -287,9 +287,7 @@
     "design/assets/icon-192.svg",
     "design/assets/icon-512.png",
     "design/assets/icon-512.svg",
-    "design/assets/identity-board.png"
-  ],
-  "next_batch_paths": [
+    "design/assets/identity-board.png",
     "design/assets/identity-board.svg",
     "design/assets/logo-ar-inverse.png",
     "design/assets/logo-ar-inverse.svg",
@@ -316,8 +314,14 @@
     "design/fonts/Tajawal-Medium.ttf",
     "design/fonts/Tajawal-Medium.woff"
   ],
+  "next_batch_paths": [
+    "design/fonts/Tajawal-Regular.ttf",
+    "design/fonts/Tajawal-Regular.woff",
+    "design/guide/page-1.svg",
+    "design/guide/page-2.svg"
+  ],
   "resume_instruction": "Compare the recovered archive with docs/P06_SOURCE_RELEASE.json and the remote tree. Skip every matching uploaded source path; upload only missing or mismatched paths. Preserve README.md and existing history.",
-  "previous_checkpoint_commit": "cd2b3903cc644c0c56bd8b9186d86e803606dcc9",
+  "previous_checkpoint_commit": "3a50570dd749c6c774a66b2a62cbbb63d48cb2c2",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -337,7 +341,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Continue source batch 14 of 24. Skip all verified batches.",
+  "next_action": "Continue source batch 15 of 24. Skip all verified batches.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",
