@@ -380,5 +380,11 @@
     "Physical-device verification remains pending.",
     "Correct new-account hosting and server-connected phone acceptance remain pending.",
     "P08–P13 have not been implemented."
-  ]
+  ],
+  "integration": {
+    "branch": "work/p07-reception-20261108",
+    "target": "main",
+    "status": "awaiting_explicit_merge_approval",
+    "merged": false
+  }
 }

@@ -435,5 +435,11 @@
     "production_deployed": false,
     "next_stage": "P08",
     "financial_phase": "P13"
+  },
+  "current_work_branch": "work/p07-reception-20261108",
+  "integration": {
+    "target": "main",
+    "merged": false,
+    "status": "awaiting_explicit_merge_approval"
   }
 }
