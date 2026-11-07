@@ -54,21 +54,36 @@ jobs:
           npm ci --no-audit --no-fund
           cp .env.example .env
           php artisan key:generate --no-interaction
-      - name: Generate initial P07 scaffolds with Artisan
+      - name: Create isolated non-superuser test database
+        env:
+          PGPASSWORD: nobteek_ci_only
         run: |
-          php artisan make:class Services/ReceptionCommands --no-interaction
-          php artisan make:controller ReceptionController --no-interaction
-          php artisan make:policy VisitPolicy --model=Visit --no-interaction
-          php artisan make:test ReceptionArrivalTest --phpunit --no-interaction
-          php artisan make:test ReceptionVisitTest --phpunit --no-interaction
-          php artisan make:test ReceptionAccessTest --phpunit --no-interaction
-          php artisan make:test ReceptionConcurrencyTest --phpunit --no-interaction
+          psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE nobteek_test LOGIN PASSWORD 'nobteek_ci_only' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+          CREATE DATABASE nobteek_test_ci OWNER nobteek_test;
+          SQL
+      - name: Format changed PHP with Pint
+        run: |
+          vendor/bin/pint --dirty --format agent
+          vendor/bin/pint app/Services/ReceptionCommands.php app/Http/Controllers/ReceptionController.php app/Policies/VisitPolicy.php app/Models/Visit.php routes/web.php tests/ReceptionTestCase.php tests/Feature/Reception*Test.php --format agent
+      - name: Build and exercise P07 on PostgreSQL
+        run: |
+          npm run build
+          php artisan migrate --seed --force --no-interaction
+          php artisan route:list --path=v1
+          php artisan test --compact --filter=Reception
+      - name: Verify committed PHP formatting
+        run: git diff --exit-code
       - uses: actions/upload-artifact@v4
         with:
-          name: nobteek-p07-scaffolds
-          retention-days: 3
+          name: nobteek-p07-evidence
+          retention-days: 14
+          if-no-files-found: warn
           path: |
             application/app/Services/ReceptionCommands.php
             application/app/Http/Controllers/ReceptionController.php
             application/app/Policies/VisitPolicy.php
+            application/app/Models/Visit.php
+            application/routes/web.php
+            application/tests/ReceptionTestCase.php
             application/tests/Feature/Reception*Test.php

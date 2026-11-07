@@ -6,6 +6,7 @@ use App\Http\Controllers\ClinicAccessController;
 use App\Http\Controllers\ClinicSetupController;
 use App\Http\Controllers\PlatformClinicController;
 use App\Http\Controllers\PublicBookingController;
+use App\Http\Controllers\ReceptionController;
 use App\Http\Controllers\SessionSetupController;
 use App\Http\Controllers\TeamController;
 use App\Http\Middleware\ResolveBookingActor;
@@ -55,6 +56,12 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/v1/sessions/{session}/{command}', [SessionSetupController::class, 'command'])->whereUuid('session')->whereIn('command', ['open', 'pause', 'resume', 'close', 'capacity', 'extend'])->name('session.command');
 
             Route::get('/workspace/bookings', [BookingController::class, 'index'])->name('bookings.index');
+            Route::get('/workspace/reception', [ReceptionController::class, 'index'])->name('reception.index');
+            Route::get('/v1/reception', [ReceptionController::class, 'index'])->name('reception.api');
+            Route::get('/v1/visits/{visit}', [ReceptionController::class, 'show'])->whereUuid('visit')->name('reception.show');
+            Route::post('/v1/bookings/{booking}/check-in', [ReceptionController::class, 'checkIn'])->whereUuid('booking')->name('reception.check-in');
+            Route::post('/v1/sessions/{session}/walk-ins', [ReceptionController::class, 'walkIn'])->whereUuid('session')->name('reception.walk-in');
+            Route::post('/v1/visits/{visit}/{command}', [ReceptionController::class, 'command'])->whereUuid('visit')->whereIn('command', ['mark-away', 'return', 'leave', 'defer'])->name('reception.command');
             Route::get('/v1/bookings', [BookingController::class, 'index'])->name('bookings.api');
             Route::get('/v1/bookings/{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('bookings.show');
             Route::post('/v1/bookings/{booking}/{command}', [BookingController::class, 'command'])->whereUuid('booking')->whereIn('command', ['confirm', 'reject', 'cancel', 'reschedule'])->name('booking.command');
