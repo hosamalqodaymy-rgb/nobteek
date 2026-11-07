@@ -3,13 +3,13 @@
   "repository": "hosamalqodaymy-rgb/nobteek",
   "branch": "main",
   "task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "status": "import_in_progress",
+  "status": "source_imported_pending_final_verification",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
   "source_files_expected": 334,
-  "source_files_uploaded": 333,
-  "completed_batches": 23,
+  "source_files_uploaded": 334,
+  "completed_batches": 24,
   "total_batches": 24,
   "uploaded_source_paths": [
     ".gitignore",
@@ -344,13 +344,12 @@
     "preview/p06/assets/preview-p06-frame-B-3Da7IJ.css",
     "preview/p06/assets/preview-p06-frame-HQIY1TGX.js",
     "preview/p06/index.html",
-    "preview/p06/preview-p06-frame.html"
-  ],
-  "next_batch_paths": [
+    "preview/p06/preview-p06-frame.html",
     ".github/workflows/ci.yml"
   ],
+  "next_batch_paths": [],
   "resume_instruction": "Compare the recovered archive with docs/P06_SOURCE_RELEASE.json and the remote tree. Skip every matching uploaded source path; upload only missing or mismatched paths. Preserve README.md and existing history.",
-  "previous_checkpoint_commit": "6dde5e0be773ca4dd58712712f0e3c0c762e990c",
+  "previous_checkpoint_commit": "9c9ffcfb79fd11037ebde18d92c6023b3c08d2f5",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -370,7 +369,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Continue source batch 24 of 24. Skip all verified batches.",
+  "next_action": "Verify every source blob on GitHub, inspect CI, and record the final result.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",

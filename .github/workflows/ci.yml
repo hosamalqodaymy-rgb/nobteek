@@ -1,0 +1,62 @@
+name: Nobteek foundation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: application
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nobteek_ci_only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nobteek_test_ci
+      DB_USERNAME: nobteek_test
+      DB_PASSWORD: nobteek_ci_only
+      NOBTEEK_DEMO_SEED: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, dom, curl, zip, pdo_pgsql
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - name: Install locked dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci --no-audit --no-fund
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+      - name: Create isolated non-superuser test database
+        env:
+          PGPASSWORD: nobteek_ci_only
+        run: |
+          psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE nobteek_test LOGIN PASSWORD 'nobteek_ci_only' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+          CREATE DATABASE nobteek_test_ci OWNER nobteek_test;
+          SQL
+      - name: Build, migrate, seed and test
+        run: |
+          composer validate --strict
+          npm run build
+          php artisan migrate --seed --force --no-interaction
+          php artisan test --compact
