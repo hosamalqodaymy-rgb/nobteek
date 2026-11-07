@@ -24,4 +24,5 @@
 @media(max-width:650px){.form-two-cols{grid-template-columns:1fr}.window-editor{padding:.75rem}.date-filter{gap:.75rem}.session-summary{align-items:start}.account-card .actions .btn{width:100%}.window-heading{align-items:start}.stat-list>div{gap:.5rem}}
 
 /* P06 booking forms reuse the approved identity and touch targets. */
+.booking-filters input[type=date]{min-width:0;max-width:100%}
 .booking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,25rem),1fr));gap:1.25rem}.booking-card{margin:0;min-width:0}.booking-reference{overflow-wrap:anywhere;word-break:break-word;font-size:.875rem}.booking-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:1rem;align-items:end}.booking-filters .account-field{margin:0}.state-pending{background:#FEF3C7;color:#92400E}.state-confirmed,.state-fulfilled{background:#DCFCE7;color:#166534}.state-rejected,.state-cancelled{background:#FEE4E2;color:#B42318}
