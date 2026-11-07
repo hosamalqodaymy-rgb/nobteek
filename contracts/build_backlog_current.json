@@ -1,0 +1,928 @@
+{
+  "schema_version": "1.6",
+  "as_of": "2026-11-06",
+  "status": "P06_core_bookings_verified_synthetic_partial_browser",
+  "product": {
+    "name_ar": "نوبتيك",
+    "name_en": "Nobteek",
+    "brand_status": "working_name_not_registered",
+    "tagline": "يوم عيادتك بترتيب واضح",
+    "delivery": "web_pwa",
+    "locale": "ar-YE",
+    "timezone": "Asia/Aden",
+    "application_implementation_status": "accounts_clinic_setup_and_booking_commands_verified",
+    "design_implementation_status": "P01_identity_with_P06_booking_forms",
+    "production_implementation_status": "pre_release_synthetic_only_full_browser_and_remaining_acceptance_pending",
+    "prototype_implementation_status": "frozen_interactive_prototype"
+  },
+  "billing_policy": {
+    "implementation_phase": "P13",
+    "external_payments_before_P13": false,
+    "external_paid_messaging_before_P13": false,
+    "initial_method": "reviewed_manual_transfer",
+    "period_days": 30,
+    "proposed_grace_days": 7,
+    "consultation_money_custody": false
+  },
+  "stages": [
+    {
+      "id": "P00",
+      "title": "تثبيت النطاق وقواعد العمل",
+      "depends": [],
+      "owner": "مسؤول المنتج",
+      "outputs": [
+        "مواصفات الإصدار الأول وخريطة الشاشات والحالات",
+        "عقود بيانات موحدة وبيانات تجريبية لعيادتين",
+        "سجل القرارات ومفتاح تعطيل التحصيل الخارجي"
+      ],
+      "tests": [
+        {
+          "id": "T00A",
+          "expected": "لكل شاشة وحالة ومسار استثناء مرحلة تملكها ولا تبعية دائرية.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p00_validation.json",
+            "acceptance_id": "T00A",
+            "checks": 13,
+            "scope": "specification_and_reference_model_only",
+            "application_integration_test": false
+          }
+        },
+        {
+          "id": "T00B",
+          "expected": "رحلة المراجع كاملة تعمل وصفيا من طلب الحجز إلى الإغلاق دون أي تحصيل.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p00_validation.json",
+            "acceptance_id": "T00B",
+            "checks": 38,
+            "scope": "specification_and_reference_model_only",
+            "application_integration_test": false
+          }
+        }
+      ],
+      "next": "تعطي الأسماء والحالات نفسها للتصميم والواجهة وقاعدة البيانات.",
+      "status": "completed",
+      "completion_scope": "specification_and_in_memory_reference_model_only",
+      "completed_on": "2026-11-06"
+    },
+    {
+      "id": "P01",
+      "title": "الاسم والهوية والغلاف",
+      "depends": [
+        "P00"
+      ],
+      "owner": "التصميم",
+      "outputs": [
+        "اسم العمل نوبتيك وكتابة Nobteek من إعداد موحد",
+        "شعار متجهي وأيقونة وغلاف وألوان وخط ومكونات",
+        "أحجام الهاتف والحاسوب وحالات التركيز والخطأ"
+      ],
+      "tests": [
+        {
+          "id": "T01A",
+          "expected": "وضوح الأيقونة في حجم 24 و48 بكسل والتباين في الأزواج المعتمدة.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p01_validation.json",
+            "acceptance_id": "T01A",
+            "checks": 63,
+            "scope": "P01_design_and_component_preview",
+            "manual_visual_review": true,
+            "production_application_test": false
+          }
+        },
+        {
+          "id": "T01B",
+          "expected": "يغيّر إعداد الاسم واللون جميع الشاشات دون نصوص أو ألوان مبعثرة.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p01_validation.json",
+            "acceptance_id": "T01B",
+            "checks": 6,
+            "scope": "P01_design_and_component_preview",
+            "manual_visual_review": true,
+            "production_application_test": false
+          }
+        }
+      ],
+      "next": "تستهلك الواجهات رموز التصميم نفسها، لا نسخا مستقلة.",
+      "status": "completed",
+      "completion_scope": "identity_assets_and_component_preview_only",
+      "completed_on": "2026-11-06"
+    },
+    {
+      "id": "P02",
+      "title": "نموذج الواجهات قبل الربط",
+      "depends": [
+        "P00",
+        "P01"
+      ],
+      "owner": "الواجهات",
+      "outputs": [
+        "نماذج تفاعلية للاستقبال والطبيب والمراجع والمالك",
+        "حالات تحميل وفراغ وفشل وتعارض وانقطاع وصلاحية",
+        "واجهات تجريبية مطابقة لعقود البيانات"
+      ],
+      "tests": [
+        {
+          "id": "T02A",
+          "expected": "رحلة مكتملة ببيانات وهمية على عرض 360 و768 و1440 بكسل.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p02_validation.json",
+            "scope": "browser_local_mock_transport_only",
+            "final_retest_status": "passed",
+            "production_application_test": false
+          }
+        },
+        {
+          "id": "T02B",
+          "expected": "التنقل بلوحة المفاتيح وتكبير النص لا يخفيان إجراء الحضور أو إلغاء الحجز.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p02_validation.json",
+            "scope": "browser_local_mock_transport_only",
+            "final_retest_status": "passed",
+            "production_application_test": false
+          }
+        }
+      ],
+      "next": "يغلق التصميم، ويبقى الربط الحقيقي خاضعا لاختبارات التكامل لاحقا.",
+      "status": "completed",
+      "implementation_status": "interactive_prototype_ready",
+      "acceptance_status": "passed",
+      "completion_scope": "interactive_browser_prototype_only",
+      "completed_on": "2026-11-06"
+    },
+    {
+      "id": "P03",
+      "title": "المشروع وقاعدة البيانات وبيئة الاختبار",
+      "depends": [
+        "P00",
+        "P02"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "مستودع مستقل وبيئة محلية وبيئة اختبار منفصلة",
+        "Laravel وReact وPostgreSQL مع ملفات إصدارات مقفلة",
+        "ترحيلات وبيانات وهمية وتشغيل اختبارات آلي"
+      ],
+      "tests": [
+        {
+          "id": "T03A",
+          "expected": "يبني جهاز نظيف المشروع ويرحل قاعدة فارغة بنفس التعليمات.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p03_validation.json",
+            "scope": "clean_locked_install_and_authenticated_PostgreSQL_TCP_server",
+            "pdo_connection_tested": true,
+            "production_operational_application_test": false
+          }
+        },
+        {
+          "id": "T03B",
+          "expected": "كل مرجع مرتبط بعيادة صحيحة ولا توجد أسرار أو بيانات مرضى في المستودع.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p03_validation.json",
+            "scope": "clean_locked_install_and_authenticated_PostgreSQL_TCP_server",
+            "pdo_connection_tested": true,
+            "production_operational_application_test": false
+          }
+        }
+      ],
+      "next": "توفر أساسا ثابتا للحسابات والحجوزات والربط المالي المتأخر.",
+      "status": "completed",
+      "started_on": "2026-11-06",
+      "implementation_status": "foundation_verified",
+      "acceptance_status": "passed",
+      "completion_scope": "clean_build_schema_seed_and_real_postgresql_integration",
+      "completed_on": "2026-11-06"
+    },
+    {
+      "id": "P04",
+      "title": "الحسابات والصلاحيات وعزل العيادات",
+      "depends": [
+        "P03"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "أسماء دخول وكلمات مرور وحسابات مستقلة للأدوار",
+        "عزل عيادتين ودخول آمن واستعادة وسجل تدقيق",
+        "تحقق إضافي لمالك المنصة ومالك العيادة قبل الاستخدام الحقيقي"
+      ],
+      "tests": [
+        {
+          "id": "T04A",
+          "expected": "لا يستطيع موظف العيادة الأولى قراءة أو تعديل أو تصدير بيانات الثانية بتغيير المعرف.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p04_validation.json",
+            "application_report": "results/p04_application_validation.json",
+            "http_report": "results/p04_http_validation.json",
+            "scope": "real_PostgreSQL_and_authenticated_Laravel_routes_with_synthetic_data",
+            "production_operational_release_test": false
+          }
+        },
+        {
+          "id": "T04B",
+          "expected": "استعادة الحساب تبطل الجلسات القديمة ولا تسمح بمعرفة حجوزات شخص من رقمه.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p04_validation.json",
+            "application_report": "results/p04_application_validation.json",
+            "http_report": "results/p04_http_validation.json",
+            "scope": "real_PostgreSQL_and_authenticated_Laravel_routes_with_synthetic_data",
+            "production_operational_release_test": false
+          }
+        }
+      ],
+      "next": "تستهلك كل شاشة لاحقة صلاحيات الخادم، لا إخفاء الأزرار فقط.",
+      "status": "completed",
+      "started_on": "2026-11-06",
+      "completed_on": "2026-11-06",
+      "implementation_status": "accounts_permissions_and_tenant_isolation_implemented",
+      "acceptance_status": "passed",
+      "completion_scope": "real_Laravel_PostgreSQL_auth_authorization_and_synthetic_HTTP_sessions_plus_visual_fixtures"
+    },
+    {
+      "id": "P05",
+      "title": "إعداد العيادة والأطباء والجلسات",
+      "depends": [
+        "P04"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "اسم وموقع ومعلم قريب واتصال العيادة",
+        "أطباء وموظفون وجلسات ونوافذ وصول وسعة معتمدة",
+        "فتح وإيقاف وإغلاق الجلسة مع سبب وتاريخ تغيير"
+      ],
+      "tests": [
+        {
+          "id": "T05A",
+          "expected": "تمنع الفترات المتداخلة للطبيب نفسه داخل العيادة ولا تتجاوز النوافذ حدود الجلسة.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p05_validation.json",
+            "application_report": "results/p05_application_validation.json",
+            "http_report": "results/p05_http_validation.json",
+            "scope": "real_Laravel_PostgreSQL_and_HTTP_synthetic_records",
+            "production_operational_release_test": false
+          }
+        },
+        {
+          "id": "T05B",
+          "expected": "تغيير السعة لا يزيل حجزا قائما؛ يخطر الموظف بتأثر المواعيد قبل الحفظ.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p05_validation.json",
+            "application_report": "results/p05_application_validation.json",
+            "http_report": "results/p05_http_validation.json",
+            "scope": "real_Laravel_PostgreSQL_and_HTTP_synthetic_records",
+            "production_operational_release_test": false
+          }
+        }
+      ],
+      "next": "تصبح الجلسة ونافذة الوصول مرجع الحجز والطابور والتقارير.",
+      "status": "completed",
+      "started_on": "2026-11-06",
+      "completed_on": "2026-11-06",
+      "implementation_status": "clinic_doctor_session_window_setup_and_versioned_commands_implemented",
+      "acceptance_status": "passed",
+      "completion_scope": "real_PostgreSQL_and_HTTP_with_MFA_authorization_and_separate_component_based_visual_tests"
+    },
+    {
+      "id": "P06",
+      "title": "الحجوزات والتأكيد والإلغاء",
+      "depends": [
+        "P05"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "حجز من الاستقبال أو طلب من رابط العيادة",
+        "طلب ويب قيد المراجعة ثم تأكيد أو رفض مسبب",
+        "منع تكرار الطلب نفسه وتأجيل وإلغاء موثق"
+      ],
+      "tests": [
+        {
+          "id": "T06A",
+          "expected": "محاولتان متزامنتان لآخر مكان تؤكدان حجزا واحدا فقط.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p06_validation.json",
+            "application_report": "results/p06_application_validation.json",
+            "http_report": "results/p06_http_validation.json",
+            "scope": "real_PostgreSQL_and_concurrent_HTTP_with_distinct_staff_and_guest_actors",
+            "production_operational_release_test": false
+          }
+        },
+        {
+          "id": "T06B",
+          "expected": "إعادة الطلب بعد انقطاع الرد لا تنشئ حجزا ثانيا، ورقم الأسرة يقبل أكثر من مراجع.",
+          "status": "passed",
+          "evidence": {
+            "file": "results/p06_validation.json",
+            "application_report": "results/p06_application_validation.json",
+            "http_report": "results/p06_http_validation.json",
+            "scope": "real_PostgreSQL_and_concurrent_HTTP_with_distinct_staff_and_guest_actors",
+            "production_operational_release_test": false
+          }
+        }
+      ],
+      "next": "ينتج حجزا موحدا تستطيع شاشة الاستقبال تسجيل وصوله دون إعادة إدخال.",
+      "status": "completed",
+      "started_on": "2026-11-06",
+      "completed_on": "2026-11-06",
+      "implementation_status": "public_and_staff_pending_requests_confirm_reject_cancel_reschedule_implemented",
+      "acceptance_status": "passed",
+      "completion_scope": "real_PostgreSQL_and_HTTP_concurrency_with_partial_public_browser_journey",
+      "browser_verification_limit": "Full staff browser journey, responsive widths and text scaling remain unverified after browser policy blocked reload."
+    },
+    {
+      "id": "P07",
+      "title": "الاستقبال والحضور وتنظيم الدور",
+      "depends": [
+        "P06"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "قائمة اليوم وبحث مقيد وإضافة حضور مباشر",
+        "رقم دور ثابت عند الوصول وترتيب مستقل للحاضرين",
+        "تسجيل مغادرة مؤقتة وعودة وتجاوز مصرح مسبب"
+      ],
+      "tests": [
+        {
+          "id": "T07A",
+          "expected": "موظفان يسجلان الوصول في اللحظة نفسها دون أرقام دور مكررة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T07B",
+          "expected": "المتأخر يعود إلى نهاية المنتظرين مع حفظ رقم تذكرته وأسباب الاستثناءات.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تغذي قائمة جاهزة للطبيب وعدد من أمام المراجع دون إظهار الأسماء.",
+      "status": "not_started"
+    },
+    {
+      "id": "P08",
+      "title": "شاشة الطبيب ودورة الزيارة",
+      "depends": [
+        "P07"
+      ],
+      "owner": "الواجهات والخلفية",
+      "outputs": [
+        "متاح ومتأخر ومتوقف وحالة الزيارة الحالية",
+        "استدعاء ثم بدء وإنهاء مع أوقات مسجلة",
+        "غياب عن النداء وتصحيح مسجل دون حذف التاريخ"
+      ],
+      "tests": [
+        {
+          "id": "T08A",
+          "expected": "ضغط استدعاء التالي من جهازين لا يختار مريضين، ولا توجد زيارتان نشطتان للطبيب نفسه.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T08B",
+          "expected": "بدء زيارة دون حضور أو إلغاء زيارة مكتملة يرفض مع رسالة واضحة.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "ترسل أحداث الحالة للمراجع والتنبيهات والتقارير من العملية نفسها.",
+      "status": "not_started"
+    },
+    {
+      "id": "P09",
+      "title": "رابط المراجع وشاشة الانتظار",
+      "depends": [
+        "P06",
+        "P08"
+      ],
+      "owner": "الواجهات",
+      "outputs": [
+        "اختيار الطبيب والنافذة وطلب الحجز وحفظ الرابط",
+        "متابعة خاصة لحالة المراجع وعدد المنتظرين أمامه",
+        "شاشة صالة بأرقام فقط، وصفحات المساعدة والخصوصية"
+      ],
+      "tests": [
+        {
+          "id": "T09A",
+          "expected": "الرابط لا يعرض أسماء الآخرين ولا الهاتف ولا التشخيص؛ تبديل المعرف لا يكشف حجزا آخر.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T09B",
+          "expected": "انقطاع الاتصال أو إلغاء الجلسة يظهران بصراحة، والطلب قيد المراجعة لا يبدو مؤكدا.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "يعتمد الرابط على الحالة الفعلية، ويعمل دون تطبيق أو حساب مريض.",
+      "status": "not_started"
+    },
+    {
+      "id": "P10",
+      "title": "التنبيهات والتقارير وإدارة المنصة",
+      "depends": [
+        "P08",
+        "P09"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "تنبيهات داخل النظام ومحاكي لقنوات الإرسال الخارجية",
+        "ملخص زيارات وانتظار ومغادرين ودقائق دعم وتصدير مقيد",
+        "إدارة عيادات ودعم وتدقيق دون اشتراكات مالية مفعلة"
+      ],
+      "tests": [
+        {
+          "id": "T10A",
+          "expected": "لا تتكرر رسالة الحدث الواحد، ولا يسجل المحاكي رسالة خارجية على أنها مسلمة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T10B",
+          "expected": "الانتظار يحسب من الوصول إلى بدء الزيارة للزيارات مكتملة الأوقات فقط.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "توصل واجهة الإرسال الحقيقية في المرحلة الأخيرة دون تغيير أحداث الزيارة.",
+      "status": "not_started"
+    },
+    {
+      "id": "P11",
+      "title": "الانقطاع والأمان والأداء والاستعادة",
+      "depends": [
+        "P04",
+        "P10"
+      ],
+      "owner": "التطوير والاختبار",
+      "outputs": [
+        "خطة ورقية بديلة وإعادة إدخال مضبوطة بعد العودة",
+        "تشفير واتصال آمن وتدقيق وصلاحيات وتصدير وحذف مضبوط",
+        "نسخ احتياطي واستعادة ومراقبة وأهداف أداء مقاسة"
+      ],
+      "tests": [
+        {
+          "id": "T11A",
+          "expected": "العودة بعد انقطاع أو إعادة إرسال لا تفقد دورا ولا تؤكد حفظا لم يصل للخادم.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T11B",
+          "expected": "استعادة نسخة في بيئة منفصلة ثم مطابقة الأعداد والعلاقات واختبار رحلة حجز.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تثبت وسائل الحماية قبل بيانات حقيقية، وتكرر على الاستضافة النهائية.",
+      "status": "not_started"
+    },
+    {
+      "id": "P12",
+      "title": "اختبار الإصدار التشغيلي والتسليم",
+      "depends": [
+        "P11"
+      ],
+      "owner": "مسؤول المنتج والاختبار",
+      "outputs": [
+        "تشغيل شامل لعيادتين وهميتين وثلاثة أطباء من أكثر من جهاز",
+        "فحص هواتف وحاسوب وإتاحة ووثائق تدريب وتشغيل",
+        "نسخة مرشحة محفوظة وخطة رجوع وسجل نتائج فعلي"
+      ],
+      "tests": [
+        {
+          "id": "T12A",
+          "expected": "تمر الرحلات الكاملة والاختبارات الحرجة دون تعارض حجز أو كشف بيانات أو تعطيل دور.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T12B",
+          "expected": "تشغل النسخة دون أي مزود دفع أو إرسال مدفوع وتبقى المحاكاة واضحة.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "منتج قابل للتجربة المضبوطة، ثم يبدأ آخر جزء وظيفي وهو التحصيل.",
+      "status": "not_started"
+    },
+    {
+      "id": "P13",
+      "title": "الاشتراكات والتحصيل والتفعيل النهائي",
+      "depends": [
+        "P12"
+      ],
+      "owner": "التطوير ومسؤول التحصيل",
+      "outputs": [
+        "باقات وفواتير وتحويل يدوي ومراجعة وإيصالات وحقوق استخدام",
+        "سياسات فترة التجربة والتجديد والسماح والتقييد والاسترداد",
+        "ربط الإرسال والاستضافة المدفوعة إن لزما ثم إعادة فحص الإصدار"
+      ],
+      "tests": [
+        {
+          "id": "T13A",
+          "expected": "الإيصال قيد المراجعة لا يفعّل اشتراكا، والموافقة المكررة تمدد مرة واحدة فقط.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T13B",
+          "expected": "انتهاء الاشتراك لا يوقف زيارة بدأت، والتجديد أو الاسترداد لا يكرر الأثر.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T13C",
+          "expected": "يمر سيناريو دفع مرفوض أو ناقص أو مكرر أو بوابة متعذرة مع سجل مالي متطابق.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "إطلاق مدفوع محدود عند اكتمال التحقق والتشغيل والسياسات، ثم قياس الاستخدام والتجديد.",
+      "status": "not_started"
+    }
+  ],
+  "screens": [
+    {
+      "id": "S01",
+      "title": "الغلاف العام",
+      "purpose": "تعريف الخدمة ودخول العيادة وفتح رابط المتابعة"
+    },
+    {
+      "id": "S02",
+      "title": "الدخول والاستعادة",
+      "purpose": "اسم دخول وكلمة مرور وتحقق إضافي واستعادة"
+    },
+    {
+      "id": "S03",
+      "title": "إعداد العيادة",
+      "purpose": "المعلومات والفريق والأطباء والجلسات"
+    },
+    {
+      "id": "S04",
+      "title": "الاستقبال",
+      "purpose": "حجوزات اليوم والحضور والدور والتأجيل"
+    },
+    {
+      "id": "S05",
+      "title": "الطبيب",
+      "purpose": "الجلسة الحالية والاستدعاء وبدء الزيارة وإنهاؤها"
+    },
+    {
+      "id": "S06",
+      "title": "طلب الحجز",
+      "purpose": "صفحة خاصة بالعيادة واختيار نافذة الوصول"
+    },
+    {
+      "id": "S07",
+      "title": "تذكرة المراجع",
+      "purpose": "الحالة والعدد أمامه ووقت آخر تحديث والمساعدة"
+    },
+    {
+      "id": "S08",
+      "title": "شاشة الصالة",
+      "purpose": "رقم المستدعى والأرقام التالية بلا أسماء أو هواتف"
+    },
+    {
+      "id": "S09",
+      "title": "لوحة المالك",
+      "purpose": "ملخص تشغيل وتصدير وصلاحيات ودعم"
+    },
+    {
+      "id": "S10",
+      "title": "مدير المنصة",
+      "purpose": "عيادات ومستخدمون ودعم وسجل تدقيق"
+    },
+    {
+      "id": "S11",
+      "title": "الاشتراك والتحصيل",
+      "purpose": "باقات وفواتير وإثبات تحويل ومراجعة، في P13 فقط"
+    },
+    {
+      "id": "S12",
+      "title": "السياسات والمساعدة",
+      "purpose": "الخصوصية والشروط والحذف والتواصل"
+    }
+  ],
+  "colors": [
+    {
+      "role": "اللون الأساسي",
+      "hex": "#0F766E",
+      "usage": "الأزرار والإجراءات الرئيسية ونقاط العلامة"
+    },
+    {
+      "role": "الكحلي",
+      "hex": "#14364B",
+      "usage": "الشعار والأشرطة المهمة"
+    },
+    {
+      "role": "خلفية الصفحات",
+      "hex": "#F5F8FA",
+      "usage": "مساحة العمل الهادئة"
+    },
+    {
+      "role": "البطاقات",
+      "hex": "#FFFFFF",
+      "usage": "النماذج والقوائم"
+    },
+    {
+      "role": "النص الأساسي",
+      "hex": "#172B3A",
+      "usage": "العناوين والمحتوى"
+    },
+    {
+      "role": "النص الثانوي",
+      "hex": "#526575",
+      "usage": "الشروحات ووقت آخر تحديث"
+    },
+    {
+      "role": "الحدود",
+      "hex": "#D7E2E8",
+      "usage": "فواصل البطاقات، وليس لون النص"
+    },
+    {
+      "role": "النجاح",
+      "hex": "#166534",
+      "usage": "تأكيد مع نص ورمز، على خلفية DCFCE7"
+    },
+    {
+      "role": "التنبيه",
+      "hex": "#92400E",
+      "usage": "تأخير أو حاجة مراجعة، على خلفية FEF3C7"
+    },
+    {
+      "role": "الخطأ",
+      "hex": "#B42318",
+      "usage": "فشل أو إلغاء واضح مع وصف"
+    }
+  ],
+  "state_enums": {
+    "booking": [
+      "pending",
+      "confirmed",
+      "rejected",
+      "cancelled",
+      "fulfilled"
+    ],
+    "visit": [
+      "waiting",
+      "called",
+      "in_service",
+      "away",
+      "completed",
+      "left"
+    ],
+    "session": [
+      "scheduled",
+      "open",
+      "paused",
+      "closed"
+    ],
+    "subscription": [
+      "trial",
+      "active",
+      "grace",
+      "restricted",
+      "cancelled"
+    ],
+    "payment": [
+      "awaiting",
+      "submitted",
+      "under_review",
+      "approved",
+      "rejected",
+      "refunded"
+    ],
+    "invoice": [
+      "issued",
+      "pending",
+      "paid",
+      "voided",
+      "refunded"
+    ],
+    "refund": [
+      "requested",
+      "approved",
+      "processing",
+      "completed",
+      "rejected",
+      "failed"
+    ]
+  },
+  "endpoint_contracts": [
+    {
+      "path": "POST /v1/booking-requests",
+      "purpose": "طلب ويب دون تأكيد أو رقم دور",
+      "state": "pending"
+    },
+    {
+      "path": "POST /v1/bookings/{id}/confirm",
+      "purpose": "اعتماد داخل سعة النافذة والجلسة",
+      "state": "confirmed"
+    },
+    {
+      "path": "POST /v1/bookings/{id}/check-in",
+      "purpose": "تسجيل وصول واحد ورقم ثابت",
+      "state": "waiting"
+    },
+    {
+      "path": "POST /v1/sessions/{id}/call-next",
+      "purpose": "اختيار منتظر واحد بمعاملة مقفلة",
+      "state": "called"
+    },
+    {
+      "path": "POST /v1/visits/{id}/start",
+      "purpose": "تثبيت وقت البدء",
+      "state": "in_service"
+    },
+    {
+      "path": "POST /v1/visits/{id}/complete",
+      "purpose": "تثبيت وقت النهاية والحدث",
+      "state": "completed"
+    },
+    {
+      "path": "GET /v1/tickets/{secret}",
+      "purpose": "بيانات صاحب الرابط فقط وعدد أمامه",
+      "state": "role-limited"
+    },
+    {
+      "path": "POST /v1/payment-proofs/{id}/approve",
+      "purpose": "تنفيذ P13 مرة واحدة لفاتورة محددة",
+      "state": "approved"
+    }
+  ],
+  "release_policy": {
+    "stage_evidence_required": true,
+    "rerun_affected_regressions": true,
+    "prototype_only_phases": [
+      "P00",
+      "P01",
+      "P02"
+    ],
+    "real_patient_data_before_security_and_acceptance": false
+  },
+  "sources": [
+    {
+      "organization": "Laravel 13",
+      "title": "متطلبات الإصدار وسياسة الدعم",
+      "url": "https://laravel.com/framework/docs/13.x/releases"
+    },
+    {
+      "organization": "Laravel React starter kit",
+      "title": "React وTypeScript وInertia في مشروع واحد",
+      "url": "https://laravel.com/framework/docs/13.x/starter-kits"
+    },
+    {
+      "organization": "PostgreSQL",
+      "title": "سياسة الإصدارات المدعومة",
+      "url": "https://www.postgresql.org/support/versioning/"
+    },
+    {
+      "organization": "W3C WCAG 2.2",
+      "title": "تباين النص والحد الأدنى لهدف المؤشر",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+    },
+    {
+      "organization": "W3C WCAG 2.2",
+      "title": "حجم الأزرار والتباعد",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html"
+    },
+    {
+      "organization": "Google Fonts",
+      "title": "ترخيص خط Tajawal",
+      "url": "https://github.com/google/fonts/blob/main/ofl/tajawal/OFL.txt"
+    },
+    {
+      "organization": "OWASP ASVS",
+      "title": "مرجع فحوصات الأمان للتطبيقات",
+      "url": "https://github.com/OWASP/ASVS"
+    },
+    {
+      "organization": "Playwright",
+      "title": "اختبارات واجهة قابلة لإعادة التشغيل",
+      "url": "https://playwright.dev/docs/test-assertions"
+    },
+    {
+      "organization": "ITU",
+      "title": "خطة الترقيم اليمنية المنشورة أكتوبر 2026",
+      "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
+    }
+  ],
+  "baseline_id": "NOBTEEK-P06-1.0",
+  "next_stage": "P07",
+  "implementation_baseline": {
+    "id": "NOBTEEK-P00-1.0",
+    "phase": "P00",
+    "source_package": "Nobteek_P00_Source_v1.zip",
+    "specification": "Nobteek_P00_Specification_AR.pdf",
+    "checks_passed": 51,
+    "production_application_tests_run": false
+  },
+  "business_rules_baseline": "NOBTEEK-P00-1.0",
+  "design_baseline": {
+    "id": "NOBTEEK-P01-1.0",
+    "source_package": "Nobteek_P01_Design_Kit_v1.zip",
+    "guide": "Nobteek_P01_Brand_Guide_AR.pdf",
+    "preview": "Nobteek_P01_Preview.html",
+    "checks_passed": 69,
+    "browser_and_interaction_checks": 37,
+    "source_and_asset_checks": 32,
+    "brand_status": "working_name_not_registered"
+  },
+  "prototype_baseline": {
+    "id": "NOBTEEK-P02-1.0",
+    "release_state": "frozen_prototype",
+    "preview": "Nobteek_P02_Prototype_AR.html",
+    "source_package": "Nobteek_P03_Foundation_Source_v1.zip",
+    "report": "Nobteek_P02_Test_Report_AR.txt",
+    "candidate_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+    "current_domain_checks_passed": 40,
+    "current_asset_checks_passed": 12,
+    "previous_browser_checks_passed": 63,
+    "previous_keyboard_checks_passed": 4,
+    "final_browser_retest": "passed",
+    "production_auth_and_database": false,
+    "browser_checks_passed": 70,
+    "keyboard_checks_passed": 4,
+    "checks_passed": 126,
+    "source_in_cumulative_package": true
+  },
+  "foundation_baseline": {
+    "id": "NOBTEEK-P03-1.0",
+    "source_package": "Nobteek_P03_Foundation_Source_v1.zip",
+    "guide": "Nobteek_P03_Setup_and_Test_AR.txt",
+    "status": "completed_foundation_only",
+    "database_engine_checks_passed": 31,
+    "laravel_checks_passed": 14,
+    "source_checks_passed": 6,
+    "clean_build_steps_passed": 7,
+    "pending_database_feature_tests": 0,
+    "pdo_connection_tested": true,
+    "financial_implementation_phase": "P13",
+    "server_checks_passed": 4
+  },
+  "accounts_baseline": {
+    "id": "NOBTEEK-P04-1.0",
+    "source_package": "Nobteek_P04_Accounts_Source_v1.zip",
+    "guide": "Nobteek_P04_Setup_and_Test_AR.txt",
+    "laravel_tests_passed": 52,
+    "laravel_assertions": 365,
+    "native_http_checks_passed": 15,
+    "visual_viewport_cases_passed": 27,
+    "text_scale_cases_passed": 4,
+    "clean_build_steps_passed": 7,
+    "mandatory_owner_mfa": true,
+    "clinic_isolation": "server_memberships_Eloquent_scopes_policies_and_composite_foreign_keys",
+    "real_patient_data": false,
+    "financial_phase": "P13",
+    "next_stage": "P05"
+  },
+  "clinic_setup_baseline": {
+    "id": "NOBTEEK-P05-1.0",
+    "source_package": "Nobteek_P05_Clinic_Setup_Source_v1.zip",
+    "guide": "Nobteek_P05_Setup_and_Test_AR.txt",
+    "laravel_tests_passed": 80,
+    "new_phase_tests": 28,
+    "laravel_assertions": 563,
+    "phase_http_checks_passed": 23,
+    "account_http_regressions_passed": 15,
+    "parallel_duplicate_command_tested": true,
+    "visual_viewport_cases_passed": 24,
+    "text_scale_cases_passed": 4,
+    "simulated_ui_interactions_passed": 12,
+    "clean_build_steps_passed": 7,
+    "real_patient_data": false,
+    "next_stage": "P06",
+    "financial_phase": "P13"
+  },
+  "bookings_baseline": {
+    "id": "NOBTEEK-P06-1.0",
+    "source_package": "Nobteek_P06_Bookings_Source_v1.zip",
+    "guide": "Nobteek_P06_Setup_and_Test_AR.txt",
+    "laravel_tests_passed": 109,
+    "new_phase_tests": 29,
+    "laravel_assertions": 749,
+    "phase_http_checks_passed": 28,
+    "account_http_regressions_passed": 15,
+    "real_last_slot_race_distinct_staff": true,
+    "independent_guest_retry_scopes": true,
+    "shared_phone_keeps_distinct_patients": true,
+    "clean_build_steps_passed": 7,
+    "public_browser_checks_observed": 7,
+    "authenticated_staff_browser_tested": false,
+    "responsive_browser_matrix_tested": false,
+    "real_patient_data": false,
+    "next_stage": "P07",
+    "financial_phase": "P13"
+  }
+}

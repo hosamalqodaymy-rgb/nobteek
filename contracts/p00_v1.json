@@ -1,0 +1,1739 @@
+{
+  "schema_version": "1.0",
+  "baseline_id": "NOBTEEK-P00-1.0",
+  "as_of": "2026-11-06",
+  "classification": "frozen_execution_specification_not_production_software",
+  "source_library_file_ids": [
+    "libfile_2b300260ee74819180ef5206cf704a83",
+    "libfile_fb41c28c11a48191ac010fb79fb34249"
+  ],
+  "scope": {
+    "buyer": "clinic_owner",
+    "daily_users": [
+      "reception",
+      "doctor"
+    ],
+    "delivery": "web_pwa",
+    "launch_scope_proposal": "صنعاء وعدد محدود من العيادات الخاصة",
+    "excluded_v1": [
+      "medical_records",
+      "prescriptions",
+      "telemedicine",
+      "pharmacy",
+      "labs",
+      "native_mobile_stores"
+    ],
+    "market_validation_status": "not_observed"
+  },
+  "feature_flags": {
+    "external_payments": false,
+    "financial_tables": false,
+    "paid_messaging": false,
+    "real_patient_data": false,
+    "paid_infrastructure_purchases": false,
+    "reception_call_default": false
+  },
+  "roles": [
+    "platform_admin",
+    "owner",
+    "reception",
+    "doctor",
+    "token_holder",
+    "public"
+  ],
+  "screens": [
+    {
+      "id": "S01",
+      "title": "الغلاف العام",
+      "purpose": "تعريف الخدمة ودخول العيادة وفتح رابط المتابعة",
+      "owner_phase": "P02",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S02",
+      "title": "الدخول والاستعادة",
+      "purpose": "اسم دخول وكلمة مرور وتحقق إضافي واستعادة",
+      "owner_phase": "P04",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S03",
+      "title": "إعداد العيادة",
+      "purpose": "المعلومات والفريق والأطباء والجلسات",
+      "owner_phase": "P05",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S04",
+      "title": "الاستقبال",
+      "purpose": "حجوزات اليوم والحضور والدور والتأجيل",
+      "owner_phase": "P07",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S05",
+      "title": "الطبيب",
+      "purpose": "الجلسة الحالية والاستدعاء وبدء الزيارة وإنهاؤها",
+      "owner_phase": "P08",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S06",
+      "title": "طلب الحجز",
+      "purpose": "صفحة خاصة بالعيادة واختيار نافذة الوصول",
+      "owner_phase": "P09",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S07",
+      "title": "تذكرة المراجع",
+      "purpose": "الحالة والعدد أمامه ووقت آخر تحديث والمساعدة",
+      "owner_phase": "P09",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S08",
+      "title": "شاشة الصالة",
+      "purpose": "رقم المستدعى والأرقام التالية بلا أسماء أو هواتف",
+      "owner_phase": "P09",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S09",
+      "title": "لوحة المالك",
+      "purpose": "ملخص تشغيل وتصدير وصلاحيات ودعم",
+      "owner_phase": "P10",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S10",
+      "title": "مدير المنصة",
+      "purpose": "عيادات ومستخدمون ودعم وسجل تدقيق",
+      "owner_phase": "P10",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S11",
+      "title": "الاشتراك والتحصيل",
+      "purpose": "باقات وفواتير وإثبات تحويل ومراجعة، في P13 فقط",
+      "owner_phase": "P13",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    },
+    {
+      "id": "S12",
+      "title": "السياسات والمساعدة",
+      "purpose": "الخصوصية والشروط والحذف والتواصل",
+      "owner_phase": "P02",
+      "states": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "billing_visible_before_P13": false
+    }
+  ],
+  "rules": [
+    {
+      "id": "R01",
+      "owner_phase": "P06",
+      "text_ar": "طلب الويب معلق ولا يحجز سعة ولا يمنح رقما للدور."
+    },
+    {
+      "id": "R02",
+      "owner_phase": "P06",
+      "text_ar": "التأكيد وحده يحجز مكانا؛ المؤكد والمستوفى يستهلكان السعة."
+    },
+    {
+      "id": "R03",
+      "owner_phase": "P05",
+      "text_ar": "نوافذ الوصول داخل جلسة محلية ليوم واحد ولا تتداخل؛ السعة الكلية مجموع سعات النوافذ."
+    },
+    {
+      "id": "R04",
+      "owner_phase": "P06",
+      "text_ar": "لا يمكن تأكيد طلبين على آخر مكان؛ الحسم في معاملة قاعدة البيانات لاحقا."
+    },
+    {
+      "id": "R05",
+      "owner_phase": "P07",
+      "text_ar": "رقم تذكرة واحد ثابت لكل وصول، فريد داخل الجلسة ولا يعاد استخدامه."
+    },
+    {
+      "id": "R06",
+      "owner_phase": "P07",
+      "text_ar": "ترتيب الانتظار مستقل عن رقم التذكرة، والمرجع ترتيب معاملات الخادم."
+    },
+    {
+      "id": "R07",
+      "owner_phase": "P07",
+      "text_ar": "يدخل الدور من سجل حضوره، وفق الوصول الفعلي؛ مصدر الحجز والدفع لا يمنحان أولوية."
+    },
+    {
+      "id": "R08",
+      "owner_phase": "P07",
+      "text_ar": "الوصول قبل بدء النافذة لا يمنح دورا؛ يمكن تغيير النافذة قبل الوصول إذا وجدت سعة."
+    },
+    {
+      "id": "R09",
+      "owner_phase": "P07",
+      "text_ar": "الوصول المتأخر يقبل إلى نهاية استقبال الجلسة بترتيب الحضور الفعلي ولا يلغى الحجز تلقائيا."
+    },
+    {
+      "id": "R10",
+      "owner_phase": "P08",
+      "text_ar": "المستدعى وداخل الكشف يحجزان الطبيب؛ زيارة واحدة فقط في إحدى الحالتين لكل معرف طبيب."
+    },
+    {
+      "id": "R11",
+      "owner_phase": "P08",
+      "text_ar": "لا يبدأ الكشف إلا بعد الاستدعاء ولا يكتمل إلا بعد البدء؛ تحفظ أوقات الخادم."
+    },
+    {
+      "id": "R12",
+      "owner_phase": "P07",
+      "text_ar": "الغائب مؤقتا يخرج من المنتظرين؛ يعود إلى آخر المنتظرين مع حفظ رقم التذكرة."
+    },
+    {
+      "id": "R13",
+      "owner_phase": "P08",
+      "text_ar": "الأولوية الطبية قرار الطبيب المخول لجلسته، بسبب إداري ثابت دون تشخيص أو تجاوز للحالة النشطة."
+    },
+    {
+      "id": "R14",
+      "owner_phase": "P06",
+      "text_ar": "الإلغاء قبل بدء الزيارة يحرر السعة ويغلق الوصول المرتبط إن وجد؛ يحتفظ برقمه وسجله."
+    },
+    {
+      "id": "R15",
+      "owner_phase": "P06",
+      "text_ar": "بعد بدء الزيارة يعالج الطبيب إنهاءها وتصحيحها بسجل؛ لا يستخدم إلغاء حجز عادي."
+    },
+    {
+      "id": "R16",
+      "owner_phase": "P06",
+      "text_ar": "التعديل بين نافذتين أو جلستين ذري؛ إن امتلأت الجديدة تبقى القديمة كما هي، وبعد الوصول تستخدم إجراءات الدور."
+    },
+    {
+      "id": "R17",
+      "owner_phase": "P05",
+      "text_ar": "إيقاف الجلسة يمنع استدعاء جديد، ويقبل وصولا ضمن الوقت ويسمح بإتمام الحالة الجارية."
+    },
+    {
+      "id": "R18",
+      "owner_phase": "P05",
+      "text_ar": "عند نهاية الاستقبال تتوقف الحجوزات والوصول الجديد؛ تستكمل قائمة من حضروا سابقا حتى معالجتها وإغلاقها."
+    },
+    {
+      "id": "R19",
+      "owner_phase": "P05",
+      "text_ar": "الإغلاق يتطلب معالجة المنتظر والغائب والمستدعى وداخل الكشف؛ لا يحول غير الواصل إلى متغيب تلقائيا."
+    },
+    {
+      "id": "R20",
+      "owner_phase": "P05",
+      "text_ar": "تمديد نهاية الاستقبال داخل اليوم يحتاج صلاحية وسببا؛ لا يضيف نوافذ أو سعة تلقائيا."
+    },
+    {
+      "id": "R21",
+      "owner_phase": "P05",
+      "text_ar": "خفض السعة دون عدد الحجوزات المؤكدة والمستوفاة مرفوض؛ الزيادة أو الخفض المسموح يسجلان بسبب."
+    },
+    {
+      "id": "R22",
+      "owner_phase": "P04",
+      "text_ar": "اختيار سياق العيادة من عضوية موثوقة في الخادم؛ لا تعتمد العيادة على حقل يرسله العميل."
+    },
+    {
+      "id": "R23",
+      "owner_phase": "P04",
+      "text_ar": "صلاحيات الطبيب مقيدة بجلساته، ومالك المنصة لا يطلع افتراضيا على بيانات المراجعين."
+    },
+    {
+      "id": "R24",
+      "owner_phase": "P04",
+      "text_ar": "استدعاء الاستقبال صلاحية تفويض صريحة معطلة افتراضيا؛ بدء الزيارة وإنهاؤها للطبيب."
+    },
+    {
+      "id": "R25",
+      "owner_phase": "P04",
+      "text_ar": "أسماء دخول وكلمات مرور للموظفين؛ تحقق إضافي للمالكين قبل التشغيل الحقيقي واستعادة تبطل الجلسات القديمة."
+    },
+    {
+      "id": "R26",
+      "owner_phase": "P06",
+      "text_ar": "الهاتف المشترك لا يدمج أفراد الأسرة ولا يحذف حجوزاتهم؛ المعرف الداخلي هو المرجع."
+    },
+    {
+      "id": "R27",
+      "owner_phase": "P06",
+      "text_ar": "تطبع الأرقام العربية والإنجليزية إلى جوال يمني من تسعة أرقام يبدأ بسبعة؛ هذا تحقق شكلي لا يثبت الملكية."
+    },
+    {
+      "id": "R28",
+      "owner_phase": "P07",
+      "text_ar": "هاتف المراجع المباشر اختياري، واسم عرضه مطلوب؛ طلب الويب والهاتف يحتاجان رقم تواصل."
+    },
+    {
+      "id": "R29",
+      "owner_phase": "P09",
+      "text_ar": "الرابط سر عشوائي مستقل عن التذكرة، تخزن بصمته؛ ينتهي بعد 48 ساعة من نهاية الجلسة ويجدد بإبطال القديم عند الاستعادة."
+    },
+    {
+      "id": "R30",
+      "owner_phase": "P09",
+      "text_ar": "لا استرجاع للهاتف وحده ولا كشف لقائمة حجوزات الأسرة؛ تعرض التذكرة حقولا محدودة دون أسماء أو هواتف الآخرين."
+    },
+    {
+      "id": "R31",
+      "owner_phase": "P09",
+      "text_ar": "العدد أمام المراجع يشمل المنتظرين الحاضرين السابقين فقط؛ انشغال الطبيب يعرض منفصلا دون وعد بوقت كشف."
+    },
+    {
+      "id": "R32",
+      "owner_phase": "P09",
+      "text_ar": "شاشة الصالة تعرض الأرقام ومعرف الطبيب فقط؛ لا أسماء مراجعين ولا هواتف."
+    },
+    {
+      "id": "R33",
+      "owner_phase": "P06",
+      "text_ar": "كل أمر تعديل يحمل مفتاح منع تكرار ونسخة متوقعة؛ تكرار المفتاح بمحتوى مختلف يرفض، وتراجع الصلاحية عند إعادة النتيجة."
+    },
+    {
+      "id": "R34",
+      "owner_phase": "P11",
+      "text_ar": "انقطاع الاتصال لا يؤكد الحفظ؛ تتوقف الأوامر وتوضح قدم المعلومة ويستخدم البديل الورقي ثم المطابقة."
+    },
+    {
+      "id": "R35",
+      "owner_phase": "P09",
+      "text_ar": "تخزن ملفات الواجهة الثابتة فقط؛ الروابط والبيانات الخاصة مستبعدة من التخزين المشترك والتحليلات وسجلات الأسرار."
+    },
+    {
+      "id": "R36",
+      "owner_phase": "P10",
+      "text_ar": "سجل الأحداث وصندوق الإرسال يثبتان بعد نجاح المعاملة؛ يفشل التراجع كله دون رسالة أو حدث جزئي."
+    },
+    {
+      "id": "R37",
+      "owner_phase": "P10",
+      "text_ar": "الإرسال الخارجي معطل قبل P13؛ المحاكي لا يسجل تسليما حقيقيا."
+    },
+    {
+      "id": "R38",
+      "owner_phase": "P10",
+      "text_ar": "الانتظار يقاس من الوصول إلى بدء الكشف للزيارات مكتملة الأوقات؛ تعرض الأوقات الناقصة والمغادرون منفصلين."
+    },
+    {
+      "id": "R39",
+      "owner_phase": "P11",
+      "text_ar": "تحفظ البيانات بتواريخ UTC وتعرض بتوقيت Asia/Aden، وتفحص الاستعادة في بيئة منفصلة قبل البيانات الحقيقية."
+    },
+    {
+      "id": "R40",
+      "owner_phase": "P13",
+      "text_ar": "الأسعار والجداول المالية والتحصيل وربط المزودين وشراء الخدمات تنفذ أخيرا؛ لا يغير التحصيل ترتيب الدور."
+    },
+    {
+      "id": "R41",
+      "owner_phase": "P12",
+      "text_ar": "الاختبارات المرجعية في P00 لا تثبت عمل التطبيق أو قاعدة البيانات أو الأمن أو نجاح السوق."
+    },
+    {
+      "id": "R42",
+      "owner_phase": "P11",
+      "text_ar": "الحذف والاحتفاظ والتصدير بقرار مصرح وسياسة متفق عليها قبل الاستخدام الحقيقي؛ لا حذف نهائي تلقائي بمدة مفترضة."
+    },
+    {
+      "id": "R43",
+      "owner_phase": "P05",
+      "text_ar": "جلسات الطبيب نفسه داخل العيادة لا تتداخل، ويبقى منع إشغال الطبيب بزيارتين ساريا عند امتداد العمل لجلسة لاحقة."
+    },
+    {
+      "id": "R44",
+      "owner_phase": "P06",
+      "text_ar": "طلبات الزوار تستخدم نطاق إعادة محاولة مستقلا لكل جلسة زائر قصيرة؛ لا يشترك جميع الزوار في مفتاح عام يعيد رابط شخص آخر."
+    }
+  ],
+  "state_enums": {
+    "booking": [
+      "pending",
+      "confirmed",
+      "rejected",
+      "cancelled",
+      "fulfilled"
+    ],
+    "visit": [
+      "waiting",
+      "called",
+      "in_service",
+      "away",
+      "completed",
+      "left"
+    ],
+    "session": [
+      "scheduled",
+      "open",
+      "paused",
+      "closed"
+    ],
+    "subscription": [
+      "trial",
+      "active",
+      "grace",
+      "restricted",
+      "cancelled"
+    ],
+    "payment": [
+      "awaiting",
+      "submitted",
+      "under_review",
+      "approved",
+      "rejected",
+      "refunded"
+    ],
+    "invoice": [
+      "issued",
+      "pending",
+      "paid",
+      "voided",
+      "refunded"
+    ],
+    "refund": [
+      "requested",
+      "approved",
+      "processing",
+      "completed",
+      "rejected",
+      "failed"
+    ]
+  },
+  "state_owners": {
+    "booking": "P06",
+    "visit": "P07",
+    "session": "P05",
+    "subscription": "P13",
+    "payment": "P13",
+    "invoice": "P13",
+    "refund": "P13"
+  },
+  "reserved_deferred_enums": [
+    "subscription",
+    "payment",
+    "invoice",
+    "refund"
+  ],
+  "transitions": [
+    {
+      "entity": "booking",
+      "from": "pending",
+      "to": "confirmed",
+      "command": "confirm",
+      "owner_phase": "P06",
+      "condition_ar": "داخل السعة والوقت المسموح"
+    },
+    {
+      "entity": "booking",
+      "from": "pending",
+      "to": "rejected",
+      "command": "reject",
+      "owner_phase": "P06",
+      "condition_ar": "سبب مسجل"
+    },
+    {
+      "entity": "booking",
+      "from": "pending",
+      "to": "cancelled",
+      "command": "cancel",
+      "owner_phase": "P06",
+      "condition_ar": "سبب مسجل"
+    },
+    {
+      "entity": "booking",
+      "from": "confirmed",
+      "to": "cancelled",
+      "command": "cancel",
+      "owner_phase": "P06",
+      "condition_ar": "الزيارة لم تبدأ وإغلاق الوصول المرتبط"
+    },
+    {
+      "entity": "booking",
+      "from": "confirmed",
+      "to": "fulfilled",
+      "command": "complete",
+      "owner_phase": "P08",
+      "condition_ar": "اكتمال الزيارة المرتبطة فقط"
+    },
+    {
+      "entity": "visit",
+      "from": "waiting",
+      "to": "called",
+      "command": "call_next",
+      "owner_phase": "P08",
+      "condition_ar": "الطبيب متاح والجلسة مفتوحة"
+    },
+    {
+      "entity": "visit",
+      "from": "waiting",
+      "to": "away",
+      "command": "mark_away",
+      "owner_phase": "P07",
+      "condition_ar": "تحقق الموظف وسبب مسجل"
+    },
+    {
+      "entity": "visit",
+      "from": "called",
+      "to": "away",
+      "command": "mark_away",
+      "owner_phase": "P07",
+      "condition_ar": "تحقق الموظف وتحرير الطبيب"
+    },
+    {
+      "entity": "visit",
+      "from": "waiting",
+      "to": "left",
+      "command": "leave",
+      "owner_phase": "P07",
+      "condition_ar": "سبب مسجل"
+    },
+    {
+      "entity": "visit",
+      "from": "called",
+      "to": "left",
+      "command": "leave",
+      "owner_phase": "P07",
+      "condition_ar": "سبب مسجل وتحرير الطبيب"
+    },
+    {
+      "entity": "visit",
+      "from": "away",
+      "to": "left",
+      "command": "leave",
+      "owner_phase": "P07",
+      "condition_ar": "سبب مسجل"
+    },
+    {
+      "entity": "visit",
+      "from": "called",
+      "to": "in_service",
+      "command": "start",
+      "owner_phase": "P08",
+      "condition_ar": "الطبيب المخول للجلسة"
+    },
+    {
+      "entity": "visit",
+      "from": "in_service",
+      "to": "completed",
+      "command": "complete",
+      "owner_phase": "P08",
+      "condition_ar": "وقت إنهاء من الخادم"
+    },
+    {
+      "entity": "visit",
+      "from": "away",
+      "to": "waiting",
+      "command": "return",
+      "owner_phase": "P07",
+      "condition_ar": "آخر قائمة الحاضرين ورقم ثابت"
+    },
+    {
+      "entity": "session",
+      "from": "scheduled",
+      "to": "open",
+      "command": "open",
+      "owner_phase": "P05",
+      "condition_ar": "داخل وقت استقبال الجلسة"
+    },
+    {
+      "entity": "session",
+      "from": "open",
+      "to": "paused",
+      "command": "pause",
+      "owner_phase": "P05",
+      "condition_ar": "حفظ السبب التشغيلي في التطبيق"
+    },
+    {
+      "entity": "session",
+      "from": "paused",
+      "to": "open",
+      "command": "resume",
+      "owner_phase": "P05",
+      "condition_ar": "قرار مخول"
+    },
+    {
+      "entity": "session",
+      "from": "scheduled",
+      "to": "closed",
+      "command": "close",
+      "owner_phase": "P05",
+      "condition_ar": "لا حالات زيارة عالقة"
+    },
+    {
+      "entity": "session",
+      "from": "open",
+      "to": "closed",
+      "command": "close",
+      "owner_phase": "P05",
+      "condition_ar": "لا حالات زيارة عالقة"
+    },
+    {
+      "entity": "session",
+      "from": "paused",
+      "to": "closed",
+      "command": "close",
+      "owner_phase": "P05",
+      "condition_ar": "لا حالات زيارة عالقة"
+    }
+  ],
+  "commands": [
+    {
+      "id": "request",
+      "path": "POST /v1/booking-requests",
+      "owner_phase": "P06",
+      "actors": [
+        "public",
+        "owner",
+        "reception"
+      ],
+      "result": "pending",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": false
+    },
+    {
+      "id": "confirm",
+      "path": "POST /v1/bookings/{id}/confirm",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "confirmed",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "reject",
+      "path": "POST /v1/bookings/{id}/reject",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "rejected",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "cancel",
+      "path": "POST /v1/bookings/{id}/cancel",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "cancelled",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "reschedule",
+      "path": "POST /v1/bookings/{id}/reschedule",
+      "owner_phase": "P06",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "unchanged_booking_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "check_in",
+      "path": "POST /v1/bookings/{id}/check-in",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "waiting",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "walk_in",
+      "path": "POST /v1/sessions/{id}/walk-ins",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "confirmed_booking_and_waiting_visit",
+      "http_success": 201,
+      "idempotency_required": true,
+      "expected_version_required": false
+    },
+    {
+      "id": "call_next",
+      "path": "POST /v1/sessions/{id}/call-next",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor",
+        "delegated_reception"
+      ],
+      "result": "called",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "start",
+      "path": "POST /v1/visits/{id}/start",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "in_service",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "complete",
+      "path": "POST /v1/visits/{id}/complete",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "completed_and_fulfilled",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "mark_away",
+      "path": "POST /v1/visits/{id}/mark-away",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception",
+        "doctor"
+      ],
+      "result": "away",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "return",
+      "path": "POST /v1/visits/{id}/return",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception"
+      ],
+      "result": "waiting",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "leave",
+      "path": "POST /v1/visits/{id}/leave",
+      "owner_phase": "P07",
+      "actors": [
+        "owner",
+        "reception",
+        "doctor"
+      ],
+      "result": "left",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "priority",
+      "path": "POST /v1/visits/{id}/priority",
+      "owner_phase": "P08",
+      "actors": [
+        "doctor"
+      ],
+      "result": "waiting_with_recorded_priority",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "open",
+      "path": "POST /v1/sessions/{id}/open",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "open",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "pause",
+      "path": "POST /v1/sessions/{id}/pause",
+      "owner_phase": "P05",
+      "actors": [
+        "owner",
+        "doctor"
+      ],
+      "result": "paused",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "resume",
+      "path": "POST /v1/sessions/{id}/resume",
+      "owner_phase": "P05",
+      "actors": [
+        "owner",
+        "doctor"
+      ],
+      "result": "open",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "close",
+      "path": "POST /v1/sessions/{id}/close",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "closed",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "capacity",
+      "path": "POST /v1/sessions/{id}/capacity",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "unchanged_session_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "extend",
+      "path": "POST /v1/sessions/{id}/extend",
+      "owner_phase": "P05",
+      "actors": [
+        "owner"
+      ],
+      "result": "unchanged_session_state",
+      "http_success": 200,
+      "idempotency_required": true,
+      "expected_version_required": true
+    },
+    {
+      "id": "ticket",
+      "path": "GET /v1/tickets/{secret}",
+      "owner_phase": "P09",
+      "actors": [
+        "token_holder"
+      ],
+      "result": "limited_DTO",
+      "http_success": 200,
+      "idempotency_required": false,
+      "expected_version_required": false
+    }
+  ],
+  "command_envelope": {
+    "headers": [
+      "Idempotency-Key",
+      "If-Match"
+    ],
+    "request_context": "server_resolved_membership_never_body_clinic_id",
+    "response_fields": [
+      "id",
+      "state",
+      "version",
+      "server_time",
+      "request_id"
+    ],
+    "create_without_aggregate_version": [
+      "request",
+      "walk_in"
+    ],
+    "unknown_resource_and_other_clinic_share_404": true,
+    "anonymous_idempotency_scope": "server-issued short-lived anonymous session, independent for each browser; never a shared public actor key",
+    "sensitive_replay_response_storage": "encrypted at rest with limited retention; no plaintext ticket secrets in logs or persistent replay records",
+    "replay_order": [
+      "authenticate",
+      "authorize_current_scope",
+      "lookup_key_and_fingerprint",
+      "return_prior_success_or_check_version",
+      "atomic_command",
+      "commit_event_and_outbox"
+    ],
+    "idempotency_retention": "at least 48 hours for command results; permanent unique visit and financial constraints remain independent"
+  },
+  "private_ticket_fields": [
+    "booking_state",
+    "visit_state",
+    "ticket_number",
+    "waiting_ahead",
+    "doctor_state",
+    "session_state",
+    "window_starts_at",
+    "window_ends_at",
+    "server_time",
+    "booking_version",
+    "visit_version"
+  ],
+  "private_ticket_security": {
+    "secret_random_bytes": 32,
+    "stored_form": "sha256_digest_only",
+    "expiry_hours_after_session_end": 48,
+    "cache_control": "private, no-store",
+    "referrer_policy": "no-referrer",
+    "exclude_from_service_worker_cache": true,
+    "exclude_from_analytics": true
+  },
+  "data_dictionary": {
+    "clinic": [
+      "id",
+      "display_name",
+      "city",
+      "address_landmark",
+      "contact_phone",
+      "timezone",
+      "operational_state"
+    ],
+    "membership": [
+      "id",
+      "clinic_id",
+      "user_id",
+      "role",
+      "active",
+      "delegated_permissions"
+    ],
+    "doctor": [
+      "id",
+      "clinic_id",
+      "user_id",
+      "display_name",
+      "specialty_optional"
+    ],
+    "session": [
+      "id",
+      "clinic_id",
+      "doctor_id",
+      "starts_at",
+      "ends_at",
+      "state",
+      "version",
+      "ticket_counter",
+      "ready_counter"
+    ],
+    "arrival_window": [
+      "id",
+      "clinic_id",
+      "session_id",
+      "starts_at",
+      "ends_at",
+      "capacity"
+    ],
+    "patient": [
+      "id",
+      "clinic_id",
+      "display_name",
+      "contact_phone_nullable"
+    ],
+    "booking": [
+      "id",
+      "clinic_id",
+      "patient_id",
+      "session_id",
+      "window_id",
+      "source",
+      "state",
+      "version",
+      "visit_id_nullable"
+    ],
+    "visit": [
+      "id",
+      "clinic_id",
+      "booking_id",
+      "session_id",
+      "doctor_id",
+      "ticket_number",
+      "ready_sequence",
+      "priority",
+      "state",
+      "version",
+      "arrived_at",
+      "called_at",
+      "started_at",
+      "completed_at",
+      "returned_at"
+    ],
+    "ticket_token": [
+      "digest",
+      "booking_id",
+      "expires_at",
+      "revoked_at"
+    ],
+    "audit_event": [
+      "id",
+      "clinic_id",
+      "actor_id",
+      "entity_type",
+      "entity_id",
+      "event_type",
+      "at",
+      "reason_code",
+      "request_id",
+      "safe_changes"
+    ],
+    "outbox": [
+      "id",
+      "clinic_id",
+      "event_id",
+      "channel",
+      "status",
+      "attempts",
+      "next_attempt_at"
+    ]
+  },
+  "integrity_requirements": [
+    "composite tenant-consistent foreign keys for operational relations",
+    "unique visit per booking",
+    "unique session_id plus ticket_number",
+    "one called or in_service visit per doctor_id across sessions",
+    "atomic capacity check and reserve with deterministic database locks",
+    "events and outbox commit in the same transaction as the state change",
+    "server-controlled timestamps and expected aggregate versions",
+    "successful idempotency record is committed with the command"
+  ],
+  "time_policy": {
+    "storage": "UTC",
+    "display": "Asia/Aden",
+    "interval": "start_inclusive_end_exclusive",
+    "session_day": "single_local_intake_day",
+    "after_intake_end": "process previously checked-in visits; reject new bookings and arrivals"
+  },
+  "phone_policy": {
+    "canonical_prefix": "+967",
+    "local_pattern": "^7[0-9]{8}$",
+    "ownership_verified": false,
+    "unique_person_key": false
+  },
+  "update_policy": {
+    "staff_poll_seconds": 5,
+    "patient_poll_seconds": 20,
+    "pause_when_hidden": true,
+    "backoff_on_failure": true,
+    "offline_confirmed_writes": false,
+    "stale_data_label_required": true
+  },
+  "exceptions": [
+    {
+      "id": "E01",
+      "code": "capacity_full",
+      "http_status": 409,
+      "owner_phase": "P06"
+    },
+    {
+      "id": "E02",
+      "code": "stale_version",
+      "http_status": 409,
+      "owner_phase": "P06"
+    },
+    {
+      "id": "E03",
+      "code": "idempotency_key_reused",
+      "http_status": 409,
+      "owner_phase": "P06"
+    },
+    {
+      "id": "E04",
+      "code": "forbidden",
+      "http_status": 403,
+      "owner_phase": "P04"
+    },
+    {
+      "id": "E05",
+      "code": "cross_clinic_or_unknown_resource",
+      "http_status": 404,
+      "owner_phase": "P04"
+    },
+    {
+      "id": "E06",
+      "code": "invalid_contact_shape",
+      "http_status": 422,
+      "owner_phase": "P06"
+    },
+    {
+      "id": "E07",
+      "code": "arrival_window_not_started",
+      "http_status": 409,
+      "owner_phase": "P07"
+    },
+    {
+      "id": "E08",
+      "code": "intake_ended",
+      "http_status": 409,
+      "owner_phase": "P05"
+    },
+    {
+      "id": "E09",
+      "code": "doctor_busy",
+      "http_status": 409,
+      "owner_phase": "P08"
+    },
+    {
+      "id": "E10",
+      "code": "session_closed",
+      "http_status": 409,
+      "owner_phase": "P05"
+    },
+    {
+      "id": "E11",
+      "code": "unresolved_visits",
+      "http_status": 409,
+      "owner_phase": "P05"
+    },
+    {
+      "id": "E12",
+      "code": "rate_limit",
+      "http_status": 429,
+      "owner_phase": "P11"
+    },
+    {
+      "id": "E13",
+      "code": "network_timeout",
+      "http_status": null,
+      "owner_phase": "P11"
+    },
+    {
+      "id": "E14",
+      "code": "expired_or_invalid_ticket",
+      "http_status": 404,
+      "owner_phase": "P09"
+    },
+    {
+      "id": "E15",
+      "code": "external_provider_disabled",
+      "http_status": null,
+      "owner_phase": "P13"
+    },
+    {
+      "id": "E16",
+      "code": "partial_transaction_failure",
+      "http_status": null,
+      "owner_phase": "P06"
+    }
+  ],
+  "decision_log": [
+    {
+      "id": "D01",
+      "decision_ar": "اعتماد نوافذ وصول وترتيب حضور؛ لا وعد بدقيقة كشف.",
+      "reason_ar": "مدة الزيارات متغيرة ويجب أن يتطابق الوعد مع التشغيل."
+    },
+    {
+      "id": "D02",
+      "decision_ar": "رقم الدور ثابت وموضع الانتظار منفصل.",
+      "reason_ar": "عودة الغائب والاستثناء المخول لا يعيدان ترقيم التذاكر."
+    },
+    {
+      "id": "D03",
+      "decision_ar": "بدء النافذة حد قبول الوصول المبكر، والسعة الإجمالية مشتقة.",
+      "reason_ar": "منع تناقض نافذة الوصول مع الدور أو حقلين مختلفين للسعة."
+    },
+    {
+      "id": "D04",
+      "decision_ar": "من حضر قبل نهاية الاستقبال يستكمل بعد النهاية؛ الإدخال الجديد يتوقف.",
+      "reason_ar": "حفظ استمرارية الخدمة مع إغلاق منفذ الحجوزات الجديدة."
+    },
+    {
+      "id": "D05",
+      "decision_ar": "الهاتف اختياري للحضور المباشر ولا يستخدم كمفتاح شخص.",
+      "reason_ar": "دعم الأسرة والمراجع الذي لا يملك هاتفا."
+    },
+    {
+      "id": "D06",
+      "decision_ar": "الأولوية للطبيب والاستدعاء المفوض منفصل عن بدء الزيارة.",
+      "reason_ar": "تحديد المسؤولية ومنع تحول التفويض الإداري إلى قرار طبي."
+    },
+    {
+      "id": "D07",
+      "decision_ar": "اختبارات P00 على مرجع داخل الذاكرة وتظل اختبارات التطبيق لاحقة.",
+      "reason_ar": "توثيق الدليل الفعلي دون نسبة ضمانات قاعدة أو واجهة إلى نموذج القواعد."
+    },
+    {
+      "id": "D08",
+      "decision_ar": "كل ربط أو شراء مدفوع في P13؛ أسماء الحالات المالية محجوزة فقط.",
+      "reason_ar": "الالتزام بترتيب التنفيذ المطلوب دون بناء الجداول والتحصيل مبكرا."
+    }
+  ],
+  "assumptions_requiring_later_evidence": [
+    {
+      "topic": "الاسم والعلامة والنطاق",
+      "phase": "P01",
+      "public_release_check_required": true
+    },
+    {
+      "topic": "استعداد العيادات للدفع والتجديد",
+      "phase": "P13",
+      "market_test_required": true
+    },
+    {
+      "topic": "سياسة الاحتفاظ والحذف والاتفاق مع العيادة",
+      "phase": "P11",
+      "before_real_data": true
+    },
+    {
+      "topic": "دعم مزود التحويل أو الرسائل للنشاط في اليمن",
+      "phase": "P13",
+      "provider_verification_required": true
+    }
+  ],
+  "stage_plan": [
+    {
+      "id": "P00",
+      "title": "تثبيت النطاق وقواعد العمل",
+      "depends": [],
+      "owner": "مسؤول المنتج",
+      "outputs": [
+        "مواصفات الإصدار الأول وخريطة الشاشات والحالات",
+        "عقود بيانات موحدة وبيانات تجريبية لعيادتين",
+        "سجل القرارات ومفتاح تعطيل التحصيل الخارجي"
+      ],
+      "tests": [
+        {
+          "id": "T00A",
+          "expected": "لكل شاشة وحالة ومسار استثناء مرحلة تملكها ولا تبعية دائرية.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T00B",
+          "expected": "رحلة المراجع كاملة تعمل وصفيا من طلب الحجز إلى الإغلاق دون أي تحصيل.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تعطي الأسماء والحالات نفسها للتصميم والواجهة وقاعدة البيانات.",
+      "status": "not_started"
+    },
+    {
+      "id": "P01",
+      "title": "الاسم والهوية والغلاف",
+      "depends": [
+        "P00"
+      ],
+      "owner": "التصميم",
+      "outputs": [
+        "اسم العمل نوبتيك وكتابة Nobteek من إعداد موحد",
+        "شعار متجهي وأيقونة وغلاف وألوان وخط ومكونات",
+        "أحجام الهاتف والحاسوب وحالات التركيز والخطأ"
+      ],
+      "tests": [
+        {
+          "id": "T01A",
+          "expected": "وضوح الأيقونة في حجم 24 و48 بكسل والتباين في الأزواج المعتمدة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T01B",
+          "expected": "يغيّر إعداد الاسم واللون جميع الشاشات دون نصوص أو ألوان مبعثرة.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تستهلك الواجهات رموز التصميم نفسها، لا نسخا مستقلة.",
+      "status": "not_started"
+    },
+    {
+      "id": "P02",
+      "title": "نموذج الواجهات قبل الربط",
+      "depends": [
+        "P00",
+        "P01"
+      ],
+      "owner": "الواجهات",
+      "outputs": [
+        "نماذج تفاعلية للاستقبال والطبيب والمراجع والمالك",
+        "حالات تحميل وفراغ وفشل وتعارض وانقطاع وصلاحية",
+        "واجهات تجريبية مطابقة لعقود البيانات"
+      ],
+      "tests": [
+        {
+          "id": "T02A",
+          "expected": "رحلة مكتملة ببيانات وهمية على عرض 360 و768 و1440 بكسل.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T02B",
+          "expected": "التنقل بلوحة المفاتيح وتكبير النص لا يخفيان إجراء الحضور أو إلغاء الحجز.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "يغلق التصميم، ويبقى الربط الحقيقي خاضعا لاختبارات التكامل لاحقا.",
+      "status": "not_started"
+    },
+    {
+      "id": "P03",
+      "title": "المشروع وقاعدة البيانات وبيئة الاختبار",
+      "depends": [
+        "P00",
+        "P02"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "مستودع مستقل وبيئة محلية وبيئة اختبار منفصلة",
+        "Laravel وReact وPostgreSQL مع ملفات إصدارات مقفلة",
+        "ترحيلات وبيانات وهمية وتشغيل اختبارات آلي"
+      ],
+      "tests": [
+        {
+          "id": "T03A",
+          "expected": "يبني جهاز نظيف المشروع ويرحل قاعدة فارغة بنفس التعليمات.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T03B",
+          "expected": "كل مرجع مرتبط بعيادة صحيحة ولا توجد أسرار أو بيانات مرضى في المستودع.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "توفر أساسا ثابتا للحسابات والحجوزات والربط المالي المتأخر.",
+      "status": "not_started"
+    },
+    {
+      "id": "P04",
+      "title": "الحسابات والصلاحيات وعزل العيادات",
+      "depends": [
+        "P03"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "أسماء دخول وكلمات مرور وحسابات مستقلة للأدوار",
+        "عزل عيادتين ودخول آمن واستعادة وسجل تدقيق",
+        "تحقق إضافي لمالك المنصة ومالك العيادة قبل الاستخدام الحقيقي"
+      ],
+      "tests": [
+        {
+          "id": "T04A",
+          "expected": "لا يستطيع موظف العيادة الأولى قراءة أو تعديل أو تصدير بيانات الثانية بتغيير المعرف.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T04B",
+          "expected": "استعادة الحساب تبطل الجلسات القديمة ولا تسمح بمعرفة حجوزات شخص من رقمه.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تستهلك كل شاشة لاحقة صلاحيات الخادم، لا إخفاء الأزرار فقط.",
+      "status": "not_started"
+    },
+    {
+      "id": "P05",
+      "title": "إعداد العيادة والأطباء والجلسات",
+      "depends": [
+        "P04"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "اسم وموقع ومعلم قريب واتصال العيادة",
+        "أطباء وموظفون وجلسات ونوافذ وصول وسعة معتمدة",
+        "فتح وإيقاف وإغلاق الجلسة مع سبب وتاريخ تغيير"
+      ],
+      "tests": [
+        {
+          "id": "T05A",
+          "expected": "تمنع الفترات المتداخلة للطبيب نفسه داخل العيادة ولا تتجاوز النوافذ حدود الجلسة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T05B",
+          "expected": "تغيير السعة لا يزيل حجزا قائما؛ يخطر الموظف بتأثر المواعيد قبل الحفظ.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تصبح الجلسة ونافذة الوصول مرجع الحجز والطابور والتقارير.",
+      "status": "not_started"
+    },
+    {
+      "id": "P06",
+      "title": "الحجوزات والتأكيد والإلغاء",
+      "depends": [
+        "P05"
+      ],
+      "owner": "الخلفية",
+      "outputs": [
+        "حجز من الاستقبال أو طلب من رابط العيادة",
+        "طلب ويب قيد المراجعة ثم تأكيد أو رفض مسبب",
+        "منع تكرار الطلب نفسه وتأجيل وإلغاء موثق"
+      ],
+      "tests": [
+        {
+          "id": "T06A",
+          "expected": "محاولتان متزامنتان لآخر مكان تؤكدان حجزا واحدا فقط.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T06B",
+          "expected": "إعادة الطلب بعد انقطاع الرد لا تنشئ حجزا ثانيا، ورقم الأسرة يقبل أكثر من مراجع.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "ينتج حجزا موحدا تستطيع شاشة الاستقبال تسجيل وصوله دون إعادة إدخال.",
+      "status": "not_started"
+    },
+    {
+      "id": "P07",
+      "title": "الاستقبال والحضور وتنظيم الدور",
+      "depends": [
+        "P06"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "قائمة اليوم وبحث مقيد وإضافة حضور مباشر",
+        "رقم دور ثابت عند الوصول وترتيب مستقل للحاضرين",
+        "تسجيل مغادرة مؤقتة وعودة وتجاوز مصرح مسبب"
+      ],
+      "tests": [
+        {
+          "id": "T07A",
+          "expected": "موظفان يسجلان الوصول في اللحظة نفسها دون أرقام دور مكررة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T07B",
+          "expected": "المتأخر يعود إلى نهاية المنتظرين مع حفظ رقم تذكرته وأسباب الاستثناءات.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تغذي قائمة جاهزة للطبيب وعدد من أمام المراجع دون إظهار الأسماء.",
+      "status": "not_started"
+    },
+    {
+      "id": "P08",
+      "title": "شاشة الطبيب ودورة الزيارة",
+      "depends": [
+        "P07"
+      ],
+      "owner": "الواجهات والخلفية",
+      "outputs": [
+        "متاح ومتأخر ومتوقف وحالة الزيارة الحالية",
+        "استدعاء ثم بدء وإنهاء مع أوقات مسجلة",
+        "غياب عن النداء وتصحيح مسجل دون حذف التاريخ"
+      ],
+      "tests": [
+        {
+          "id": "T08A",
+          "expected": "ضغط استدعاء التالي من جهازين لا يختار مريضين، ولا توجد زيارتان نشطتان للطبيب نفسه.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T08B",
+          "expected": "بدء زيارة دون حضور أو إلغاء زيارة مكتملة يرفض مع رسالة واضحة.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "ترسل أحداث الحالة للمراجع والتنبيهات والتقارير من العملية نفسها.",
+      "status": "not_started"
+    },
+    {
+      "id": "P09",
+      "title": "رابط المراجع وشاشة الانتظار",
+      "depends": [
+        "P06",
+        "P08"
+      ],
+      "owner": "الواجهات",
+      "outputs": [
+        "اختيار الطبيب والنافذة وطلب الحجز وحفظ الرابط",
+        "متابعة خاصة لحالة المراجع وعدد المنتظرين أمامه",
+        "شاشة صالة بأرقام فقط، وصفحات المساعدة والخصوصية"
+      ],
+      "tests": [
+        {
+          "id": "T09A",
+          "expected": "الرابط لا يعرض أسماء الآخرين ولا الهاتف ولا التشخيص؛ تبديل المعرف لا يكشف حجزا آخر.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T09B",
+          "expected": "انقطاع الاتصال أو إلغاء الجلسة يظهران بصراحة، والطلب قيد المراجعة لا يبدو مؤكدا.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "يعتمد الرابط على الحالة الفعلية، ويعمل دون تطبيق أو حساب مريض.",
+      "status": "not_started"
+    },
+    {
+      "id": "P10",
+      "title": "التنبيهات والتقارير وإدارة المنصة",
+      "depends": [
+        "P08",
+        "P09"
+      ],
+      "owner": "الخلفية والواجهات",
+      "outputs": [
+        "تنبيهات داخل النظام ومحاكي لقنوات الإرسال الخارجية",
+        "ملخص زيارات وانتظار ومغادرين ودقائق دعم وتصدير مقيد",
+        "إدارة عيادات ودعم وتدقيق دون اشتراكات مالية مفعلة"
+      ],
+      "tests": [
+        {
+          "id": "T10A",
+          "expected": "لا تتكرر رسالة الحدث الواحد، ولا يسجل المحاكي رسالة خارجية على أنها مسلمة.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T10B",
+          "expected": "الانتظار يحسب من الوصول إلى بدء الزيارة للزيارات مكتملة الأوقات فقط.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "توصل واجهة الإرسال الحقيقية في المرحلة الأخيرة دون تغيير أحداث الزيارة.",
+      "status": "not_started"
+    },
+    {
+      "id": "P11",
+      "title": "الانقطاع والأمان والأداء والاستعادة",
+      "depends": [
+        "P04",
+        "P10"
+      ],
+      "owner": "التطوير والاختبار",
+      "outputs": [
+        "خطة ورقية بديلة وإعادة إدخال مضبوطة بعد العودة",
+        "تشفير واتصال آمن وتدقيق وصلاحيات وتصدير وحذف مضبوط",
+        "نسخ احتياطي واستعادة ومراقبة وأهداف أداء مقاسة"
+      ],
+      "tests": [
+        {
+          "id": "T11A",
+          "expected": "العودة بعد انقطاع أو إعادة إرسال لا تفقد دورا ولا تؤكد حفظا لم يصل للخادم.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T11B",
+          "expected": "استعادة نسخة في بيئة منفصلة ثم مطابقة الأعداد والعلاقات واختبار رحلة حجز.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "تثبت وسائل الحماية قبل بيانات حقيقية، وتكرر على الاستضافة النهائية.",
+      "status": "not_started"
+    },
+    {
+      "id": "P12",
+      "title": "اختبار الإصدار التشغيلي والتسليم",
+      "depends": [
+        "P11"
+      ],
+      "owner": "مسؤول المنتج والاختبار",
+      "outputs": [
+        "تشغيل شامل لعيادتين وهميتين وثلاثة أطباء من أكثر من جهاز",
+        "فحص هواتف وحاسوب وإتاحة ووثائق تدريب وتشغيل",
+        "نسخة مرشحة محفوظة وخطة رجوع وسجل نتائج فعلي"
+      ],
+      "tests": [
+        {
+          "id": "T12A",
+          "expected": "تمر الرحلات الكاملة والاختبارات الحرجة دون تعارض حجز أو كشف بيانات أو تعطيل دور.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T12B",
+          "expected": "تشغل النسخة دون أي مزود دفع أو إرسال مدفوع وتبقى المحاكاة واضحة.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "منتج قابل للتجربة المضبوطة، ثم يبدأ آخر جزء وظيفي وهو التحصيل.",
+      "status": "not_started"
+    },
+    {
+      "id": "P13",
+      "title": "الاشتراكات والتحصيل والتفعيل النهائي",
+      "depends": [
+        "P12"
+      ],
+      "owner": "التطوير ومسؤول التحصيل",
+      "outputs": [
+        "باقات وفواتير وتحويل يدوي ومراجعة وإيصالات وحقوق استخدام",
+        "سياسات فترة التجربة والتجديد والسماح والتقييد والاسترداد",
+        "ربط الإرسال والاستضافة المدفوعة إن لزما ثم إعادة فحص الإصدار"
+      ],
+      "tests": [
+        {
+          "id": "T13A",
+          "expected": "الإيصال قيد المراجعة لا يفعّل اشتراكا، والموافقة المكررة تمدد مرة واحدة فقط.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T13B",
+          "expected": "انتهاء الاشتراك لا يوقف زيارة بدأت، والتجديد أو الاسترداد لا يكرر الأثر.",
+          "status": "not_run",
+          "evidence": null
+        },
+        {
+          "id": "T13C",
+          "expected": "يمر سيناريو دفع مرفوض أو ناقص أو مكرر أو بوابة متعذرة مع سجل مالي متطابق.",
+          "status": "not_run",
+          "evidence": null
+        }
+      ],
+      "next": "إطلاق مدفوع محدود عند اكتمال التحقق والتشغيل والسياسات، ثم قياس الاستخدام والتجديد.",
+      "status": "not_started"
+    }
+  ],
+  "validation_scope": {
+    "reference_model": true,
+    "production_http": false,
+    "database_concurrency": false,
+    "authentication_implementation": false,
+    "security_penetration": false,
+    "ui": false,
+    "backup_restore": false,
+    "payments": false,
+    "market_acceptance": false
+  }
+}
