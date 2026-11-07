@@ -94,16 +94,25 @@ async function capture(page, name) {
 }
 async function layout(page, name) {
   activePage = page;
+  await page.evaluate(async () => { await document.fonts.ready; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
   const metrics = await page.evaluate(() => {
     const width = innerWidth;
     const bad = [...document.querySelectorAll('main input, main select, main button, main article, main section, header nav')].filter(e => {
       const r = e.getBoundingClientRect(); return r.width && (r.left < -1 || r.right > width + 1);
     }).map(e => ({ tag: e.tagName, text: (e.getAttribute('aria-label') || e.textContent || '').slice(0, 100), left: e.getBoundingClientRect().left, width: e.getBoundingClientRect().width }));
-    return { viewport: width, scrollWidth: document.documentElement.scrollWidth, direction: getComputedStyle(document.documentElement).direction, bad, h1: document.querySelectorAll('main h1').length };
+    const overflow = [...document.querySelectorAll('body *')].filter(e => {
+      if (e.closest('.skip-link') || getComputedStyle(e).display === 'none') return false;
+      const r = e.getBoundingClientRect(); return r.width && r.height && (r.left < -1 || r.right > width + 1);
+    }).map(e => ({ tag: e.tagName, className: String(e.className).slice(0, 100), text: (e.textContent || '').slice(0, 100), left: e.getBoundingClientRect().left, right: e.getBoundingClientRect().right }));
+    return { viewport: width, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth, direction: getComputedStyle(document.documentElement).direction, bad, overflow: overflow.slice(0, 12), h1: document.querySelectorAll('main h1').length };
   });
   await capture(page, name);
+  const png = fs.readFileSync(path.join(output, name + '.png'));
+  metrics.screenshotWidth = png.readUInt32BE(16);
   assert.equal(metrics.direction, 'rtl'); assert.equal(metrics.h1, 1);
   assert.ok(metrics.scrollWidth <= metrics.viewport + 1, JSON.stringify(metrics));
+  assert.ok(metrics.bodyScrollWidth <= metrics.viewport + 1, JSON.stringify(metrics));
+  assert.ok(metrics.screenshotWidth <= metrics.viewport + 1, JSON.stringify(metrics));
   assert.deepEqual(metrics.bad, [], JSON.stringify(metrics));
   return metrics;
 }
