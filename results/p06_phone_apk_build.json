@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "phase": "P06",
+  "prepared_at": "2026-11-08",
+  "repository": "hosamalqodaymy-rgb/nobteek",
+  "source_commit": "1071378236637109fc18b5b151c751b8edcf744a",
+  "source_tree": "ef73d0978f9548586175009da5abcb28213ffb56",
+  "artifact": {
+    "name": "Nobteek_P06_Interface_Test.apk",
+    "bytes": 234487,
+    "sha256": "1072a2df874922bbb28fb16be5c47f8e3160db9c98cf8e9457f3a0886cdc236a",
+    "package": "com.nobteek.preview",
+    "version_code": 601,
+    "version_name": "0.6.1-phone-test",
+    "label": "نوبتيك تجريبي P06",
+    "min_sdk": 26,
+    "target_sdk": 35,
+    "android_permissions": []
+  },
+  "scope": {
+    "kind": "offline Android WebView UI preview",
+    "reuses_existing_P06_React_components": true,
+    "real_authentication": false,
+    "server_requests": false,
+    "persistent_bookings": false,
+    "fixture_resets_on_screen_selection": true,
+    "production_deployment": false,
+    "physical_phone_tested": false,
+    "phases_P07_to_P13_implemented": false
+  },
+  "android_smoke": {
+    "installed": true,
+    "publicScreen": true,
+    "staffScreen": true,
+    "text200": true,
+    "physicalPhoneTested": false,
+    "scope": "Android emulator startup and local WebView rendering",
+    "sdk": "35",
+    "passed": true
+  },
+  "signing": {
+    "verified": true,
+    "v2": true,
+    "v3": true,
+    "certificate_sha256": "a46144c15cb3df6920dcce36c838511f56289e1f93223b11523a742dac1cb958",
+    "key": "ephemeral test-only key deleted after build; not stored in repository",
+    "upgrade_note": "A rebuild with a different ephemeral key may require uninstalling the prior preview."
+  },
+  "ci_runs": [
+    {
+      "name": "Nobteek P06 browser acceptance",
+      "id": 42422113553,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "1071378236637109fc18b5b151c751b8edcf744a",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113553"
+    },
+    {
+      "name": "Nobteek foundation",
+      "id": 42422113540,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "1071378236637109fc18b5b151c751b8edcf744a",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113540"
+    },
+    {
+      "name": "Nobteek P06 phone APK",
+      "id": 42422113466,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "1071378236637109fc18b5b151c751b8edcf744a",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113466"
+    }
+  ],
+  "ci_artifact": {
+    "id": 13593577730,
+    "name": "nobteek-p06-phone-apk",
+    "retention_days": 14
+  },
+  "pending": [
+    "User verification on a real Android phone including keyboard, scrolling, rotation and 200% text.",
+    "Connect the user's new Render account before deploying the server-connected phone test. The available old account was not used."
+  ],
+  "guide": "docs/PHONE_TEST_AR.md"
+}

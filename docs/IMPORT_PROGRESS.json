@@ -3,7 +3,7 @@
   "repository": "hosamalqodaymy-rgb/nobteek",
   "branch": "main",
   "task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "status": "source_import_and_P06_automated_browser_verified",
+  "status": "P06_browser_and_Android_emulator_verified_physical_phone_pending",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
@@ -369,8 +369,8 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "P07: reception, arrival and queue organization. Keep physical-device verification pending before pilot/production release.",
-  "next_development_stage": "P07 after closing the recorded P06 browser gaps",
+  "next_action": "User tests offline P06 APK using docs/PHONE_TEST_AR.md. Connect the new Render account for server-connected phone tests; do not use the excluded old account.",
+  "next_development_stage": "P07: reception, arrival and queue organization; not started.",
   "browser_gaps": [
     "physical phone native browser and keyboard when a device is available"
   ],
@@ -378,9 +378,9 @@
   "current_ci": {
     "status": "completed",
     "conclusion": "success",
-    "run_id": 42385132233,
-    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42385132233",
-    "head_sha": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
+    "run_id": 42422113540,
+    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113540",
+    "head_sha": "1071378236637109fc18b5b151c751b8edcf744a",
     "phpunit_tests": 109,
     "phpunit_assertions": 749,
     "build_migrate_seed_passed": true,
@@ -404,6 +404,17 @@
       1440
     ],
     "text_resize_percent": 200,
-    "real_phone_tested": false
+    "real_phone_tested": false,
+    "latest_successful_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113553"
+  },
+  "phone_verification": {
+    "report": "results/p06_phone_apk_build.json",
+    "source_commit": "1071378236637109fc18b5b151c751b8edcf744a",
+    "android_emulator_sdk": 35,
+    "apk_install_and_start_passed": true,
+    "physical_phone_tested": false,
+    "offline_UI_only": true,
+    "server_connected_phone_tested": false,
+    "guide": "docs/PHONE_TEST_AR.md"
   }
 }
