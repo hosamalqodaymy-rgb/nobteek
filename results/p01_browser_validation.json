@@ -1,0 +1,255 @@
+{
+  "baselineId": "NOBTEEK-P01-1.0",
+  "observedOn": "2026-11-06",
+  "scope": "controlled_browser_component_preview_only",
+  "method": "Read-only browser DOM measurements from the authored QA harness",
+  "checksRun": 32,
+  "failures": 0,
+  "passed": true,
+  "checks": [
+    {
+      "id": "reflow_360",
+      "status": "passed",
+      "detail": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_360",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_360",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_360",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_360_text_200",
+      "status": "passed",
+      "detail": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_360_text_200",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_360_text_200",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_360_text_200",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_768",
+      "status": "passed",
+      "detail": {
+        "width": 768,
+        "scrollWidth": 753
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_768",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_768",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_768",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_1440",
+      "status": "passed",
+      "detail": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_1440",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_1440",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_1440",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_alternate",
+      "status": "passed",
+      "detail": {
+        "width": 1024,
+        "scrollWidth": 1009
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_alternate",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_alternate",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_alternate",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "actual_200_text",
+      "status": "passed",
+      "detail": "32px",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_booking",
+      "status": "passed",
+      "detail": [
+        "cancelled",
+        "confirmed",
+        "fulfilled",
+        "pending",
+        "rejected"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_visit",
+      "status": "passed",
+      "detail": [
+        "away",
+        "called",
+        "completed",
+        "in_service",
+        "left",
+        "waiting"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_session",
+      "status": "passed",
+      "detail": [
+        "closed",
+        "open",
+        "paused",
+        "scheduled"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "state_text_and_icons",
+      "status": "passed",
+      "detail": "Text and icon accompany every color",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "seven_screen_states",
+      "status": "passed",
+      "detail": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "body_16px",
+      "status": "passed",
+      "detail": "16px",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "phone_ltr",
+      "status": "passed",
+      "detail": "Phone inputs remain LTR",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "error_description",
+      "status": "passed",
+      "detail": "Error text is attached to its input",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "rebrand_names",
+      "status": "passed",
+      "detail": {
+        "names": [
+          "ترتيب",
+          "ترتيب"
+        ],
+        "en": [
+          "QueueDemo"
+        ],
+        "title": "ترتيب QueueDemo | معاينة الهوية والمكونات"
+      },
+      "acceptance": "T01B"
+    },
+    {
+      "id": "rebrand_primary",
+      "status": "passed",
+      "detail": "rgb(29, 78, 216)",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "rebrand_derived",
+      "status": "passed",
+      "detail": "#1842B5",
+      "acceptance": "T01B"
+    }
+  ],
+  "productionApplicationTested": false,
+  "screenshotsIncluded": false
+}

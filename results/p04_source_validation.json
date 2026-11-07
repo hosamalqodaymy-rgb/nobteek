@@ -1,0 +1,39 @@
+{
+  "baselineId": "NOBTEEK-P04-1.0",
+  "scope": "versioned_source_boundary_static_secret_patterns_syntax_baseline_and_evidence",
+  "passed": true,
+  "checksRun": 7,
+  "checks": [
+    {
+      "id": "S01_source_excludes_environments_secrets_sessions_logs_and_dependencies",
+      "status": "passed"
+    },
+    {
+      "id": "S02_no_known_private_key_or_provider_token_patterns",
+      "status": "passed"
+    },
+    {
+      "id": "S03_frozen_business_design_and_prototype_retained",
+      "status": "passed"
+    },
+    {
+      "id": "S04_javascript_lock_matches_manifest",
+      "status": "passed"
+    },
+    {
+      "id": "S05_php_source_parses",
+      "status": "passed"
+    },
+    {
+      "id": "S06_evidence_counts_and_next_phase_agree",
+      "status": "passed"
+    },
+    {
+      "id": "S07_diff_has_no_whitespace_errors",
+      "status": "passed"
+    }
+  ],
+  "phpFilesLinted": 65,
+  "frozenFilesVerified": 57,
+  "independentSecurityAuditCompleted": false
+}

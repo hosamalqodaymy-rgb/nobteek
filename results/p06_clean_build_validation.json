@@ -1,0 +1,46 @@
+{
+  "baselineId": "NOBTEEK-P06-1.0",
+  "scope": "new_directory_clean_locked_install_build_and_full_PostgreSQL_integration",
+  "passed": true,
+  "checksRun": 7,
+  "checks": [
+    {
+      "id": "C01_composer_lock_install",
+      "status": "passed"
+    },
+    {
+      "id": "C02_composer_manifest_valid",
+      "status": "passed"
+    },
+    {
+      "id": "C03_npm_clean_install",
+      "status": "passed"
+    },
+    {
+      "id": "C04_fresh_application_key",
+      "status": "passed"
+    },
+    {
+      "id": "C05_typescript_and_production_build",
+      "status": "passed"
+    },
+    {
+      "id": "C06_postgres_migrate_and_seed",
+      "status": "passed"
+    },
+    {
+      "id": "C07_full_laravel_database_suite",
+      "status": "passed"
+    }
+  ],
+  "phpunit": {
+    "tests": "109",
+    "assertions": "749",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0"
+  },
+  "databaseServerConnectionTested": true,
+  "frameworkMigrationTested": true,
+  "ciWorkflowExecuted": false
+}

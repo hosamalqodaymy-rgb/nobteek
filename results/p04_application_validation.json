@@ -1,0 +1,23 @@
+{
+  "baselineId": "NOBTEEK-P04-1.0",
+  "completedAt": "2026-11-06T05:47:51.399676+00:00",
+  "scope": "Laravel_HTTP_kernel_auth_and_authorization_on_authenticated_PostgreSQL_17_11_with_synthetic_data",
+  "passed": true,
+  "tests": 52,
+  "assertions": 365,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "suites": {
+    "account_authentication": 11,
+    "account_recovery": 5,
+    "clinic_isolation": 11,
+    "team_administration": 10,
+    "previous_foundation_and_security_configuration": 15
+  },
+  "isolatedDatabase": "nobteek_test",
+  "databaseRoleIsSuperuser": false,
+  "realPatientDataUsed": false,
+  "productionDeploymentTested": false,
+  "CIExecuted": false
+}

@@ -1,0 +1,55 @@
+{
+  "baselineId": "NOBTEEK-P03-1.0",
+  "as_of": "2026-11-06",
+  "status": "completed_foundation_only",
+  "release_state": "frozen_foundation",
+  "passed": true,
+  "completed_checks": {
+    "postgresql_engine": 31,
+    "source_packaging_and_syntax": 6,
+    "clean_install_and_build_steps": 7,
+    "laravel_http_and_database": 14,
+    "authenticated_server_and_environment_isolation": 4
+  },
+  "pdoConnectionTested": true,
+  "frameworkMigrationTested": true,
+  "postgresDatabaseFeatureTestsExecuted": true,
+  "postgresDatabaseFeatureTestsPending": 0,
+  "ciWorkflowExecuted": false,
+  "dockerExecuted": false,
+  "productionAuthenticationImplemented": false,
+  "productionIntakeImplemented": false,
+  "realPatientDataUsed": false,
+  "externalPaidResourcesCreated": false,
+  "acceptance": {
+    "T03A": {
+      "status": "passed",
+      "scope": "clean_locked_build_and_real_PostgreSQL_PDO_integration",
+      "production_tenant_authorization_tested": false
+    },
+    "T03B": {
+      "status": "passed",
+      "scope": "composite_foreign_keys_synthetic_data_and_source_integrity",
+      "production_tenant_authorization_tested": false
+    }
+  },
+  "evidence": [
+    "results/p03_database_validation.json",
+    "results/p03_application_validation.json",
+    "results/p03_source_validation.json",
+    "results/p03_clean_build_validation.json",
+    "results/p03_server_validation.json"
+  ],
+  "next_after_acceptance": "P04_accounts_permissions_and_clinic_isolation",
+  "resolved_environment_issue": {
+    "unix_socket": "unavailable",
+    "verified_transport": "authenticated_TCP_loopback",
+    "lifecycle": "Database server and test processes run within the same execution lifecycle; server stops after completion."
+  },
+  "resolved_defect": {
+    "trigger": "migrate:fresh after a prior migration",
+    "problem": "The custom PostgreSQL trigger function survived table cleanup and its duplicate declaration failed.",
+    "fix": "CREATE OR REPLACE FUNCTION permits a clean migration after schema wipe.",
+    "verified": "Full 14-case PHPUnit suite and a fresh-directory migrate/seed/full-suite build pass."
+  }
+}

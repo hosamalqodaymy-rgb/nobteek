@@ -1,0 +1,294 @@
+{
+  "baseline_id": "NOBTEEK-P00-1.0",
+  "generated_at": "2026-11-06T03:40:25.429942+00:00",
+  "python_version": "3.12.14",
+  "validation_type": "specification_and_in_memory_reference_model",
+  "production_application_tests_run": false,
+  "database_concurrency_tested": false,
+  "ui_or_network_or_security_integration_tested": false,
+  "real_patient_data_used": false,
+  "real_payments_or_messages_sent": false,
+  "tests_run": 51,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "elapsed_seconds": 0.0326,
+  "passed": true,
+  "acceptance": {
+    "T00A": {
+      "status": "passed",
+      "checks": 13
+    },
+    "T00B": {
+      "status": "passed",
+      "checks": 38
+    }
+  },
+  "checks": [
+    {
+      "id": "test_contract.ContractTests.test_C01_dependencies_are_ordered_and_acyclic",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C02_all_twelve_screens_have_owner_and_shared_states",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C03_state_names_preserve_the_authoritative_plan",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C04_every_transition_uses_declared_states_and_commands",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C05_all_rules_and_exceptions_have_unique_ids_and_owners",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C06_finance_and_paid_services_are_disabled_and_deferred",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C07_fixtures_have_two_clinics_three_doctors_and_scoped_relations",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C08_critical_command_envelopes_require_retries_and_versions",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C09_private_ticket_schema_excludes_identity_and_other_patients",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C10_session_windows_cannot_overlap_cross_days_or_escape_bounds",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C11_pending_and_terminal_states_have_clear_paths",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C12_source_plan_tests_are_not_misreported_as_application_passes",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_contract.ContractTests.test_C13_doctor_sessions_cannot_overlap_within_a_clinic",
+      "status": "passed",
+      "acceptance": "T00A"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W01_complete_journey_without_finance",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W02_pending_requests_neither_reserve_capacity_nor_receive_tickets",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W03_competing_last_slot_has_one_success_in_reference_model",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W04_retry_same_request_returns_same_result_and_one_event",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W05_reusing_key_with_different_body_is_rejected",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W06_stale_version_preserves_state_and_event_count",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W07_cross_clinic_read_and_write_share_not_found",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W08_tenant_id_in_body_is_not_trusted",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W09_doctor_cannot_serve_another_doctors_visit",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W10_reception_call_is_explicitly_delegated",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W11_platform_admin_has_no_default_patient_read",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W12_check_in_replay_and_second_key_never_duplicate_ticket",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W13_calling_twice_cannot_reserve_two_visits",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W14_service_state_also_reserves_doctor",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W15_absence_return_keeps_ticket_and_moves_to_end",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W16_called_patient_marked_away_releases_doctor",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W17_cancellation_releases_space_without_reusing_number",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W18_completed_visit_keeps_historical_capacity",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W19_in_service_cannot_be_cancelled",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W20_capacity_cannot_drop_below_confirmed_count",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W21_failed_reschedule_retains_old_reservation",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W22_family_phone_does_not_merge_people",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W23_arabic_international_phone_and_shape_validation",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W24_walk_in_without_phone_is_atomic_and_has_a_ticket",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W25_walk_in_with_full_window_leaves_no_partial_booking",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W26_early_arrival_waits_for_window_and_late_arrival_is_recorded",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W27_intake_end_blocks_arrivals_but_existing_queue_continues",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W28_paused_session_keeps_current_visit_and_blocks_new_call",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W29_close_requires_explicit_resolution_and_is_final",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W30_ahead_count_excludes_current_service_and_others_identity",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W31_ticket_number_cannot_substitute_for_secret_and_secret_expires",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W32_priority_requires_doctor_and_preserves_ticket",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W33_failed_command_emits_neither_event_nor_outbox_entry",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W34_replayed_command_rechecks_current_permission",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W35_session_extension_cannot_cross_local_day_or_add_capacity",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W36_new_call_from_overlapping_overrun_cannot_double_reserve_doctor",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W37_anonymous_retry_keys_are_isolated_between_browsers",
+      "status": "passed",
+      "acceptance": "T00B"
+    },
+    {
+      "id": "test_workflows.WorkflowTests.test_W38_public_context_without_anonymous_scope_is_rejected",
+      "status": "passed",
+      "acceptance": "T00B"
+    }
+  ],
+  "remaining_required_in_production": [
+    "PostgreSQL tenant constraints and concurrent transactions",
+    "HTTP authentication and role enforcement",
+    "UI and mobile flows",
+    "network failure and retry integration",
+    "private cache and secret redaction",
+    "backup restore",
+    "payment and paid provider integration in P13",
+    "market use and renewal"
+  ]
+}

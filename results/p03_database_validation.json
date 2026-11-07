@@ -1,0 +1,138 @@
+{
+  "baselineId": "NOBTEEK-P03-1.0",
+  "mode": "postgresql_17_single_user",
+  "postgresVersion": "17.11",
+  "migrationRole": "nobteek_test_non_superuser",
+  "checksRun": 31,
+  "passed": true,
+  "failures": 0,
+  "pdoConnectionTested": false,
+  "networkServerTested": false,
+  "temporaryDatabaseRemoved": true,
+  "checks": [
+    {
+      "id": "DB01_migrate_empty_database",
+      "status": "passed"
+    },
+    {
+      "id": "DB02_seed_synthetic_fixture",
+      "status": "passed"
+    },
+    {
+      "id": "DB03_fixture_counts",
+      "status": "passed"
+    },
+    {
+      "id": "DB04_disabled_accounts",
+      "status": "passed"
+    },
+    {
+      "id": "DB05_shared_family_phone",
+      "status": "passed"
+    },
+    {
+      "id": "DB06_optional_phone",
+      "status": "passed"
+    },
+    {
+      "id": "DB07_cross_clinic_patient",
+      "status": "passed"
+    },
+    {
+      "id": "DB08_cross_clinic_window",
+      "status": "passed"
+    },
+    {
+      "id": "DB09_window_from_other_session",
+      "status": "passed"
+    },
+    {
+      "id": "DB10_cross_clinic_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "DB11_cross_clinic_visit",
+      "status": "passed"
+    },
+    {
+      "id": "DB12_booking_link_matches_visit",
+      "status": "passed"
+    },
+    {
+      "id": "DB13_cross_clinic_token",
+      "status": "passed"
+    },
+    {
+      "id": "DB14_cross_clinic_audit_actor",
+      "status": "passed"
+    },
+    {
+      "id": "DB15_cross_clinic_outbox_event",
+      "status": "passed"
+    },
+    {
+      "id": "DB16_one_visit_per_booking",
+      "status": "passed"
+    },
+    {
+      "id": "DB17_ticket_unique_in_session",
+      "status": "passed"
+    },
+    {
+      "id": "DB18_called_locks_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "DB19_in_service_locks_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "DB20_positive_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "DB21_window_inside_session",
+      "status": "passed"
+    },
+    {
+      "id": "DB22_nonoverlapping_windows",
+      "status": "passed"
+    },
+    {
+      "id": "DB23_nonoverlapping_doctor_sessions",
+      "status": "passed"
+    },
+    {
+      "id": "DB24_doctor_requires_doctor_membership",
+      "status": "passed"
+    },
+    {
+      "id": "DB25_no_plaintext_ticket_column",
+      "status": "passed"
+    },
+    {
+      "id": "DB26_no_financial_tables",
+      "status": "passed"
+    },
+    {
+      "id": "DB27_repeat_seed_is_idempotent",
+      "status": "passed"
+    },
+    {
+      "id": "DB28_repeat_preserves_counts",
+      "status": "passed"
+    },
+    {
+      "id": "DB29_external_delivery_disabled",
+      "status": "passed"
+    },
+    {
+      "id": "DB30_replay_requires_retention",
+      "status": "passed"
+    },
+    {
+      "id": "DB31_application_role_not_superuser",
+      "status": "passed"
+    }
+  ]
+}

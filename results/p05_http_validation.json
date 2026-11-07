@@ -1,0 +1,102 @@
+{
+  "baselineId": "NOBTEEK-P05-1.0",
+  "scope": "real_local_HTTP_4_PHP_workers_CSRF_MFA_and_PostgreSQL_synthetic_only",
+  "checks": [
+    {
+      "id": "J01_owner_real_password_TOTP_login",
+      "status": "passed"
+    },
+    {
+      "id": "J02_current_clinic_settings",
+      "status": "passed"
+    },
+    {
+      "id": "J03_other_clinic_session_not_found",
+      "status": "passed"
+    },
+    {
+      "id": "J04_create_real_session_windows",
+      "status": "passed"
+    },
+    {
+      "id": "J05_local_time_preserves_UTC_instant",
+      "status": "passed"
+    },
+    {
+      "id": "J06_version_required",
+      "status": "passed"
+    },
+    {
+      "id": "J07_open_inside_intake",
+      "status": "passed"
+    },
+    {
+      "id": "J08_parallel_same_attempt_one_effect",
+      "status": "passed"
+    },
+    {
+      "id": "J09_single_audit_event_for_parallel_pause",
+      "status": "passed"
+    },
+    {
+      "id": "J10_doctor_resumes_own_session",
+      "status": "passed"
+    },
+    {
+      "id": "J11_doctor_cannot_operate_other_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "J12_preview_does_not_change_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "J13_explicit_capacity_acknowledgment_required",
+      "status": "passed"
+    },
+    {
+      "id": "J14_confirmed_capacity_change",
+      "status": "passed"
+    },
+    {
+      "id": "J15_capacity_retry_no_duplicate",
+      "status": "passed"
+    },
+    {
+      "id": "J16_stale_version_conflict",
+      "status": "passed"
+    },
+    {
+      "id": "J17_extension_without_new_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "J18_close_empty_session",
+      "status": "passed"
+    },
+    {
+      "id": "J19_closed_is_terminal",
+      "status": "passed"
+    },
+    {
+      "id": "J20_platform_onboards_atomic_clinic_owner",
+      "status": "passed"
+    },
+    {
+      "id": "J21_owner_activation_link_works",
+      "status": "passed"
+    },
+    {
+      "id": "J22_new_owner_requires_MFA_before_use",
+      "status": "passed"
+    },
+    {
+      "id": "J23_platform_has_no_patient_access",
+      "status": "passed"
+    }
+  ],
+  "passed": true,
+  "productionReleaseTested": false,
+  "configuredPHPWorkers": 4,
+  "observedServerProcesses": 5
+}

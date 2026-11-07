@@ -1,0 +1,226 @@
+{
+  "baselineId": "NOBTEEK-P04-1.0",
+  "completedAt": "2026-11-06T05:47:51.399676+00:00",
+  "scope": "public_live_Laravel_pages_and_separate_component_based_visual_fixtures",
+  "passed": true,
+  "publicLivePages": [
+    "login",
+    "recovery"
+  ],
+  "publicInteractions": [
+    "password_visibility_toggle",
+    "recovery_link_navigation"
+  ],
+  "viewportCases": [
+    {
+      "screen": "login",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "challenge",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "recovery",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "activation",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "security",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Team",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Platform",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Error",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "login",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "challenge",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "recovery",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "activation",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "security",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Team",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Platform",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Error",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "login",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "challenge",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "recovery",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "activation",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "security",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "Team",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "Platform",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "Error",
+      "width": 1440,
+      "status": "passed"
+    }
+  ],
+  "viewportChecks": [
+    "correct_screen_heading_loaded",
+    "single_h1",
+    "rtl",
+    "input_labels",
+    "controls_at_least_44px_except_checkbox_with_large_label_target",
+    "no_document_horizontal_overflow"
+  ],
+  "textScaleCases": [
+    {
+      "screen": "login",
+      "width": 360,
+      "scalePercent": 200,
+      "computedRootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "recovery",
+      "width": 360,
+      "scalePercent": 200,
+      "computedRootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "security",
+      "width": 360,
+      "scalePercent": 200,
+      "computedRootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "Team",
+      "width": 360,
+      "scalePercent": 200,
+      "computedRootFontPx": 32,
+      "status": "passed"
+    }
+  ],
+  "postChangeVisualRechecks": [
+    {
+      "screen": "Platform",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "Platform",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "Platform",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "Workspace",
+      "width": 1440,
+      "status": "passed"
+    }
+  ],
+  "authenticatedBrowserJourneyTested": false,
+  "authenticatedHTTPJourneyEvidence": "results/p04_http_validation.json",
+  "keyboardJourneyTested": false,
+  "mobileDeviceHardwareTested": false,
+  "screenshotsExported": false
+}

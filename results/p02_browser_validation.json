@@ -1,0 +1,357 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "scope": "rendered_ui_in_browser",
+  "productionDatabaseTested": false,
+  "productionAuthenticationTested": false,
+  "harness": "tools/p02_browser_qa.html",
+  "observation": "Observed final rendered qa-result: complete true, passed true, 70 checks, zero failures. Future session opening is tested after its start time.",
+  "viewports": [
+    360,
+    768,
+    1440
+  ],
+  "zoom": {
+    "method": "root text size",
+    "percent": 200,
+    "viewport": 360
+  },
+  "checks": [
+    {
+      "id": "f360_context_locked_while_saving",
+      "status": "passed"
+    },
+    {
+      "id": "f360_pending_has_no_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f360_patient_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 345,
+        "width": 345
+      }
+    },
+    {
+      "id": "f360_confirmation_before_arrival",
+      "status": "passed"
+    },
+    {
+      "id": "f360_arrival_assigns_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f360_reception_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 345,
+        "width": 345
+      }
+    },
+    {
+      "id": "f360_private_waiting_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f360_called_reserves_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "f360_private_called_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f360_service_started",
+      "status": "passed"
+    },
+    {
+      "id": "f360_completion_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f360_owner_counts_completed",
+      "status": "passed"
+    },
+    {
+      "id": "f360_owner_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 345,
+        "width": 345
+      }
+    },
+    {
+      "id": "f768_context_locked_while_saving",
+      "status": "passed"
+    },
+    {
+      "id": "f768_pending_has_no_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f768_patient_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 753,
+        "width": 753
+      }
+    },
+    {
+      "id": "f768_confirmation_before_arrival",
+      "status": "passed"
+    },
+    {
+      "id": "f768_arrival_assigns_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f768_reception_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 753,
+        "width": 753
+      }
+    },
+    {
+      "id": "f768_private_waiting_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f768_called_reserves_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "f768_private_called_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f768_service_started",
+      "status": "passed"
+    },
+    {
+      "id": "f768_completion_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f768_owner_counts_completed",
+      "status": "passed"
+    },
+    {
+      "id": "f768_owner_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 753,
+        "width": 753
+      }
+    },
+    {
+      "id": "f1440_context_locked_while_saving",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_pending_has_no_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_patient_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 1440,
+        "width": 1440
+      }
+    },
+    {
+      "id": "f1440_confirmation_before_arrival",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_arrival_assigns_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_reception_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 1425,
+        "width": 1425
+      }
+    },
+    {
+      "id": "f1440_private_waiting_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_called_reserves_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_private_called_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_service_started",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_completion_visible",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_owner_counts_completed",
+      "status": "passed"
+    },
+    {
+      "id": "f1440_owner_reflows",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 1425,
+        "width": 1425
+      }
+    },
+    {
+      "id": "E01_reschedule_visible",
+      "status": "passed"
+    },
+    {
+      "id": "E02_cancel_visible",
+      "status": "passed"
+    },
+    {
+      "id": "E03_walkin_without_phone",
+      "status": "passed"
+    },
+    {
+      "id": "E04_ticket_sequence",
+      "status": "passed"
+    },
+    {
+      "id": "E05_return_keeps_ticket_moves_to_end",
+      "status": "passed"
+    },
+    {
+      "id": "E06_wall_has_numbers_no_names",
+      "status": "passed"
+    },
+    {
+      "id": "E07_offline_writes_disabled",
+      "status": "passed"
+    },
+    {
+      "id": "E08_state_loading",
+      "status": "passed"
+    },
+    {
+      "id": "E08_state_empty",
+      "status": "passed"
+    },
+    {
+      "id": "E09_recover_empty",
+      "status": "passed"
+    },
+    {
+      "id": "E08_state_error",
+      "status": "passed"
+    },
+    {
+      "id": "E09_recover_error",
+      "status": "passed"
+    },
+    {
+      "id": "E08_state_conflict",
+      "status": "passed"
+    },
+    {
+      "id": "E09_recover_conflict",
+      "status": "passed"
+    },
+    {
+      "id": "E08_state_forbidden",
+      "status": "passed"
+    },
+    {
+      "id": "E09_recover_forbidden",
+      "status": "passed"
+    },
+    {
+      "id": "E10_other_clinic_not_rendered",
+      "status": "passed"
+    },
+    {
+      "id": "E11_admin_no_patient_details",
+      "status": "passed"
+    },
+    {
+      "id": "E12_owner_save_locks_actions",
+      "status": "passed"
+    },
+    {
+      "id": "E13_owner_name_saved",
+      "status": "passed"
+    },
+    {
+      "id": "E14_delegation_locks_next_action",
+      "status": "passed"
+    },
+    {
+      "id": "E15_pending_action_does_not_open_new_dialog",
+      "status": "passed"
+    },
+    {
+      "id": "E16_delegation_saved",
+      "status": "passed"
+    },
+    {
+      "id": "E17_session_created",
+      "status": "passed"
+    },
+    {
+      "id": "E18_new_session_opened",
+      "status": "passed"
+    },
+    {
+      "id": "Z01_200pct_360_no_overflow",
+      "status": "passed",
+      "detail": {
+        "ok": true,
+        "scrollWidth": 345,
+        "width": 345
+      }
+    },
+    {
+      "id": "Z02_reachable_check_in",
+      "status": "passed"
+    },
+    {
+      "id": "Z02_reachable_reschedule",
+      "status": "passed"
+    },
+    {
+      "id": "Z02_reachable_reason",
+      "status": "passed"
+    },
+    {
+      "id": "Z03_modal_fits_width",
+      "status": "passed"
+    },
+    {
+      "id": "Z04_modal_actions_reachable",
+      "status": "passed"
+    }
+  ],
+  "checksRun": 70,
+  "complete": true,
+  "passed": true,
+  "failures": 0,
+  "tested_standalone_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+  "applies_to_final_candidate": true,
+  "final_candidate_retest": "passed"
+}

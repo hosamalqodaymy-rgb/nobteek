@@ -1,0 +1,139 @@
+{
+  "baselineId": "NOBTEEK-P06-1.0",
+  "scope": "real_local_HTTP_CSRF_MFA_PostgreSQL_with_distinct_staff_and_guest_cookie_jars",
+  "passed": true,
+  "checks": [
+    {
+      "id": "K01_real_owner_MFA_and_reception_password",
+      "status": "passed"
+    },
+    {
+      "id": "K02_future_scheduled_session_accepts_requests",
+      "status": "passed"
+    },
+    {
+      "id": "K03_public_CSRF_required",
+      "status": "passed"
+    },
+    {
+      "id": "K04_web_pending_without_visit_or_ticket_number",
+      "status": "passed"
+    },
+    {
+      "id": "K05_lost_response_retry_same_booking",
+      "status": "passed"
+    },
+    {
+      "id": "K06_changed_payload_same_key_conflicts",
+      "status": "passed"
+    },
+    {
+      "id": "K07_different_browser_same_key_independent",
+      "status": "passed"
+    },
+    {
+      "id": "K08_shared_family_phone_two_distinct_patients",
+      "status": "passed"
+    },
+    {
+      "id": "K09_two_distinct_staff_compete_last_slot",
+      "status": "passed"
+    },
+    {
+      "id": "K10_one_confirmed_one_pending_no_partial_event",
+      "status": "passed"
+    },
+    {
+      "id": "K11_parallel_guest_retry_one_result",
+      "status": "passed"
+    },
+    {
+      "id": "K12_parallel_create_one_audit_event",
+      "status": "passed"
+    },
+    {
+      "id": "K13_second_window_confirmation",
+      "status": "passed"
+    },
+    {
+      "id": "K14_full_target_keeps_original_booking",
+      "status": "passed"
+    },
+    {
+      "id": "K15_cancel_releases_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "K16_reschedule_atomically_retains_confirmed_state",
+      "status": "passed"
+    },
+    {
+      "id": "K17_reschedule_retry_one_effect",
+      "status": "passed"
+    },
+    {
+      "id": "K18_old_slot_available_after_move",
+      "status": "passed"
+    },
+    {
+      "id": "K19_stale_version_rejected",
+      "status": "passed"
+    },
+    {
+      "id": "K20_doctor_cannot_manage_bookings",
+      "status": "passed"
+    },
+    {
+      "id": "K21_cross_clinic_not_found",
+      "status": "passed"
+    },
+    {
+      "id": "K22_public_history_and_phone_lookup_denied",
+      "status": "passed"
+    },
+    {
+      "id": "K23_private_headers",
+      "status": "passed"
+    },
+    {
+      "id": "K24_staff_page_real_component",
+      "status": "passed"
+    },
+    {
+      "id": "K25_direct_contact_optional_no_automatic_arrival",
+      "status": "passed"
+    },
+    {
+      "id": "K26_pending_rejection_reasoned",
+      "status": "passed"
+    },
+    {
+      "id": "K27_invalid_phone_rejected_before_write",
+      "status": "passed"
+    },
+    {
+      "id": "K28_public_cannot_confirm_booking",
+      "status": "passed"
+    }
+  ],
+  "realPatientDataUsed": false,
+  "externalMessagesSent": false,
+  "productionReleaseTested": false,
+  "lastSlotRace": {
+    "distinctAuthenticatedActors": true,
+    "actorRoles": [
+      "owner",
+      "reception"
+    ],
+    "requestStartDeltaMilliseconds": 0.517,
+    "httpStatuses": [
+      200,
+      409
+    ],
+    "confirmed": 1,
+    "pending": 1,
+    "bookingConfirmEvents": 1
+  },
+  "configuredPHPWorkers": 4,
+  "observedServerProcesses": 5
+}

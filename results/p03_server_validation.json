@@ -1,0 +1,28 @@
+{
+  "baselineId": "NOBTEEK-P03-1.0",
+  "scope": "Laravel_PDO_on_local_authenticated_TCP_PostgreSQL_17_11",
+  "pdoConnectionTested": true,
+  "frameworkMigrationTested": true,
+  "separateDatabaseRolesVerified": true,
+  "checksRun": 4,
+  "passed": true,
+  "failures": 0,
+  "checks": [
+    {
+      "id": "TCP_development_framework_migrate_and_seed",
+      "status": "passed"
+    },
+    {
+      "id": "TCP_development_cannot_connect_to_other_environment",
+      "status": "passed"
+    },
+    {
+      "id": "TCP_testing_framework_migrate_and_seed",
+      "status": "passed"
+    },
+    {
+      "id": "TCP_testing_cannot_connect_to_other_environment",
+      "status": "passed"
+    }
+  ]
+}

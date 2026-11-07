@@ -1,0 +1,573 @@
+{
+  "baselineId": "NOBTEEK-P01-1.0",
+  "observedOn": "2026-11-06",
+  "scope": "P01_brand_assets_and_component_preview",
+  "checksRun": 69,
+  "failures": 0,
+  "passed": true,
+  "acceptance": {
+    "T01A": {
+      "checks": 63,
+      "status": "passed"
+    },
+    "T01B": {
+      "checks": 6,
+      "status": "passed"
+    }
+  },
+  "evidenceFiles": [
+    "results/p01_assets_validation.json",
+    "results/p01_browser_validation.json",
+    "results/p01_interaction_validation.json"
+  ],
+  "manualVisualReview": {
+    "identityBoard": true,
+    "desktopCover": true,
+    "mobileCover": true,
+    "desktopComponents": true,
+    "mobileComponents": true,
+    "text200Percent": true,
+    "smallIconAndInverse": true,
+    "guideAllSixPages": true
+  },
+  "productionApplicationTested": false,
+  "realPatientData": false,
+  "paymentsOrPaidServices": false,
+  "localPlaywrightRunnerStatus": "not_run_successfully_in_managed_sandbox; browser checks completed through the supported preview and controlled browser",
+  "checks": [
+    {
+      "id": "contrast_primary",
+      "status": "passed",
+      "detail": {
+        "ratio": 5.473,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_hover",
+      "status": "passed",
+      "detail": {
+        "ratio": 7.103,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_active",
+      "status": "passed",
+      "detail": {
+        "ratio": 9.284,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_main_text",
+      "status": "passed",
+      "detail": {
+        "ratio": 13.644,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_muted_text",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.039,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_success",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.492,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_warning",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.367,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_error",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.047,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_primary_soft",
+      "status": "passed",
+      "detail": {
+        "ratio": 4.757,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_navy_inverse",
+      "status": "passed",
+      "detail": {
+        "ratio": 12.658,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_control_boundary",
+      "status": "passed",
+      "detail": {
+        "ratio": 4.268,
+        "minimum": 3
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_focus_ring",
+      "status": "passed",
+      "detail": {
+        "ratio": 12.658,
+        "minimum": 3
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "symbol_24",
+      "status": "passed",
+      "detail": "Exact PNG dimensions and transparency",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "symbol_48",
+      "status": "passed",
+      "detail": "Exact PNG dimensions and transparency",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_192",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_512",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_1024",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "self_contained_vectors",
+      "status": "passed",
+      "detail": {
+        "svgFiles": 14
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "state_keys_match_p00",
+      "status": "passed",
+      "detail": "Canonical operational state names are unchanged",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "financial_work_deferred",
+      "status": "passed",
+      "detail": "No payment or paid integration added",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_OFL.txt",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Bold.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Medium.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Regular.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Regular",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Medium",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Bold",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "component_colors_use_tokens",
+      "status": "passed",
+      "detail": "No separate color literals in shared components",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "template_brand_is_data_bound",
+      "status": "passed",
+      "detail": "Visible brand values come from the generated configuration",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "all_exports_rebrand",
+      "status": "passed",
+      "detail": "All SVG variants and cover exports rebuild with their configured language name",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "bidi_mixed_numbers",
+      "status": "passed",
+      "detail": {
+        "text": "يستخدم الرمز في 24 و48 بكسل",
+        "ordered_tokens": [
+          "24",
+          "48"
+        ]
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "bidi_mixed_latin",
+      "status": "passed",
+      "detail": {
+        "text": "نوبتيك P01 الإصدار 1.0",
+        "ordered_tokens": [
+          "P01",
+          "1.0"
+        ]
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_360",
+      "status": "passed",
+      "detail": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_360",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_360",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_360",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_360_text_200",
+      "status": "passed",
+      "detail": {
+        "width": 360,
+        "scrollWidth": 345
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_360_text_200",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_360_text_200",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_360_text_200",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_768",
+      "status": "passed",
+      "detail": {
+        "width": 768,
+        "scrollWidth": 753
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_768",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_768",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_768",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_1440",
+      "status": "passed",
+      "detail": {
+        "width": 1440,
+        "scrollWidth": 1425
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_1440",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_1440",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_1440",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "reflow_alternate",
+      "status": "passed",
+      "detail": {
+        "width": 1024,
+        "scrollWidth": 1009
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_alternate",
+      "status": "passed",
+      "detail": "loaded",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "control_height_alternate",
+      "status": "passed",
+      "detail": "48px minimum",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "labels_alternate",
+      "status": "passed",
+      "detail": "Every input and select has a label",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "actual_200_text",
+      "status": "passed",
+      "detail": "32px",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_booking",
+      "status": "passed",
+      "detail": [
+        "cancelled",
+        "confirmed",
+        "fulfilled",
+        "pending",
+        "rejected"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_visit",
+      "status": "passed",
+      "detail": [
+        "away",
+        "called",
+        "completed",
+        "in_service",
+        "left",
+        "waiting"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "canonical_session",
+      "status": "passed",
+      "detail": [
+        "closed",
+        "open",
+        "paused",
+        "scheduled"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "state_text_and_icons",
+      "status": "passed",
+      "detail": "Text and icon accompany every color",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "seven_screen_states",
+      "status": "passed",
+      "detail": [
+        "loading",
+        "empty",
+        "success",
+        "error",
+        "offline",
+        "forbidden",
+        "conflict"
+      ],
+      "acceptance": "T01A"
+    },
+    {
+      "id": "body_16px",
+      "status": "passed",
+      "detail": "16px",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "phone_ltr",
+      "status": "passed",
+      "detail": "Phone inputs remain LTR",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "error_description",
+      "status": "passed",
+      "detail": "Error text is attached to its input",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "rebrand_names",
+      "status": "passed",
+      "detail": {
+        "names": [
+          "ترتيب",
+          "ترتيب"
+        ],
+        "en": [
+          "QueueDemo"
+        ],
+        "title": "ترتيب QueueDemo | معاينة الهوية والمكونات"
+      },
+      "acceptance": "T01B"
+    },
+    {
+      "id": "rebrand_primary",
+      "status": "passed",
+      "detail": "rgb(29, 78, 216)",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "rebrand_derived",
+      "status": "passed",
+      "detail": "#1842B5",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "button_feedback",
+      "status": "passed",
+      "detail": "تمت معاينة تفاعل الزر؛ بيانات هذه الصفحة تجريبية.",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "text_input",
+      "status": "passed",
+      "detail": {
+        "field": "patient-name",
+        "value": "مراجع تجريبي"
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "keyboard_focus",
+      "status": "passed",
+      "detail": {
+        "field": "contact-phone",
+        "outline": "solid",
+        "width": "2px",
+        "color": "rgb(20, 54, 75)"
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "select_and_checkbox",
+      "status": "passed",
+      "detail": {
+        "selected": "4:00 إلى 4:30 مساء",
+        "checked": true
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "disabled_controls",
+      "status": "passed",
+      "detail": {
+        "loadingEnabled": false,
+        "disabledEnabled": false
+      },
+      "acceptance": "T01A"
+    }
+  ],
+  "p00Regression": {
+    "checks": 51,
+    "status": "passed",
+    "evidence": "results/p00_validation.json"
+  },
+  "publicBrandClearance": "working_name_pending_formal_check_before_public_release"
+}

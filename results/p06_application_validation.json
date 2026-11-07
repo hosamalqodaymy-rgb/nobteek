@@ -1,0 +1,22 @@
+{
+  "baselineId": "NOBTEEK-P06-1.0",
+  "completedAt": "2026-11-06T18:10:49.008568+00:00",
+  "scope": "real_Laravel_PostgreSQL_booking_requests_commands_tenant_isolation_MFA_and_atomic_capacity_synthetic_only",
+  "passed": true,
+  "tests": 109,
+  "assertions": 749,
+  "newP06Tests": 29,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "suites": {
+    "booking_requests": 11,
+    "booking_commands": 9,
+    "reschedule_and_rollback": 9,
+    "previous_account_clinic_and_foundation_regressions": 80
+  },
+  "databaseRoleIsSuperuser": false,
+  "realPatientDataUsed": false,
+  "ciExecuted": false,
+  "productionDeploymentTested": false
+}

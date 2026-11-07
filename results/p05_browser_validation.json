@@ -1,0 +1,220 @@
+{
+  "baselineId": "NOBTEEK-P05-1.0",
+  "completedAt": "2026-11-06T14:01:50.080327+00:00",
+  "scope": "same_React_components_isolated_visual_fixtures_and_simulated_session_transport",
+  "passed": true,
+  "viewportCases": [
+    {
+      "screen": "ClinicSettings",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "PlatformClinics",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionList",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDetail",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDoctor",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionReception",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionClosed",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionEmpty",
+      "width": 360,
+      "status": "passed"
+    },
+    {
+      "screen": "ClinicSettings",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "PlatformClinics",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionList",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDetail",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDoctor",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionReception",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionClosed",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionEmpty",
+      "width": 768,
+      "status": "passed"
+    },
+    {
+      "screen": "ClinicSettings",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "PlatformClinics",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionList",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDetail",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDoctor",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionReception",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionClosed",
+      "width": 1440,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionEmpty",
+      "width": 1440,
+      "status": "passed"
+    }
+  ],
+  "viewportCriteria": [
+    "correct_screen_marker_and_heading_loaded",
+    "rtl",
+    "single_h1",
+    "labelled_inputs",
+    "visible_controls_at_least_44px",
+    "no_horizontal_document_overflow"
+  ],
+  "textScaleCases": [
+    {
+      "screen": "ClinicSettings",
+      "width": 360,
+      "scalePercent": 200,
+      "rootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "PlatformClinics",
+      "width": 360,
+      "scalePercent": 200,
+      "rootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionList",
+      "width": 360,
+      "scalePercent": 200,
+      "rootFontPx": 32,
+      "status": "passed"
+    },
+    {
+      "screen": "SessionDetail",
+      "width": 360,
+      "scalePercent": 200,
+      "rootFontPx": 32,
+      "status": "passed"
+    }
+  ],
+  "interactionChecks": [
+    {
+      "id": "capacity_below_reservations_has_no_save_action",
+      "status": "passed"
+    },
+    {
+      "id": "reviewed_capacity_requires_acknowledgment",
+      "status": "passed"
+    },
+    {
+      "id": "pending_requests_overflow_warning_visible",
+      "status": "passed"
+    },
+    {
+      "id": "keyboard_Tab_Enter_submits_preview",
+      "status": "passed"
+    },
+    {
+      "id": "keyboard_Space_acknowledges_change",
+      "status": "passed"
+    },
+    {
+      "id": "keyboard_Enter_saves_simulated_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "saved_capacity_reflected_in_window_summary",
+      "status": "passed"
+    },
+    {
+      "id": "success_notice_persists_after_refresh",
+      "status": "passed"
+    },
+    {
+      "id": "success_notice_mobile_reflow",
+      "status": "passed"
+    },
+    {
+      "id": "doctor_has_pause_resume_without_owner_controls",
+      "status": "passed"
+    },
+    {
+      "id": "reception_has_read_only_controls",
+      "status": "passed"
+    },
+    {
+      "id": "closed_session_has_no_mutation_controls",
+      "status": "passed"
+    }
+  ],
+  "authenticatedBrowserJourneyTested": false,
+  "actualHTTPJourneyEvidence": "results/p05_http_validation.json",
+  "hardwarePhoneTested": false,
+  "screenshotsExported": false
+}

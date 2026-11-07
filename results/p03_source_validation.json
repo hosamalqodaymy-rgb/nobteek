@@ -1,0 +1,34 @@
+{
+  "baselineId": "NOBTEEK-P03-1.0",
+  "scope": "source_packaging_and_syntax_preflight",
+  "passed": true,
+  "checksRun": 6,
+  "checks": [
+    {
+      "id": "S01_no_private_environment_or_dependency_cache_in_source",
+      "status": "passed"
+    },
+    {
+      "id": "S02_no_known_private_key_or_provider_token_patterns",
+      "status": "passed"
+    },
+    {
+      "id": "S03_npm_lock_matches_manifest",
+      "status": "passed"
+    },
+    {
+      "id": "S04_prior_baselines_unchanged",
+      "status": "passed"
+    },
+    {
+      "id": "S05_all_application_php_files_parse",
+      "status": "passed"
+    },
+    {
+      "id": "S06_database_init_shell_parses",
+      "status": "passed"
+    }
+  ],
+  "phpFilesLinted": 28,
+  "securityAuditCompleted": false
+}

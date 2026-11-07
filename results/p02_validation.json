@@ -1,0 +1,57 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "release_state": "frozen_prototype",
+  "as_of": "2026-11-06",
+  "status": "completed_prototype_only",
+  "passed": true,
+  "candidate_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+  "current_candidate": {
+    "domain_checks_passed": 40,
+    "static_checks_passed": 12,
+    "p00_regression_passed": 51,
+    "productionDatabaseTested": false,
+    "productionAuthenticationTested": false,
+    "browser_checks_passed": 70,
+    "keyboard_checks_passed": 4
+  },
+  "last_observed_browser_run": {
+    "automated_ui_checks_passed": 70,
+    "keyboard_checks_passed": 4,
+    "artifact_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+    "viewports": [
+      360,
+      768,
+      1440
+    ],
+    "root_text_percent": 200,
+    "applies_to_final_candidate": true
+  },
+  "last_fix": {
+    "problem": "Opening another action during a pending save could close the newly opened dialog.",
+    "change": "Disable write actions and delegation controls while saving; reject overlapping actions; restore correct controls after failure.",
+    "browser_retest_status": "passed"
+  },
+  "remaining_verification": {
+    "status": "none_for_P02",
+    "production_security_and_integration": "deferred_to_owning_stages"
+  },
+  "evidence": [
+    "results/p02_domain_validation.json",
+    "results/p02_assets_validation.json",
+    "results/p02_browser_validation.json",
+    "results/p02_keyboard_validation.json",
+    "results/p00_validation.json"
+  ],
+  "acceptance": {
+    "T02A": {
+      "status": "passed",
+      "scope": "interactive_browser_prototype_only"
+    },
+    "T02B": {
+      "status": "passed",
+      "scope": "interactive_browser_prototype_only"
+    }
+  },
+  "checksRun": 126,
+  "failures": 0
+}

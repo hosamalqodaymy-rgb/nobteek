@@ -1,0 +1,67 @@
+{
+  "baselineId": "NOBTEEK-P04-1.0",
+  "scope": "real_local_HTTP_CSRF_cookies_two_independent_sessions_synthetic_only",
+  "checks": [
+    {
+      "id": "H01_login_page_and_no_store",
+      "status": "passed"
+    },
+    {
+      "id": "H02_cookie_httponly_samesite",
+      "status": "passed"
+    },
+    {
+      "id": "H03_csrf_missing_rejected",
+      "status": "passed"
+    },
+    {
+      "id": "H04_first_real_login",
+      "status": "passed"
+    },
+    {
+      "id": "H05_second_independent_login",
+      "status": "passed"
+    },
+    {
+      "id": "H06_both_sessions_can_read",
+      "status": "passed"
+    },
+    {
+      "id": "H07_cross_clinic_denied",
+      "status": "passed"
+    },
+    {
+      "id": "H08_change_password_real_csrf",
+      "status": "passed"
+    },
+    {
+      "id": "H15_stale_session_can_open_recovery",
+      "status": "passed"
+    },
+    {
+      "id": "H09_only_changing_session_survives",
+      "status": "passed"
+    },
+    {
+      "id": "H10_logout_closes_current_session",
+      "status": "passed"
+    },
+    {
+      "id": "H11_owner_password_requires_mfa",
+      "status": "passed"
+    },
+    {
+      "id": "H12_history_encryption_no_raw_credentials",
+      "status": "passed"
+    },
+    {
+      "id": "H13_get_logout_is_not_allowed",
+      "status": "passed"
+    },
+    {
+      "id": "H14_sensitive_debug_recorder_not_exposed",
+      "status": "passed"
+    }
+  ],
+  "passed": true
+}

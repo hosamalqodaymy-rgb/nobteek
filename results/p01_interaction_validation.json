@@ -1,0 +1,56 @@
+{
+  "baselineId": "NOBTEEK-P01-1.0",
+  "observedOn": "2026-11-06",
+  "scope": "actual_browser_interactions_with_demo_controls",
+  "checksRun": 5,
+  "failures": 0,
+  "passed": true,
+  "checks": [
+    {
+      "id": "button_feedback",
+      "status": "passed",
+      "detail": "تمت معاينة تفاعل الزر؛ بيانات هذه الصفحة تجريبية.",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "text_input",
+      "status": "passed",
+      "detail": {
+        "field": "patient-name",
+        "value": "مراجع تجريبي"
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "keyboard_focus",
+      "status": "passed",
+      "detail": {
+        "field": "contact-phone",
+        "outline": "solid",
+        "width": "2px",
+        "color": "rgb(20, 54, 75)"
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "select_and_checkbox",
+      "status": "passed",
+      "detail": {
+        "selected": "4:00 إلى 4:30 مساء",
+        "checked": true
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "disabled_controls",
+      "status": "passed",
+      "detail": {
+        "loadingEnabled": false,
+        "disabledEnabled": false
+      },
+      "acceptance": "T01A"
+    }
+  ],
+  "applicationConsoleErrorsObserved": 0,
+  "unrelatedBrowserExtensionMessagesExcluded": true
+}

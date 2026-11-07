@@ -1,0 +1,339 @@
+{
+  "baselineId": "NOBTEEK-P01-1.0",
+  "generatedAt": "2026-11-06T01:55:56.717Z",
+  "scope": "offline_P01_asset_and_design_contract_checks",
+  "productionApplicationTested": false,
+  "checksRun": 32,
+  "passed": true,
+  "failures": 0,
+  "contrast": [
+    {
+      "id": "primary",
+      "foreground": "#FFFFFF",
+      "background": "#0F766E",
+      "ratio": 5.473250081210842,
+      "minimum": 4.5
+    },
+    {
+      "id": "hover",
+      "foreground": "#FFFFFF",
+      "background": "#0D635C",
+      "ratio": 7.10325640178861,
+      "minimum": 4.5
+    },
+    {
+      "id": "active",
+      "foreground": "#FFFFFF",
+      "background": "#0A504B",
+      "ratio": 9.283941709999501,
+      "minimum": 4.5
+    },
+    {
+      "id": "main_text",
+      "foreground": "#172B3A",
+      "background": "#F5F8FA",
+      "ratio": 13.644344035063408,
+      "minimum": 4.5
+    },
+    {
+      "id": "muted_text",
+      "foreground": "#526575",
+      "background": "#FFFFFF",
+      "ratio": 6.039497126178129,
+      "minimum": 4.5
+    },
+    {
+      "id": "success",
+      "foreground": "#166534",
+      "background": "#DCFCE7",
+      "ratio": 6.4923831516894746,
+      "minimum": 4.5
+    },
+    {
+      "id": "warning",
+      "foreground": "#92400E",
+      "background": "#FEF3C7",
+      "ratio": 6.367237188363559,
+      "minimum": 4.5
+    },
+    {
+      "id": "error",
+      "foreground": "#B42318",
+      "background": "#FEF3F2",
+      "ratio": 6.04726982551666,
+      "minimum": 4.5
+    },
+    {
+      "id": "primary_soft",
+      "foreground": "#0F766E",
+      "background": "#E7F1F1",
+      "ratio": 4.7565353715017515,
+      "minimum": 4.5
+    },
+    {
+      "id": "navy_inverse",
+      "foreground": "#FFFFFF",
+      "background": "#14364B",
+      "ratio": 12.658142691079815,
+      "minimum": 4.5
+    },
+    {
+      "id": "control_boundary",
+      "foreground": "#6B7D89",
+      "background": "#FFFFFF",
+      "ratio": 4.268436052384636,
+      "minimum": 3
+    },
+    {
+      "id": "focus_ring",
+      "foreground": "#14364B",
+      "background": "#FFFFFF",
+      "ratio": 12.658142691079815,
+      "minimum": 3
+    }
+  ],
+  "checks": [
+    {
+      "id": "contrast_primary",
+      "status": "passed",
+      "detail": {
+        "ratio": 5.473,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_hover",
+      "status": "passed",
+      "detail": {
+        "ratio": 7.103,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_active",
+      "status": "passed",
+      "detail": {
+        "ratio": 9.284,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_main_text",
+      "status": "passed",
+      "detail": {
+        "ratio": 13.644,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_muted_text",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.039,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_success",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.492,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_warning",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.367,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_error",
+      "status": "passed",
+      "detail": {
+        "ratio": 6.047,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_primary_soft",
+      "status": "passed",
+      "detail": {
+        "ratio": 4.757,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_navy_inverse",
+      "status": "passed",
+      "detail": {
+        "ratio": 12.658,
+        "minimum": 4.5
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_control_boundary",
+      "status": "passed",
+      "detail": {
+        "ratio": 4.268,
+        "minimum": 3
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "contrast_focus_ring",
+      "status": "passed",
+      "detail": {
+        "ratio": 12.658,
+        "minimum": 3
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "symbol_24",
+      "status": "passed",
+      "detail": "Exact PNG dimensions and transparency",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "symbol_48",
+      "status": "passed",
+      "detail": "Exact PNG dimensions and transparency",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_192",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_512",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "app_icon_1024",
+      "status": "passed",
+      "detail": "Opaque square and foreground inside the maskable safe circle",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "self_contained_vectors",
+      "status": "passed",
+      "detail": {
+        "svgFiles": 14
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "state_keys_match_p00",
+      "status": "passed",
+      "detail": "Canonical operational state names are unchanged",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "financial_work_deferred",
+      "status": "passed",
+      "detail": "No payment or paid integration added",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_OFL.txt",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Bold.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Medium.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_source_Tajawal-Regular.ttf",
+      "status": "passed",
+      "detail": "Matches the exact official GitHub blob",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Regular",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Medium",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "font_woff_Bold",
+      "status": "passed",
+      "detail": "Local WOFF asset",
+      "acceptance": "T01A"
+    },
+    {
+      "id": "component_colors_use_tokens",
+      "status": "passed",
+      "detail": "No separate color literals in shared components",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "template_brand_is_data_bound",
+      "status": "passed",
+      "detail": "Visible brand values come from the generated configuration",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "all_exports_rebrand",
+      "status": "passed",
+      "detail": "All SVG variants and cover exports rebuild with their configured language name",
+      "acceptance": "T01B"
+    },
+    {
+      "id": "bidi_mixed_numbers",
+      "status": "passed",
+      "detail": {
+        "text": "يستخدم الرمز في 24 و48 بكسل",
+        "ordered_tokens": [
+          "24",
+          "48"
+        ]
+      },
+      "acceptance": "T01A"
+    },
+    {
+      "id": "bidi_mixed_latin",
+      "status": "passed",
+      "detail": {
+        "text": "نوبتيك P01 الإصدار 1.0",
+        "ordered_tokens": [
+          "P01",
+          "1.0"
+        ]
+      },
+      "acceptance": "T01A"
+    }
+  ]
+}

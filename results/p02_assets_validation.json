@@ -1,0 +1,60 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "scope": "static_prototype_assets",
+  "checksRun": 12,
+  "passed": true,
+  "failures": 0,
+  "standalone_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+  "checks": [
+    {
+      "id": "A01_standalone_has_no_external_resource_links",
+      "status": "passed",
+      "detail": []
+    },
+    {
+      "id": "A02_standalone_has_no_remote_css_urls",
+      "status": "passed"
+    },
+    {
+      "id": "A03_arabic_rtl_document",
+      "status": "passed"
+    },
+    {
+      "id": "A04_no_network_client",
+      "status": "passed"
+    },
+    {
+      "id": "A05_no_persistent_patient_storage",
+      "status": "passed"
+    },
+    {
+      "id": "A06_reuses_frozen_design_styles",
+      "status": "passed"
+    },
+    {
+      "id": "A07_no_payment_screen_route",
+      "status": "passed"
+    },
+    {
+      "id": "A08_skip_link_and_landmark",
+      "status": "passed"
+    },
+    {
+      "id": "A09_dialog_semantics",
+      "status": "passed"
+    },
+    {
+      "id": "A10_scope_explicit",
+      "status": "passed"
+    },
+    {
+      "id": "A11_prior_contracts_fixtures_model_design_unchanged",
+      "status": "passed",
+      "detail": []
+    },
+    {
+      "id": "A12_standalone_matches_deliverable",
+      "status": "passed"
+    }
+  ]
+}

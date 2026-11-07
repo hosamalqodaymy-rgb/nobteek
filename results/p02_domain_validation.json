@@ -1,0 +1,171 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "scope": "browser_local_mock_transport_rules",
+  "productionDatabaseTested": false,
+  "productionAuthenticationTested": false,
+  "checksRun": 40,
+  "passed": true,
+  "failures": 0,
+  "checks": [
+    {
+      "id": "D01_full_journey",
+      "status": "passed"
+    },
+    {
+      "id": "D02_pending_does_not_reserve",
+      "status": "passed"
+    },
+    {
+      "id": "D03_last_slot",
+      "status": "passed"
+    },
+    {
+      "id": "D04_idempotent_request",
+      "status": "passed"
+    },
+    {
+      "id": "D05_key_changed_body",
+      "status": "passed"
+    },
+    {
+      "id": "D06_stale_version",
+      "status": "passed"
+    },
+    {
+      "id": "D07_family_phone",
+      "status": "passed"
+    },
+    {
+      "id": "D08_phone_shape",
+      "status": "passed"
+    },
+    {
+      "id": "D09_walk_in_without_phone",
+      "status": "passed"
+    },
+    {
+      "id": "D10_check_in_only_once",
+      "status": "passed"
+    },
+    {
+      "id": "D11_early_check_in",
+      "status": "passed"
+    },
+    {
+      "id": "D12_late_check_in",
+      "status": "passed"
+    },
+    {
+      "id": "D13_intake_end",
+      "status": "passed"
+    },
+    {
+      "id": "D14_called_reserves_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "D15_in_service_reserves_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "D16_return_preserves_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "D17_called_absence_releases_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "D18_cancel_releases_capacity_keeps_number",
+      "status": "passed"
+    },
+    {
+      "id": "D19_no_cancel_after_start",
+      "status": "passed"
+    },
+    {
+      "id": "D20_complete_keeps_capacity",
+      "status": "passed"
+    },
+    {
+      "id": "D21_reschedule_rollback",
+      "status": "passed"
+    },
+    {
+      "id": "D22_capacity_floor",
+      "status": "passed"
+    },
+    {
+      "id": "D23_pause_keeps_active_care",
+      "status": "passed"
+    },
+    {
+      "id": "D24_close_unresolved",
+      "status": "passed"
+    },
+    {
+      "id": "D25_closed_has_no_new_intake",
+      "status": "passed"
+    },
+    {
+      "id": "D26_scope_rejects_other_clinic",
+      "status": "passed"
+    },
+    {
+      "id": "D27_doctor_only_own_session",
+      "status": "passed"
+    },
+    {
+      "id": "D28_platform_has_no_patient_snapshot",
+      "status": "passed"
+    },
+    {
+      "id": "D29_reception_delegation_is_limited",
+      "status": "passed"
+    },
+    {
+      "id": "D30_priority_preserves_active_and_ticket",
+      "status": "passed"
+    },
+    {
+      "id": "D31_ticket_dto_has_only_contract_fields",
+      "status": "passed"
+    },
+    {
+      "id": "D32_private_ahead_excludes_active",
+      "status": "passed"
+    },
+    {
+      "id": "D33_ticket_is_not_public_number",
+      "status": "passed"
+    },
+    {
+      "id": "D34_ticket_expiry",
+      "status": "passed"
+    },
+    {
+      "id": "D35_offline_no_mutation",
+      "status": "passed"
+    },
+    {
+      "id": "D36_failed_command_has_no_event",
+      "status": "passed"
+    },
+    {
+      "id": "D37_context_cannot_be_body_field",
+      "status": "passed"
+    },
+    {
+      "id": "D38_anonymous_scopes_are_independent",
+      "status": "passed"
+    },
+    {
+      "id": "D39_overlapping_session_rejected",
+      "status": "passed"
+    },
+    {
+      "id": "D40_report_filters_clinic_and_times",
+      "status": "passed"
+    }
+  ]
+}

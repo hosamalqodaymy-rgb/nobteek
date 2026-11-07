@@ -1,0 +1,68 @@
+{
+  "baselineId": "NOBTEEK-P03-1.0",
+  "scope": "Laravel_http_kernel_and_live_PostgreSQL_feature_tests",
+  "checksRun": 14,
+  "passed": true,
+  "failures": 0,
+  "assertions": 45,
+  "databaseFeatureTestsExecuted": true,
+  "databaseFeatureTestsPending": 0,
+  "checks": [
+    {
+      "id": "test_welcome_uses_the_shared_arabic_identity",
+      "status": "passed"
+    },
+    {
+      "id": "test_health_endpoint_boots_without_database_access",
+      "status": "passed"
+    },
+    {
+      "id": "test_unimplemented_auth_and_intake_are_not_exposed",
+      "status": "passed"
+    },
+    {
+      "id": "test_paid_integrations_and_real_data_remain_disabled",
+      "status": "passed"
+    },
+    {
+      "id": "test_postgresql_and_aden_are_configured",
+      "status": "passed"
+    },
+    {
+      "id": "test_demo_factory_has_no_enabled_login_or_password",
+      "status": "passed"
+    },
+    {
+      "id": "test_demo_seeding_refuses_production",
+      "status": "passed"
+    },
+    {
+      "id": "test_demo_seeding_refuses_an_unrelated_database",
+      "status": "passed"
+    },
+    {
+      "id": "test_seed_is_synthetic_repeatable_and_disabled_for_login",
+      "status": "passed"
+    },
+    {
+      "id": "test_operational_foreign_keys_reject_other_clinic_references",
+      "status": "passed"
+    },
+    {
+      "id": "test_one_arrival_and_one_ticket_number_are_enforced",
+      "status": "passed"
+    },
+    {
+      "id": "test_called_and_in_service_both_reserve_the_doctor",
+      "status": "passed"
+    },
+    {
+      "id": "test_family_phone_and_optional_walk_in_phone_are_supported",
+      "status": "passed"
+    },
+    {
+      "id": "test_windows_cannot_escape_their_session_or_have_zero_capacity",
+      "status": "passed"
+    }
+  ]
+}

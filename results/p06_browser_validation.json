@@ -1,0 +1,49 @@
+{
+  "baselineId": "NOBTEEK-P06-1.0",
+  "status": "partial_public_journey_verified_browser_policy_blocked_remainder",
+  "scope": "real_public_Laravel_form_in_cloud_browser_at_1363px_then_security_policy_blocked_after_reload",
+  "observedChecks": [
+    {
+      "id": "B01_real_public_clinic_form_and_dependent_windows",
+      "status": "passed"
+    },
+    {
+      "id": "B02_invalid_phone_server_validation_visible",
+      "status": "passed"
+    },
+    {
+      "id": "B03_Tab_focus_reaches_submit",
+      "status": "passed"
+    },
+    {
+      "id": "B04_Enter_submits_and_pending_receipt_is_visible",
+      "status": "passed"
+    },
+    {
+      "id": "B05_pending_not_confirmed_and_no_queue_number_message",
+      "status": "passed"
+    },
+    {
+      "id": "B06_new_request_resets_name_and_phone",
+      "status": "passed"
+    },
+    {
+      "id": "B07_RTL_one_heading_no_document_overflow_at_1363",
+      "status": "passed"
+    }
+  ],
+  "observedChecksPassed": 7,
+  "actualPublicRequestSubmitted": true,
+  "syntheticOnly": true,
+  "authenticatedStaffBrowserJourneyTested": false,
+  "responsiveViewportMatrixTested": false,
+  "textScaleMatrixTested": false,
+  "isolatedComponentPreviewBuilt": true,
+  "isolatedPreviewBrowserTested": false,
+  "blockingAction": "reload_then_select_session_and_read_current_page",
+  "blockingReason": "browser_URL_policy_could_not_acquire_frame_authority_and_rejected_protocol",
+  "workaroundAttempted": false,
+  "screenshotsExported": false,
+  "realMobileHardwareTested": false,
+  "requiredLater": "full_staff_browser_journey_and_mobile_responsive_acceptance_before_real_data"
+}

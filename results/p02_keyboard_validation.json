@@ -1,0 +1,34 @@
+{
+  "baselineId": "NOBTEEK-P02-1.0",
+  "scope": "native_browser_keyboard_input",
+  "viewport": 360,
+  "rootTextPercent": 200,
+  "checksRun": 4,
+  "passed": true,
+  "failures": 0,
+  "checks": [
+    {
+      "id": "K01_tab_from_arrival",
+      "status": "passed",
+      "evidence": "Tab from تسجيل الحضور focused تعديل الفترة with visible focus outline."
+    },
+    {
+      "id": "K02_enter_records_arrival",
+      "status": "passed",
+      "evidence": "Enter on تسجيل الحضور produced success notice and رقم التذكرة 1."
+    },
+    {
+      "id": "K03_tab_reaches_cancel_confirmation",
+      "status": "passed",
+      "evidence": "Enter opened إلغاء الحجز; Tab from سبب الإجراء focused تأكيد إلغاء الحجز."
+    },
+    {
+      "id": "K04_enter_cancels_and_preserves_ticket",
+      "status": "passed",
+      "evidence": "Enter confirmed cancellation. Booking showed حجز ملغى and visit showed رقم التذكرة 1 غادر العيادة."
+    }
+  ],
+  "tested_standalone_sha256": "27f21fe86ab0a287b4989dad240f0a93dec45f673d01e58f724a266d1018fe8b",
+  "applies_to_final_candidate": true,
+  "final_candidate_retest": "passed"
+}
