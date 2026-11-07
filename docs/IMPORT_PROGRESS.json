@@ -8,10 +8,10 @@
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
   "source_files_expected": 334,
-  "source_files_uploaded": 87,
-  "completed_batches": 5,
+  "source_files_uploaded": 104,
+  "completed_batches": 6,
   "total_batches": 24,
-  "previous_checkpoint_commit": "51de369ce8ac3bf30a517e85d653537e2f9911db",
+  "previous_checkpoint_commit": "428390685546d36f1f27b43d69a7ff1de54e0929",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
   "original_local_git_objects_in_source_archive": false,
@@ -31,7 +31,7 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Continue source batch 6 of 24. Skip all verified batches.",
+  "next_action": "Continue source batch 7 of 24. Skip all verified batches.",
   "next_development_stage": "P07 after closing the recorded P06 browser gaps",
   "browser_gaps": [
     "authenticated staff browser journey",
