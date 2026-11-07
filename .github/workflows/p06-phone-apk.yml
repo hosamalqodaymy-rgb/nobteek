@@ -1,0 +1,54 @@
+name: Nobteek P06 phone APK
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build the actual P06 components as local phone fixtures
+        working-directory: application
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npx vite build --config vite.phone-preview.config.ts
+      - name: Install Android build tools
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Build and verify signed APK
+        run: bash tools/build_phone_preview_apk.sh
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and launch APK on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: python3 tools/smoke_phone_preview.py
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: nobteek-p06-phone-apk
+          path: |
+            dist-phone/*.apk
+            dist-phone/*.txt
+            dist-phone/*.json
+            dist-phone/*.png
+          if-no-files-found: warn
+          retention-days: 14
