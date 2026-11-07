@@ -108,6 +108,28 @@ async function layout(page, name) {
   await capture(page, name);
   const png = fs.readFileSync(path.join(output, name + '.png'));
   metrics.screenshotWidth = png.readUInt32BE(16);
+  if (metrics.actualViewport > metrics.viewport + 1 || metrics.bodyScrollWidth > metrics.viewport + 1) {
+    const crowded = await page.evaluate(() => [...document.querySelectorAll('main *, header *, .skip-link')].filter(e => {
+      const r = e.getBoundingClientRect(); return r.width && r.height && (e.scrollWidth > e.clientWidth + 1 && e.clientWidth > 0);
+    }).map(e => ({ tag: e.tagName, type: e.getAttribute('type'), className: String(e.className), text: (e.textContent || '').slice(0, 90), client: e.clientWidth, scroll: e.scrollWidth, width: e.getBoundingClientRect().width })).slice(0, 20));
+    const candidates = {
+      controls: '.account-field{min-width:0}.account-field input,.account-field select{min-width:0;max-width:100%}',
+      cardText: '.booking-card p{overflow-wrap:anywhere}',
+      mainText: '.account-main{overflow-wrap:anywhere}',
+      dateControl: '.account-field input[type=date]{min-width:0;max-width:100%}',
+      compactPadding: '.account-card{padding:1rem}',
+      skipLink: '.skip-link{max-inline-size:calc(100% - 2rem);overflow-wrap:anywhere}',
+    };
+    const probes = [];
+    for (const [candidate, css] of Object.entries(candidates)) {
+      const style = await page.addStyleTag({ content: css });
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      probes.push({ candidate, ...await page.evaluate(() => ({ viewport: innerWidth, root: document.documentElement.scrollWidth, body: document.body.scrollWidth })) });
+      await style.evaluate(e => e.remove());
+    }
+    report.layoutDiagnostics = { name, metrics, crowded, probes };
+    console.log(JSON.stringify({ layoutDiagnostics: report.layoutDiagnostics }));
+  }
   assert.equal(metrics.direction, 'rtl'); assert.equal(metrics.h1, 1);
   assert.ok(Math.abs(metrics.actualViewport - metrics.viewport) <= 1, JSON.stringify(metrics));
   assert.ok(metrics.scrollWidth <= metrics.viewport + 1, JSON.stringify(metrics));
