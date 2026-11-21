@@ -57,7 +57,7 @@ function VisitCard({ visit, current = false, canPractice, reasonOptions, disable
 }) {
   const subject = visit.display_name + ' · التذكرة ' + visit.ticket_number;
   const reasonActions = (['priority', 'mark_away', 'leave', 'correct'] as const).filter(action => canPractice && visit.actions[action]);
-  return <article className={'account-card doctor-visit' + (current ? ' doctor-current-visit' : '')} data-visit-id={visit.id}>
+  return <article className={'account-card doctor-visit' + (current ? ' doctor-current-visit' : '')} data-visit-id={visit.id} data-visit-version={visit.version}>
     <div className="section-heading"><h2>{visit.display_name}</h2><span className={'state-pill state-' + visit.state}>{visitStates[visit.state]}</span></div>
     {visit.priority && <p className="state-pill state-warning">أولوية طبية مسجلة</p>}
     <dl className="reception-ticket"><div><dt>رقم التذكرة الثابت</dt><dd>{visit.ticket_number}</dd></div><div><dt>موضع الانتظار الآن</dt><dd>{visit.waiting_position ?? 'خارج الانتظار'}</dd></div></dl>
@@ -67,7 +67,7 @@ function VisitCard({ visit, current = false, canPractice, reasonOptions, disable
       {visit.started_at && <div><dt>بدء الكشف</dt><dd>{timeLabel(visit.started_at)}</dd></div>}
       {visit.completed_at && <div><dt>نهاية الزيارة</dt><dd>{timeLabel(visit.completed_at)}</dd></div>}
     </dl>
-    <p className="muted">إصدار الزيارة {visit.version}{visit.booking_state === 'fulfilled' && ' · الحجز مستوفى'}</p>
+    {visit.booking_state === 'fulfilled' && <p className="muted">الحجز مستوفى</p>}
     {canPractice && <div className="actions doctor-primary-actions">{(['start', 'complete'] as const).map(action => visit.actions[action] && <button className="btn" key={action} disabled={disabled} onClick={() => void submit({ url: visit.actions[action]!, data: {}, version: visit.version, label: commandLabels[action], subject })}>{commandLabels[action]}</button>)}</div>}
     {!!reasonActions.length && <details className="doctor-visit-actions"><summary>إجراءات الزيارة المسجلة</summary><div className="doctor-reason-grid">{reasonActions.map(action => <ReasonAction key={action} action={action} url={visit.actions[action]!} version={visit.version} subject={subject} options={reasonOptions[action] ?? []} disabled={disabled} submit={submit} />)}</div></details>}
     {!!visit.events.length && <details className="doctor-event-history"><summary>سجل الزيارة</summary><ul className="event-list">{visit.events.map((event, index) => <li key={event.at + ':' + event.event_type + ':' + index}><span>{eventLabels[event.event_type] ?? 'إجراء محفوظ'}{event.reason_code && reasonLabels[event.reason_code] && ' · ' + reasonLabels[event.reason_code]}</span><time dateTime={event.at}>{dateLabel(event.at)} · {timeLabel(event.at)}</time></li>)}</ul></details>}
@@ -125,7 +125,7 @@ function DoctorScreen() {
         {active_visit.session_id !== selected_session?.id && <p className="account-alert account-warning">الزيارة الحالية من جلسة أخرى للطبيب نفسه. يجب معالجتها قبل استدعاء مراجع من الجلسة المحددة.</p>}
         <VisitCard visit={active_visit} current canPractice={permissions.can_practice} reasonOptions={reason_options} disabled={disabled} submit={submit} />
       </> : <p className="account-alert">لا توجد زيارة مستدعاة أو داخل الكشف لهذا الطبيب.</p>}</section>
-      <section className="doctor-list" aria-labelledby="doctor-list-title"><h2 id="doctor-list-title">المنتظرون وسجل الزيارات</h2><p className="muted">الأولوية الطبية أولًا، ثم ترتيب الحضور الفعلي. رقم التذكرة ثابت وموضع الانتظار يتغير.</p>{listedVisits.length ? <div className="booking-grid">{listedVisits.map(visit => <VisitCard key={visit.id} visit={visit} canPractice={permissions.can_practice} reasonOptions={reason_options} disabled={disabled} submit={submit} />)}</div> : <div className="account-card"><h3>{visits.length ? 'الزيارة المطابقة ظاهرة في البطاقة الحالية' : 'لا توجد زيارات مطابقة'}</h3><p>اختر حالة أخرى من مرشح الزيارات أو حدّث القائمة بعد تسجيل الحضور.</p></div>}{blocked ? <p className="muted">تتاح بقية صفحات القائمة بعد تأكيد نتيجة الإجراء الحالي.</p> : <Pagination value={pagination} />}</section>
+      <section className="doctor-list" aria-labelledby="doctor-list-title"><h2 id="doctor-list-title">المنتظرون وسجل الزيارات</h2><p className="muted">الأولوية الطبية أولًا بحسب ترتيب اعتمادها، ثم بقية الحاضرين بحسب ترتيب الانتظار المسجل. رقم التذكرة ثابت.</p>{listedVisits.length ? <div className="booking-grid">{listedVisits.map(visit => <VisitCard key={visit.id} visit={visit} canPractice={permissions.can_practice} reasonOptions={reason_options} disabled={disabled} submit={submit} />)}</div> : <div className="account-card"><h3>{visits.length ? 'الزيارة المطابقة ظاهرة في البطاقة الحالية' : 'لا توجد زيارات مطابقة'}</h3><p>اختر حالة أخرى من مرشح الزيارات أو حدّث القائمة بعد تسجيل الحضور.</p></div>}{blocked ? <p className="muted">تتاح بقية صفحات القائمة بعد تأكيد نتيجة الإجراء الحالي.</p> : <Pagination value={pagination} />}</section>
     </div>
   </AccountLayout>;
 }

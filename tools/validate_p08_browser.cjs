@@ -84,7 +84,7 @@ async function uiVisit(p, id, action, label, reason, expected = 200) {
   assert.equal(response.status(), expected); const result = await response.json();
   if (expected === 200) {
     if (['complete', 'mark-away', 'leave'].includes(action)) await p.locator('.doctor-active').locator('article[data-visit-id="' + id + '"]').waitFor({ state: 'detached' });
-    else await c.getByText('إصدار الزيارة ' + result.version, { exact: false }).waitFor();
+    else await p.locator('article.doctor-visit[data-visit-id="' + id + '"][data-visit-version="' + result.version + '"]').waitFor();
   } else await p.getByRole('alert').waitFor();
   return result;
 }
@@ -372,7 +372,7 @@ async function captureLayout(p, name) {
     const saved = await visit(before.id);
     assert.equal(saved.version, changed.body.version); assert.equal(saved.events.filter(e => e.event_type === 'visit_priority').length, 1);
     await doctor.getByRole('button', { name: 'تحديث قائمة الطبيب', exact: true }).click();
-    await card(doctor, before.id).getByText('إصدار الزيارة ' + saved.version, { exact: false }).waitFor();
+    await doctor.locator('article.doctor-visit[data-visit-id="' + before.id + '"][data-visit-version="' + saved.version + '"]').waitFor();
     await card(doctor, before.id).getByText('أولوية طبية مسجلة', { exact: true }).waitFor();
   });
   await step('D15', 'Correction is audit-only before and after closing; completed visits cannot be cancelled', async () => {
