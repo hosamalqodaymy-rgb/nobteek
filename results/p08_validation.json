@@ -4,7 +4,7 @@
   "release_id": "NOBTEEK-P08-1.0",
   "as_of": "2026-11-22",
   "timezone": "Asia/Aden",
-  "status": "implemented_automated_verified_ready_for_review_pending_merge",
+  "status": "implemented_automated_verified_merged_physical_device_pending",
   "scope": "real_Laravel_PostgreSQL_and_Chromium_with_isolated_synthetic_data",
   "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
   "source_tree": "d9f461c7293a3d1132cc35fee515fc6cd899b1f8",
@@ -12,11 +12,17 @@
   "integration": {
     "branch": "work/p08-doctor-20261122",
     "target": "main",
-    "status": "ready_for_review",
-    "merged": false,
+    "status": "merged",
+    "merged": true,
     "pull_request": 2,
     "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/2",
-    "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733"
+    "reviewed_head_sha": "f598b1250a9c0fa60c5ecc6defe84642e7bd8464",
+    "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+    "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+    "merged_at": "2026-11-21T22:54:59Z",
+    "merged_on_local": "2026-11-22",
+    "timezone": "Asia/Aden",
+    "authorization": "User explicitly approved merging P08 and starting P09 in this conversation."
   },
   "implementation": {
     "physician_workspace": "/workspace/doctor",
@@ -664,5 +670,16 @@
     ],
     "observations": "The 360px/200% fragmentation seen in the earlier screenshots is resolved. Action words remain intact; normal wrapping between words, nested forms and departure warnings remain readable. No clipping or overlapping controls was observed in these five final screenshots. All 14 layout cases have empty controlsOutside and splitActionWords arrays."
   },
-  "observed_at_utc": "2026-11-21 22:22:22 UTC"
+  "observed_at_utc": "2026-11-21 22:22:22 UTC",
+  "merge_review": {
+    "merged": true,
+    "head_tree_matches_merge_tree": true,
+    "head_commit": "f598b1250a9c0fa60c5ecc6defe84642e7bd8464",
+    "head_tree": "5cca7de503905d45592f83cdc3ddff17be64b297",
+    "merge_commit": "950b1089c8b0ff6519ef011188f193fcd8067185",
+    "verified_before_merge": true,
+    "runtime_source": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+    "source_workflow_runs_successful": 9,
+    "merged_on_local": "2026-11-22"
+  }
 }

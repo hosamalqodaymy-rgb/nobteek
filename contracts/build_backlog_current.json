@@ -1,7 +1,7 @@
 {
   "schema_version": "1.8",
   "as_of": "2026-11-22",
-  "status": "P08_doctor_automated_verified_pending_merge_and_physical_device",
+  "status": "P08_doctor_merged_automated_verified_physical_device_pending",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -12,7 +12,7 @@
     "timezone": "Asia/Aden",
     "application_implementation_status": "accounts_setup_bookings_reception_and_doctor_lifecycle_verified",
     "design_implementation_status": "P01_identity_with_P08_doctor_and_delegation_forms",
-    "production_implementation_status": "pre_release_synthetic_only_P08_verified_pending_merge_remaining_phases_and_deployment",
+    "production_implementation_status": "pre_release_synthetic_only_P08_verified_remaining_phases_deployment_and_real_device_pending",
     "prototype_implementation_status": "frozen_interactive_prototype"
   },
   "billing_policy": {
@@ -455,18 +455,24 @@
         }
       ],
       "next": "ترسل أحداث الحالة للمراجع والتنبيهات والتقارير من العملية نفسها.",
-      "status": "completed_synthetic_automated_pending_merge_and_physical_device",
+      "status": "completed_synthetic_automated_physical_device_pending",
       "started_on": "2026-11-22",
       "completed_on": "2026-11-22",
       "completion_scope": "real_Laravel_PostgreSQL_and_Chromium_synthetic_automated_acceptance",
       "integration": {
         "branch": "work/p08-doctor-20261122",
         "target": "main",
-        "status": "ready_for_review",
-        "merged": false,
+        "status": "merged",
+        "merged": true,
         "pull_request": 2,
         "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/2",
-        "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733"
+        "reviewed_head_sha": "f598b1250a9c0fa60c5ecc6defe84642e7bd8464",
+        "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+        "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "merged_at": "2026-11-21T22:54:59Z",
+        "merged_on_local": "2026-11-22",
+        "timezone": "Asia/Aden",
+        "authorization": "User explicitly approved merging P08 and starting P09 in this conversation."
       }
     },
     {
@@ -1112,9 +1118,10 @@
     "real_phone_tested": false,
     "server_connected_phone_tested": false,
     "production_deployed": false,
-    "merged": false,
+    "merged": true,
     "pull_request": 2,
     "next_stage": "P09",
-    "financial_phase": "P13"
+    "financial_phase": "P13",
+    "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185"
   }
 }
