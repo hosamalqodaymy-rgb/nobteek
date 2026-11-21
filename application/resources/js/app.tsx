@@ -12,11 +12,12 @@ import SessionList from './pages/SessionList';
 import SessionDetail from './pages/SessionDetail';
 import BookingList from './pages/BookingList';
 import PublicBooking from './pages/PublicBooking';
+import Reception from './pages/Reception';
 import '../css/app.css';
 
 createInertiaApp({
   resolve: (name) => {
-    const pages = { Welcome, Account, Workspace, Team, Platform, Error: ErrorPage, PlatformClinics, ClinicSettings, SessionList, SessionDetail, BookingList, PublicBooking };
+    const pages = { Welcome, Account, Workspace, Team, Platform, Error: ErrorPage, PlatformClinics, ClinicSettings, SessionList, SessionDetail, BookingList, PublicBooking, Reception };
     if (name in pages) return pages[name as keyof typeof pages];
     throw new Error(`Unknown page: ${name}`);
   },

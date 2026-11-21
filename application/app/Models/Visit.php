@@ -12,6 +12,6 @@ class Visit extends TenantRecord
 
     protected function casts(): array
     {
-        return ['version' => 'integer', 'priority' => 'boolean', 'arrived_at' => 'immutable_datetime', 'called_at' => 'immutable_datetime', 'started_at' => 'immutable_datetime', 'completed_at' => 'immutable_datetime'];
+        return ['version' => 'integer', 'ticket_number' => 'integer', 'ready_sequence' => 'integer', 'priority' => 'boolean', 'arrived_at' => 'immutable_datetime', 'called_at' => 'immutable_datetime', 'started_at' => 'immutable_datetime', 'completed_at' => 'immutable_datetime', 'returned_at' => 'immutable_datetime'];
     }
 }

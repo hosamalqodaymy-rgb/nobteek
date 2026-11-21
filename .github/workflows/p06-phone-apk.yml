@@ -1,5 +1,28 @@
 name: Nobteek P06 phone APK
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'android-preview/**'
+      - 'application/resources/css/**'
+      - 'application/resources/js/p06-phone-fixture.tsx'
+      - 'application/resources/js/pages/BookingList.tsx'
+      - 'application/resources/js/pages/PublicBooking.tsx'
+      - 'application/resources/js/components/**'
+      - 'application/phone-preview-frame.html'
+      - 'application/vite.phone-preview.config.ts'
+      - 'application/package*.json'
+      - 'tools/build_phone_preview_apk.sh'
+      - 'tools/smoke_phone_preview.py'
+      - '.github/workflows/p06-phone-apk.yml'
+  pull_request:
+    paths:
+      - 'android-preview/**'
+      - 'application/resources/**'
+      - 'application/package*.json'
+      - 'application/*phone-preview*'
+      - 'tools/*phone*'
+      - '.github/workflows/p06-phone-apk.yml'
+  workflow_dispatch:
 concurrency:
   group: p06-phone-${{ github.ref }}
   cancel-in-progress: true

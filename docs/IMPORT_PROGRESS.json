@@ -3,7 +3,7 @@
   "repository": "hosamalqodaymy-rgb/nobteek",
   "branch": "main",
   "task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "status": "P06_browser_and_Android_emulator_verified_physical_phone_pending",
+  "status": "P07_reception_and_queue_automated_verified_physical_phone_pending",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
@@ -369,8 +369,8 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "User tests offline P06 APK using docs/PHONE_TEST_AR.md. Connect the new Render account for server-connected phone tests; do not use the excluded old account.",
-  "next_development_stage": "P07: reception, arrival and queue organization; not started.",
+  "next_action": "P08 physician call-next/start/complete and clinical priority. Physical phone and new-account hosting remain pending; previous APK is offline P06 only.",
+  "next_development_stage": "P08",
   "browser_gaps": [
     "physical phone native browser and keyboard when a device is available"
   ],
@@ -378,11 +378,11 @@
   "current_ci": {
     "status": "completed",
     "conclusion": "success",
-    "run_id": 42422113540,
-    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42422113540",
-    "head_sha": "1071378236637109fc18b5b151c751b8edcf744a",
-    "phpunit_tests": 109,
-    "phpunit_assertions": 749,
+    "run_id": 42426242756,
+    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/42426242756",
+    "head_sha": "1f8c3be4bbeb61c3f6b3b416ac6d877a23df7bf6",
+    "phpunit_tests": 139,
+    "phpunit_assertions": 945,
     "build_migrate_seed_passed": true,
     "environment": "isolated GitHub Actions PostgreSQL test database"
   },
@@ -416,5 +416,30 @@
     "offline_UI_only": true,
     "server_connected_phone_tested": false,
     "guide": "docs/PHONE_TEST_AR.md"
+  },
+  "reception_verification": {
+    "id": "NOBTEEK-P07-1.0",
+    "report": "results/p07_validation.json",
+    "laravel_tests_passed": 139,
+    "new_phase_tests": 30,
+    "laravel_assertions": 945,
+    "browser_checks_passed": 14,
+    "responsive_layout_cases_passed": 12,
+    "text_resize_200_percent_tested": true,
+    "distinct_staff_arrival_race_passed": true,
+    "same_booking_race_one_visit": true,
+    "return_tail_preserves_ticket": true,
+    "atomic_walk_in": true,
+    "real_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "next_stage": "P08",
+    "financial_phase": "P13"
+  },
+  "current_work_branch": "work/p07-reception-20261108",
+  "integration": {
+    "target": "main",
+    "merged": false,
+    "status": "awaiting_explicit_merge_approval"
   }
 }
