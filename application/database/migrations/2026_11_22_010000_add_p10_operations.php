@@ -25,49 +25,8 @@ CREATE TABLE support_requests (
  id uuid PRIMARY KEY,
  clinic_id uuid NOT NULL REFERENCES clinics(id),
  category varchar(32) NOT NULL CHECK (category IN ('access','schedule','technical','other')),
- request_key_digest char(64) NOT NULL CHECK (request_key_digest ~ '^[0-9a-f]{64} varchar(20) NOT NULL DEFAULT 'open' CHECK (state IN ('open','resolved')),
- version bigint NOT NULL DEFAULT 1 CHECK (version > 0),
- opened_by_membership_id uuid NOT NULL,
- opened_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
- resolved_at timestamptz,
- resolved_by_user_id uuid REFERENCES users(id),
- UNIQUE (clinic_id,id),
- UNIQUE (clinic_id,opened_by_membership_id,request_key_digest),
- FOREIGN KEY (clinic_id,opened_by_membership_id) REFERENCES memberships(clinic_id,id),
- CHECK ((state='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL) OR
-        (state='resolved' AND resolved_at IS NOT NULL AND resolved_by_user_id IS NOT NULL))
-);
-CREATE INDEX support_requests_clinic_state ON support_requests(clinic_id,state,opened_at);
-SQL);
-    }
-
-    public function down(): void
-    {
-        DB::statement('DROP TABLE IF EXISTS support_requests,notification_simulations');
-    }
-};
-),
- request_fingerprint char(64) NOT NULL CHECK (request_fingerprint ~ '^[0-9a-f]{64} varchar(20) NOT NULL DEFAULT 'open' CHECK (state IN ('open','resolved')),
- version bigint NOT NULL DEFAULT 1 CHECK (version > 0),
- opened_by_membership_id uuid NOT NULL,
- opened_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
- resolved_at timestamptz,
- resolved_by_user_id uuid REFERENCES users(id),
- UNIQUE (clinic_id,id),
- FOREIGN KEY (clinic_id,opened_by_membership_id) REFERENCES memberships(clinic_id,id),
- CHECK ((state='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL) OR
-        (state='resolved' AND resolved_at IS NOT NULL AND resolved_by_user_id IS NOT NULL))
-);
-CREATE INDEX support_requests_clinic_state ON support_requests(clinic_id,state,opened_at);
-SQL);
-    }
-
-    public function down(): void
-    {
-        DB::statement('DROP TABLE IF EXISTS support_requests,notification_simulations');
-    }
-};
-),
+ request_key_digest char(64) NOT NULL CHECK (request_key_digest ~ '^[0-9a-f]{64}$'),
+ request_fingerprint char(64) NOT NULL CHECK (request_fingerprint ~ '^[0-9a-f]{64}$'),
  state varchar(20) NOT NULL DEFAULT 'open' CHECK (state IN ('open','resolved')),
  version bigint NOT NULL DEFAULT 1 CHECK (version > 0),
  opened_by_membership_id uuid NOT NULL,
@@ -75,6 +34,7 @@ SQL);
  resolved_at timestamptz,
  resolved_by_user_id uuid REFERENCES users(id),
  UNIQUE (clinic_id,id),
+ UNIQUE (clinic_id,opened_by_membership_id,request_key_digest),
  FOREIGN KEY (clinic_id,opened_by_membership_id) REFERENCES memberships(clinic_id,id),
  CHECK ((state='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL) OR
         (state='resolved' AND resolved_at IS NOT NULL AND resolved_by_user_id IS NOT NULL))
