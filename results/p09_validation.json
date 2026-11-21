@@ -4,7 +4,7 @@
   "release_id": "NOBTEEK-P09-1.0",
   "as_of": "2026-11-22",
   "timezone": "Asia/Aden",
-  "status": "implemented_automated_verified_pending_merge_physical_device_pending",
+  "status": "implemented_automated_verified_merged_physical_device_pending",
   "scope": "real_Laravel_PostgreSQL_and_Chromium_with_isolated_synthetic_data",
   "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
   "source_tree": "70a27d9e77e4ad217d19bcec881a716f92910975",
@@ -12,13 +12,24 @@
   "integration": {
     "branch": "work/p09-patient-20261122",
     "target": "main",
-    "status": "ready_for_review_pending_merge",
-    "merged": false,
+    "status": "merged_into_main_automated_verified",
+    "merged": true,
     "pull_request": 3,
     "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/3",
     "tested_source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
-    "main_contains": "P00 through P08",
-    "next_action": "Review and merge P09, then implement P10 notifications, reports and platform administration."
+    "main_contains": "P00 through P09",
+    "next_action": "P10 not started; begin only after owner requests it. Physical-device staging tests and production logging protections remain pending.",
+    "merged_at": "2026-11-21T23:45:49Z",
+    "merge_commit": "76adab9e6cb57950d5a54e703943645e1eb91f0c",
+    "review": {
+      "pr_3_state": "closed_merged",
+      "mergeable_before_merge": true,
+      "review_threads": 0,
+      "blocking_reviews": 0,
+      "tested_source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "documentation_only_followup": "6a2d933535f51ff56080b84eb0119f105f9f5507",
+      "notes": "Merge confirmed via GitHub; tested application source unchanged after CI. Post-merge checks may be separate."
+    }
   },
   "prior_integration": {
     "phase": "P08",
