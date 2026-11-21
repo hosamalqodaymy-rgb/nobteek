@@ -43,6 +43,7 @@ async function pageFor(context) {
   return page;
 }
 async function login(page, username, mfa = false) {
+  activePage = page;
   await page.goto(base + '/login');
   await page.getByLabel('اسم الدخول', { exact: true }).fill(username);
   await page.getByLabel('كلمة المرور', { exact: true }).fill(password);
@@ -74,11 +75,13 @@ async function openTicket(page, link, expected = 200) {
   return { response, shell };
 }
 async function refreshTicket(page) {
+  activePage = page;
   const [response] = await Promise.all([page.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current'), page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).click()]);
   assert.equal(response.status(), 200); await page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).waitFor();
   return response.json();
 }
 async function advancePoll(page, milliseconds, route) {
+  activePage = page;
   const response = page.waitForResponse(value => new URL(value.url()).pathname === route);
   await page.clock.runFor(milliseconds); const result = await response; assert.equal(result.status(), 200); return result.json();
 }
@@ -110,7 +113,21 @@ async function captureLayout(page, name) {
 }
 async function textSize(page, percent) { await page.evaluate(value => { document.documentElement.style.fontSize = value + '%'; }, percent); }
 function safeShell(props) { for (const key of ['auth', 'privateNotice', 'status', 'doctor_workspace_allowed', 'errors']) assert.equal(Object.hasOwn(props, key), false, 'Private shared prop in public shell'); }
-async function shellProps(page) { return page.evaluate(() => JSON.parse(document.getElementById('app').dataset.page).props); }
+async function shellProps(page) {
+  const url = new URL(page.url());
+  const response = await page.request.get(url.origin + url.pathname + url.search, { headers: { Accept: 'text/html' } });
+  assert.equal(response.status(), 200, 'Public HTML shell must load');
+  return page.evaluate(html => {
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    const attribute = document.getElementById('app')?.getAttribute('data-page');
+    if (attribute?.trim().startsWith('{')) return JSON.parse(attribute).props;
+    for (const script of document.querySelectorAll('script[type="application/json"]')) {
+      const data = JSON.parse(script.textContent || '{}');
+      if (typeof data.component === 'string' && typeof data.url === 'string' && data.props && typeof data.props === 'object') return data.props;
+    }
+    throw new Error('Initial Inertia page data is absent from the HTML shell');
+  }, await response.text());
+}
 
 (async () => {
   browser = await chromium.launch({ headless: true });
@@ -149,6 +166,7 @@ async function shellProps(page) { return page.evaluate(() => JSON.parse(document
     assert.equal((await post(owner, '/v1/sessions/' + sid + '/open', { reason_code: 'scheduled_start' }, 1)).status, 200);
   });
   await step('P09B02', 'Public doctor/window booking receipt offers explicit private copy and file save', async () => {
+    activePage = guest;
     await guest.goto(base + '/clinics/' + fixture.clinic_id + '/book'); safeShell(await shellProps(guest));
     await guest.getByLabel('الطبيب والجلسة', { exact: true }).selectOption(sid); await guest.getByLabel('نافذة الوصول', { exact: true }).selectOption(wid);
     await guest.getByLabel('اسم المراجع', { exact: true }).fill('مراجع المتابعة التجريبي'); await guest.getByLabel('رقم التواصل', { exact: true }).fill('777123456');
@@ -240,6 +258,7 @@ async function shellProps(page) { return page.evaluate(() => JSON.parse(document
     report.waitingSemantics = { activeExcluded: true, unarrivedExcluded: true, priorityOrdered: true, sessionStateSeparate: true, ticketPollSeconds: 20 };
   });
   await step('P09B07', 'Staff waiting display is session scoped, numbers only, and refreshes automatically every 5 seconds', async () => {
+    activePage = hall;
     let data = await get(owner, roomRoute()); assert.deepEqual(Object.keys(data).sort(), roomFields); assert.deepEqual(data.called_ticket_numbers, [5]); assert.deepEqual(data.next_ticket_numbers, [1, 2, 3, 4, 6]);
     assert.equal((await guest.request.get(base + roomRoute(), { headers: { Accept: 'application/json' } })).status(), 401);
     assert.equal((await other.request.get(base + roomRoute(), { headers: { Accept: 'application/json' } })).status(), 404);
@@ -278,6 +297,7 @@ async function shellProps(page) { return page.evaluate(() => JSON.parse(document
     report.polling = { hiddenPaused: true, resumedOnVisible: true, offlineRetainsStaleData: true, reconnectImmediate: true, failedReadBackoffFirstMilliseconds: 40000, manualRefreshWorks: true };
   });
   await step('P09B10', 'Verified recovery survives lost committed response, refreshed version and disappearing row, with one immutable replay', async () => {
+    activePage = owner;
     const before = await booking(receipt.id);
     assert.equal((await post(reception, before.actions.ticket_link, { reason_code: 'patient_requested_recovery', verified_identity: false }, before.version)).status, 422);
     assert.equal((await post(reception, before.actions.ticket_link, { contact_phone: '777123456' }, before.version)).status, 422);
@@ -324,8 +344,9 @@ async function shellProps(page) { return page.evaluate(() => JSON.parse(document
     report.sessionLifecycle = { doctorBusyAcrossSessions: true, emptyHallDoesNotClaimDoctorAvailable: true, rejectedLinkReadable: true, cancelledLinkReadable: true, closedWithoutInventedTicket: true, completedLinkReadable: true };
   });
   await step('P09B12', 'Arabic help and privacy remain readable at 200 percent and no private URLs enter persistence or errors', async () => {
+    activePage = invalid;
     for (const [route, name] of [['/help', 'help'], ['/privacy', 'privacy']]) { await invalid.goto(base + route); safeShell(await shellProps(invalid)); await textSize(invalid, 200); await captureLayout(invalid, name + '-360-text200'); await textSize(invalid, 100); }
-    await ticket.reload(); await ticket.getByRole('heading', { name: 'افتح رابطك الخاص', exact: true }).waitFor(); assert.equal(await ticket.locator('.ticket-status').count(), 0);
+    activePage = ticket; await ticket.reload(); await ticket.getByRole('heading', { name: 'افتح رابطك الخاص', exact: true }).waitFor(); assert.equal(await ticket.locator('.ticket-status').count(), 0);
     assert.ok(ticketTransport.length >= 10 && ticketTransport.every(value => value.fixedPath && value.hasBearer && value.noCookie && value.noReferer), 'Every browser ticket read uses private fixed-path bearer transport');
     assert.deepEqual(report.runtimeErrors, []); assert.deepEqual(report.serverErrors, []);
   });
