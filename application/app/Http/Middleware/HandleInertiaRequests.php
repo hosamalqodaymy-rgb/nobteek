@@ -4,11 +4,30 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    private function doctorWorkspaceAllowed(Request $request): bool
+    {
+        if (! $request->user()) {
+            return false;
+        }
+        $memberships = DB::table('memberships as m')->join('clinics as c', 'c.id', '=', 'm.clinic_id')->where('m.user_id', $request->user()->id)
+            ->where('m.active', true)->where('c.operational_state', 'active')->get(['m.id', 'm.role', 'm.clinic_id', 'm.delegated_permissions']);
+        $membership = $memberships->firstWhere('id', $request->session()->get('membership_id')) ?? ($memberships->count() === 1 ? $memberships->first() : null);
+        if (! $membership) {
+            return false;
+        }
+        if ($membership->role === 'doctor') {
+            return DB::table('doctors')->where('clinic_id', $membership->clinic_id)->where('user_id', $request->user()->id)->where('active', true)->exists();
+        }
+
+        return $membership->role === 'reception' && (json_decode($membership->delegated_permissions, true, flags: JSON_THROW_ON_ERROR)['call_next'] ?? false) === true;
+    }
+
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -42,7 +61,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => $request->user() ? ['display_name' => $request->user()->display_name, 'username' => $request->user()->username, 'platform_admin' => $request->user()->platform_role === 'platform_admin'] : null,
-            'links' => collect(['welcome', 'login', 'challenge', 'recovery', 'account.access', 'security', 'logout', 'dashboard', 'clinic.select', 'team', 'team.create', 'platform', 'mfa.start', 'mfa.confirm', 'recovery.rotate', 'password.change', 'account.confirm', 'platform.clinics', 'platform.clinic.create', 'clinic.settings', 'clinic.settings.update', 'clinic.doctor.create', 'sessions.index', 'sessions.create', 'bookings.index', 'bookings.request', 'reception.index'])->mapWithKeys(fn ($name) => [$name => route($name)])->all(),
+            'links' => collect(['welcome', 'login', 'challenge', 'recovery', 'account.access', 'security', 'logout', 'dashboard', 'clinic.select', 'team', 'team.create', 'platform', 'mfa.start', 'mfa.confirm', 'recovery.rotate', 'password.change', 'account.confirm', 'platform.clinics', 'platform.clinic.create', 'clinic.settings', 'clinic.settings.update', 'clinic.doctor.create', 'sessions.index', 'sessions.create', 'bookings.index', 'bookings.request', 'reception.index', 'doctor.index'])->mapWithKeys(fn ($name) => [$name => route($name)])->all(),
+            'doctor_workspace_allowed' => fn () => $this->doctorWorkspaceAllowed($request),
             'status' => fn () => $request->session()->get('status'),
             'privateNotice' => function () use ($request) {
                 $encrypted = $request->session()->pull('private_notice');

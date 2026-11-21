@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClinicAccessController;
 use App\Http\Controllers\ClinicSetupController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PlatformClinicController;
 use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceptionController;
@@ -56,6 +57,12 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/v1/sessions/{session}/{command}', [SessionSetupController::class, 'command'])->whereUuid('session')->whereIn('command', ['open', 'pause', 'resume', 'close', 'capacity', 'extend'])->name('session.command');
 
             Route::get('/workspace/bookings', [BookingController::class, 'index'])->name('bookings.index');
+            Route::get('/workspace/doctor', [DoctorController::class, 'index'])->name('doctor.index');
+            Route::get('/v1/doctor', [DoctorController::class, 'index'])->name('doctor.api');
+            Route::post('/v1/sessions/{session}/call-next', [DoctorController::class, 'callNext'])->whereUuid('session')->name('doctor.call-next');
+            foreach (['start', 'complete', 'priority', 'correct'] as $command) {
+                Route::post('/v1/visits/{visit}/'.$command, [DoctorController::class, 'command'])->whereUuid('visit')->defaults('command', $command)->name('doctor.'.$command);
+            }
             Route::get('/workspace/reception', [ReceptionController::class, 'index'])->name('reception.index');
             Route::get('/v1/reception', [ReceptionController::class, 'index'])->name('reception.api');
             Route::get('/v1/visits/{visit}', [ReceptionController::class, 'show'])->whereUuid('visit')->name('reception.show');
@@ -70,6 +77,7 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/workspace/team', [TeamController::class, 'create'])->name('team.create');
             Route::post('/workspace/team/{membership}/access', [TeamController::class, 'issue'])->whereUuid('membership')->name('team.link');
             Route::post('/workspace/team/{membership}/suspend', [TeamController::class, 'suspend'])->whereUuid('membership')->name('team.suspend');
+            Route::post('/workspace/team/{membership}/delegation', [TeamController::class, 'delegation'])->whereUuid('membership')->name('team.delegation');
             Route::get('/v1/patients', [ClinicAccessController::class, 'patients'])->name('patients.index');
             Route::get('/v1/patients/export', [ClinicAccessController::class, 'export'])->name('patients.export');
             Route::get('/v1/patients/{patient}', [ClinicAccessController::class, 'patient'])->whereUuid('patient')->name('patients.show');

@@ -19,6 +19,8 @@ class SessionCommands
 {
     public const REASONS = ['scheduled_start', 'operational_pause', 'service_resumed', 'capacity_adjustment', 'intake_extended', 'session_completed', 'session_cancelled'];
 
+    public const PAUSE_REASONS = ['operational_pause', 'doctor_delayed'];
+
     public function __construct(private ClinicAuthority $authority) {}
 
     public function localTime(string $value): CarbonImmutable

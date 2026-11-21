@@ -6,6 +6,7 @@ export type Shared = {
   [key: string]: unknown;
   brand: { name: string; tagline: string };
   auth: { display_name: string; username: string; platform_admin: boolean } | null;
+  doctor_workspace_allowed?: boolean;
   links: Record<string, string>;
   status: string | null;
   privateNotice: { recovery_code?: string; account_link?: string } | null;
@@ -20,7 +21,7 @@ export function AccountLayout({ title, children, narrow = false }: { title: stri
     <header className="site-header"><div className="wrap header-row">
       <Link className="brand" href={links.welcome}><img src={symbol} alt="" width="42" height="42" /><span><span className="brand-name">{brand.name}</span><span className="brand-en" lang="en" dir="ltr">NOBTEEK</span></span></Link>
       <nav className="header-links" aria-label="القائمة الرئيسية">
-        {auth ? <><Link className="nav-link" href={links.dashboard}>مساحة العمل</Link><Link className="nav-link" href={links.security}>أمان الحساب</Link><button className="btn btn--quiet" onClick={() => router.post(links.logout)}>خروج</button></> : <Link className="nav-link" href={links.login}>دخول العيادة</Link>}
+        {auth ? <><Link className="nav-link" href={links.dashboard}>مساحة العمل</Link>{page.props.doctor_workspace_allowed && <Link className="nav-link" href={links['doctor.index']}>شاشة الطبيب</Link>}<Link className="nav-link" href={links.security}>أمان الحساب</Link><button className="btn btn--quiet" onClick={() => router.post(links.logout)}>خروج</button></> : <Link className="nav-link" href={links.login}>دخول العيادة</Link>}
       </nav>
     </div></header>
     <div className="preview-note">نسخة تجريبية قيد التجهيز · استخدم بيانات وهمية فقط</div>

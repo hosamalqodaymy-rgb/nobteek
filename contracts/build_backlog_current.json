@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.7",
+  "schema_version": "1.8",
   "as_of": "2026-11-22",
-  "status": "P07_reception_and_queue_automated_verified_physical_device_pending",
+  "status": "P08_doctor_automated_verified_pending_merge_and_physical_device",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -10,9 +10,9 @@
     "delivery": "web_pwa",
     "locale": "ar-YE",
     "timezone": "Asia/Aden",
-    "application_implementation_status": "accounts_clinic_setup_bookings_and_reception_commands_verified",
-    "design_implementation_status": "P01_identity_with_P07_reception_and_queue_forms",
-    "production_implementation_status": "pre_release_synthetic_only_P07_verified_remaining_phases_deployment_and_real_device_pending",
+    "application_implementation_status": "accounts_setup_bookings_reception_and_doctor_lifecycle_verified",
+    "design_implementation_status": "P01_identity_with_P08_doctor_and_delegation_forms",
+    "production_implementation_status": "pre_release_synthetic_only_P08_verified_pending_merge_remaining_phases_and_deployment",
     "prototype_implementation_status": "frozen_interactive_prototype"
   },
   "billing_policy": {
@@ -430,18 +430,44 @@
         {
           "id": "T08A",
           "expected": "ضغط استدعاء التالي من جهازين لا يختار مريضين، ولا توجد زيارتان نشطتان للطبيب نفسه.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p08_validation.json",
+            "acceptance_id": "T08A",
+            "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+            "run_id": 44956048275,
+            "scope": "real_Laravel_PostgreSQL_browser_and_distinct_authenticated_doctor_reception_HTTP_races",
+            "application_integration_test": true
+          }
         },
         {
           "id": "T08B",
           "expected": "بدء زيارة دون حضور أو إلغاء زيارة مكتملة يرفض مع رسالة واضحة.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p08_validation.json",
+            "acceptance_id": "T08B",
+            "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+            "run_id": 44956048275,
+            "scope": "real_Laravel_PostgreSQL_browser_and_distinct_authenticated_doctor_reception_HTTP_races",
+            "application_integration_test": true
+          }
         }
       ],
       "next": "ترسل أحداث الحالة للمراجع والتنبيهات والتقارير من العملية نفسها.",
-      "status": "not_started"
+      "status": "completed_synthetic_automated_pending_merge_and_physical_device",
+      "started_on": "2026-11-22",
+      "completed_on": "2026-11-22",
+      "completion_scope": "real_Laravel_PostgreSQL_and_Chromium_synthetic_automated_acceptance",
+      "integration": {
+        "branch": "work/p08-doctor-20261122",
+        "target": "main",
+        "status": "ready_for_review",
+        "merged": false,
+        "pull_request": 2,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/2",
+        "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733"
+      }
     },
     {
       "id": "P09",
@@ -835,6 +861,26 @@
       "path": "POST /v1/visits/{id}/defer",
       "purpose": "إرجاء إداري مسبب إلى النهاية للمالك فقط",
       "state": "waiting"
+    },
+    {
+      "path": "GET /v1/doctor",
+      "purpose": "قائمة الطبيب والزيارة النشطة والصلاحيات الحالية داخل نطاق العيادة",
+      "state": "role_limited"
+    },
+    {
+      "path": "POST /v1/visits/{id}/priority",
+      "purpose": "أولوية طبية بسبب ثابت وترتيب اعتماد مستقل مع حفظ التذكرة",
+      "state": "waiting"
+    },
+    {
+      "path": "POST /v1/visits/{id}/correct",
+      "purpose": "تصحيح مسجل بعد بدء الزيارة يحفظ الحالة والأوقات الأصلية",
+      "state": "unchanged"
+    },
+    {
+      "path": "POST /workspace/team/{membership}/delegation",
+      "purpose": "تفويض النداء للاستقبال أو سحبه بإصدار ومنع تكرار وتحقق حديث للمالك",
+      "state": "call_next_only"
     }
   ],
   "release_policy": {
@@ -894,8 +940,8 @@
       "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
     }
   ],
-  "baseline_id": "NOBTEEK-P07-1.0",
-  "next_stage": "P08",
+  "baseline_id": "NOBTEEK-P08-1.0",
+  "next_stage": "P09",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -1045,5 +1091,30 @@
       "server_connected_phone_tested": false,
       "production_deployed": false
     }
+  },
+  "doctor_baseline": {
+    "id": "NOBTEEK-P08-1.0",
+    "report": "results/p08_validation.json",
+    "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+    "laravel_tests_passed": 171,
+    "laravel_assertions": 1336,
+    "new_phase_tests": 32,
+    "doctor_filter_tests_passed": 44,
+    "doctor_filter_assertions": 474,
+    "browser_checks_passed": 17,
+    "responsive_layout_cases_passed": 14,
+    "same_session_distinct_actor_race_passed": true,
+    "cross_session_one_active_visit_passed": true,
+    "uncertain_call_and_completion_exact_retry_passed": true,
+    "delegation_revocation_before_replay_passed": true,
+    "correction_preserves_state_and_times": true,
+    "text_resize_200_percent_tested": true,
+    "real_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "merged": false,
+    "pull_request": 2,
+    "next_stage": "P09",
+    "financial_phase": "P13"
   }
 }
