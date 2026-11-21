@@ -1,6 +1,6 @@
 {
   "schema_version": "1.7",
-  "as_of": "2026-11-08",
+  "as_of": "2026-11-22",
   "status": "P07_reception_and_queue_automated_verified_physical_device_pending",
   "product": {
     "name_ar": "نوبتيك",
@@ -391,7 +391,28 @@
         }
       ],
       "next": "تغذي قائمة جاهزة للطبيب وعدد من أمام المراجع دون إظهار الأسماء.",
-      "status": "completed_synthetic_automated_physical_device_pending"
+      "status": "completed_synthetic_automated_physical_device_pending",
+      "integration": {
+        "branch": "work/p07-reception-20261108",
+        "target": "main",
+        "status": "merged",
+        "merged": true,
+        "pull_request": 1,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/1",
+        "reviewed_head_sha": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+        "merge_commit_sha": "30225fb6baffc59971b8f05212ac3fec1cd331b0",
+        "merged_at": "2026-11-21T21:49:44Z",
+        "merged_on_local": "2026-11-22",
+        "timezone": "Asia/Aden",
+        "authorization": "Explicit user approval in the current conversation"
+      },
+      "latest_review": {
+        "as_of": "2026-11-22",
+        "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+        "report": "results/p07_validation.json",
+        "report_section": "merge_review",
+        "browser_checks_passed": 15
+      }
     },
     {
       "id": "P08",
@@ -1001,6 +1022,28 @@
     "server_connected_phone_tested": false,
     "production_deployed": false,
     "next_stage": "P08",
-    "financial_phase": "P13"
+    "financial_phase": "P13",
+    "original_verified_source_commit": "1f8c3be4bbeb61c3f6b3b416ac6d877a23df7bf6",
+    "latest_review": {
+      "reviewed_on": "2026-11-22",
+      "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+      "report": "results/p07_validation.json",
+      "report_section": "merge_review",
+      "laravel_tests_passed": 139,
+      "laravel_assertions": 945,
+      "reception_filter_tests_passed": 33,
+      "reception_filter_assertions": 211,
+      "browser_checks_passed": 15,
+      "responsive_layout_cases_passed": 12,
+      "p06_browser_checks_passed": 24,
+      "pagination_refresh_20_to_21_passed": true,
+      "uncertain_last_slot_walk_in_retry_passed": true,
+      "merged": true,
+      "merge_commit_sha": "30225fb6baffc59971b8f05212ac3fec1cd331b0",
+      "next_stage": "P08",
+      "real_phone_tested": false,
+      "server_connected_phone_tested": false,
+      "production_deployed": false
+    }
   }
 }

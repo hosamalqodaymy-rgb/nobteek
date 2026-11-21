@@ -384,7 +384,400 @@
   "integration": {
     "branch": "work/p07-reception-20261108",
     "target": "main",
-    "status": "awaiting_explicit_merge_approval",
-    "merged": false
+    "status": "merged",
+    "merged": true,
+    "pull_request": 1,
+    "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/1",
+    "reviewed_head_sha": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+    "merge_commit_sha": "30225fb6baffc59971b8f05212ac3fec1cd331b0",
+    "merged_at": "2026-11-21T21:49:44Z",
+    "merged_on_local": "2026-11-22",
+    "timezone": "Asia/Aden",
+    "authorization": "Explicit user approval in the current conversation"
+  },
+  "latest_verification": "merge_review",
+  "evidence_scope_note": "The original top-level as_of, source_commit, checks, acceptance and ci_runs retain the 2026-11-08 baseline evidence. merge_review contains the newly observed 2026-11-22 verification and merge; integration reflects the confirmed current state.",
+  "merge_review": {
+    "as_of": "2026-11-22",
+    "timezone": "Asia/Aden",
+    "status": "merged_after_successful_review_and_automated_validation",
+    "reviewed_source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+    "base_main_commit": "5597c62cc9442ae119d87356545bc19e8abd9a87",
+    "review_scope": "P07 authorization, tenant isolation, concurrency, atomic commands, reception UI and affected regressions",
+    "fixes": [
+      {
+        "area": "reception_pagination",
+        "description": "Reload pagination alongside arrivals so the next-page link appears when the list grows from 20 to 21 records."
+      },
+      {
+        "area": "uncertain_walk_in_retry",
+        "description": "Preserve the submitted session and exact payload while busy or uncertain so a lost last-slot response can be replayed with the same URL, data and idempotency key after a manual refresh."
+      }
+    ],
+    "checks": {
+      "phpunit_full": {
+        "tests": 139,
+        "assertions": 945,
+        "passed": true,
+        "run_id": 44953178031
+      },
+      "phpunit_reception_filter": {
+        "tests": 33,
+        "assertions": 211,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "passed": true,
+        "run_id": 44953178023
+      },
+      "typescript_and_vite_build_passed": true,
+      "laravel_migrate_and_seed_passed": true,
+      "pint_and_committed_formatting_passed": true,
+      "browser": {
+        "schemaVersion": 1,
+        "phase": "P07",
+        "passed": true,
+        "scope": "real_Laravel_PostgreSQL_browser_and_distinct_authenticated_staff_HTTP_races",
+        "checks": [
+          {
+            "id": "R01",
+            "name": "Owner MFA and independent reception password sessions",
+            "status": "passed"
+          },
+          {
+            "id": "R02",
+            "name": "Open synthetic current session using real application commands",
+            "status": "passed"
+          },
+          {
+            "id": "T07A",
+            "name": "Distinct staff simultaneously check in distinct bookings without duplicate tickets",
+            "status": "passed"
+          },
+          {
+            "id": "R04",
+            "name": "Two staff check in the same booking once with no consumed extra ticket",
+            "status": "passed"
+          },
+          {
+            "id": "R05",
+            "name": "Mobile reception renders stable tickets and independent queue positions",
+            "status": "passed"
+          },
+          {
+            "id": "T07B",
+            "name": "Away and return preserve ticket and join the tail with recorded reasons",
+            "status": "passed"
+          },
+          {
+            "id": "R07",
+            "name": "Lost committed check-in response retries the same key and keeps one ticket",
+            "status": "passed"
+          },
+          {
+            "id": "R08",
+            "name": "Walk-in form saves confirmed booking and arrival together without a phone",
+            "status": "passed"
+          },
+          {
+            "id": "R09",
+            "name": "Reasoned owner defer is hidden from reception and cannot change a ticket",
+            "status": "passed"
+          },
+          {
+            "id": "R10",
+            "name": "Permanent departure retains history and cannot return or reissue a ticket",
+            "status": "passed"
+          },
+          {
+            "id": "R11",
+            "name": "Name and ticket search are scoped without renumbering the filtered queue",
+            "status": "passed"
+          },
+          {
+            "id": "R12",
+            "name": "CSRF, cross-clinic access and phone lookup restrictions remain enforced",
+            "status": "passed"
+          },
+          {
+            "id": "R13",
+            "name": "Reception controls and empty state fit all widths at normal and 200 percent text",
+            "status": "passed"
+          },
+          {
+            "id": "R15",
+            "name": "Last-slot lost walk-in response survives refresh and updates pagination from 20 to 21 arrivals",
+            "status": "passed"
+          },
+          {
+            "id": "R14",
+            "name": "No unexpected JavaScript or server errors",
+            "status": "passed"
+          }
+        ],
+        "screenshots": [
+          "reception-360-text100.png",
+          "empty-360-text100.png",
+          "reception-360-text200.png",
+          "empty-360-text200.png",
+          "reception-768-text100.png",
+          "empty-768-text100.png",
+          "reception-768-text200.png",
+          "empty-768-text200.png",
+          "reception-1440-text100.png",
+          "empty-1440-text100.png",
+          "reception-1440-text200.png",
+          "empty-1440-text200.png"
+        ],
+        "runtimeErrors": [],
+        "serverErrors": [],
+        "layoutCases": [
+          {
+            "name": "reception-360-text100",
+            "requestedWidth": 360,
+            "actualWidth": 360,
+            "rootWidth": 360,
+            "bodyWidth": 360,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 360
+          },
+          {
+            "name": "empty-360-text100",
+            "requestedWidth": 360,
+            "actualWidth": 360,
+            "rootWidth": 360,
+            "bodyWidth": 360,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 360
+          },
+          {
+            "name": "reception-360-text200",
+            "requestedWidth": 360,
+            "actualWidth": 360,
+            "rootWidth": 360,
+            "bodyWidth": 360,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 360
+          },
+          {
+            "name": "empty-360-text200",
+            "requestedWidth": 360,
+            "actualWidth": 360,
+            "rootWidth": 360,
+            "bodyWidth": 360,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 360
+          },
+          {
+            "name": "reception-768-text100",
+            "requestedWidth": 768,
+            "actualWidth": 768,
+            "rootWidth": 768,
+            "bodyWidth": 768,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 768
+          },
+          {
+            "name": "empty-768-text100",
+            "requestedWidth": 768,
+            "actualWidth": 768,
+            "rootWidth": 768,
+            "bodyWidth": 768,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 768
+          },
+          {
+            "name": "reception-768-text200",
+            "requestedWidth": 768,
+            "actualWidth": 768,
+            "rootWidth": 768,
+            "bodyWidth": 768,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 768
+          },
+          {
+            "name": "empty-768-text200",
+            "requestedWidth": 768,
+            "actualWidth": 768,
+            "rootWidth": 768,
+            "bodyWidth": 768,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 768
+          },
+          {
+            "name": "reception-1440-text100",
+            "requestedWidth": 1440,
+            "actualWidth": 1440,
+            "rootWidth": 1440,
+            "bodyWidth": 1440,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 1440
+          },
+          {
+            "name": "empty-1440-text100",
+            "requestedWidth": 1440,
+            "actualWidth": 1440,
+            "rootWidth": 1440,
+            "bodyWidth": 1440,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 1440
+          },
+          {
+            "name": "reception-1440-text200",
+            "requestedWidth": 1440,
+            "actualWidth": 1440,
+            "rootWidth": 1440,
+            "bodyWidth": 1440,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 1440
+          },
+          {
+            "name": "empty-1440-text200",
+            "requestedWidth": 1440,
+            "actualWidth": 1440,
+            "rootWidth": 1440,
+            "bodyWidth": 1440,
+            "direction": "rtl",
+            "controlsOutside": [],
+            "screenshotWidth": 1440
+          }
+        ],
+        "apiResponsesMocked": false,
+        "syntheticOnly": true,
+        "physicalPhoneTested": false,
+        "textResizePercent": 200,
+        "arrivalRace": {
+          "distinctActors": true,
+          "actorRoles": [
+            "owner",
+            "reception"
+          ],
+          "startDeltaMilliseconds": 0.10515500000019529,
+          "statuses": [
+            201,
+            201
+          ],
+          "tickets": [
+            1,
+            2
+          ],
+          "readySequences": [
+            1,
+            2
+          ]
+        },
+        "sameBookingRace": {
+          "distinctActors": true,
+          "statuses": [
+            201,
+            409
+          ],
+          "oneVisit": true,
+          "ticket": 3
+        },
+        "walkInRefreshRetry": {
+          "rowsBefore": 20,
+          "rowsAfter": 21,
+          "windowCapacity": 21,
+          "sameRequestAndKey": true,
+          "replayed": true,
+          "ticket": 21,
+          "oneArrivalEvent": true,
+          "secondPageReachable": true
+        }
+      },
+      "p06_browser_regression": {
+        "checks": 24,
+        "passed": true,
+        "run_id": 44953178051
+      },
+      "p06_phone_apk": {
+        "build_passed": true,
+        "emulator_install_and_launch_passed": true,
+        "run_id": 44953178027,
+        "scope": "offline P06 UI preview only",
+        "physical_phone_tested": false,
+        "p07_phone_tested": false
+      },
+      "local_node_syntax_check_passed": true,
+      "original_reference_checks": {
+        "rerun_in_this_review": false,
+        "prior_python_tests": 51,
+        "prior_frozen_files": 57,
+        "evidence": "Original top-level checks in this file; review fix touched only Reception.tsx and validate_p07_browser.cjs."
+      }
+    },
+    "ci_runs": [
+      {
+        "name": "Nobteek foundation",
+        "id": 44953178031,
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178031",
+        "event": "pull_request",
+        "conclusion": "success",
+        "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030"
+      },
+      {
+        "name": "Nobteek P07 reception",
+        "id": 44953178023,
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178023",
+        "event": "pull_request",
+        "conclusion": "success",
+        "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030"
+      },
+      {
+        "name": "Nobteek P06 browser acceptance",
+        "id": 44953178051,
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178051",
+        "event": "pull_request",
+        "conclusion": "success",
+        "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030"
+      },
+      {
+        "name": "Nobteek P06 phone APK",
+        "id": 44953178027,
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178027",
+        "event": "pull_request",
+        "conclusion": "success",
+        "source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030"
+      }
+    ],
+    "evidence_artifact": {
+      "id": 14726910092,
+      "name": "nobteek-p07-evidence",
+      "run_id": 44953178023,
+      "retention_days": 14,
+      "created_at": "2026-11-21T21:47:00Z",
+      "expires_at": "2026-12-05T21:47:00Z",
+      "digest": "sha256:e914823720395915398b699777ae1500158cea9c15a3be37aae73d3f2a9978db",
+      "downloaded_and_digest_verified": true
+    },
+    "merge_tree_matches_tested_source": true,
+    "local_php_and_postgresql_run": false,
+    "new_screenshots_visually_reviewed": false,
+    "integration": {
+      "branch": "work/p07-reception-20261108",
+      "target": "main",
+      "status": "merged",
+      "merged": true,
+      "pull_request": 1,
+      "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/1",
+      "reviewed_head_sha": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
+      "merge_commit_sha": "30225fb6baffc59971b8f05212ac3fec1cd331b0",
+      "merged_at": "2026-11-21T21:49:44Z",
+      "merged_on_local": "2026-11-22",
+      "timezone": "Asia/Aden",
+      "authorization": "Explicit user approval in the current conversation"
+    }
   }
 }
