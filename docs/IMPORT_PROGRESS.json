@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "repository": "hosamalqodaymy-rgb/nobteek",
-  "branch": "main",
+  "branch": "work/p08-doctor-20261122",
   "task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "status": "P07_merged_into_main_automated_verified_physical_phone_pending",
+  "status": "P08_implemented_automated_verified_pull_request_ready_pending_merge",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
@@ -348,7 +348,7 @@
     ".github/workflows/ci.yml"
   ],
   "next_batch_paths": [],
-  "resume_instruction": "Source import and P07 integration are complete. Start the next development stage P08 from main, preserving the recorded P00/P01 rules and existing history. Physical-phone and server-connected acceptance and new-account hosting remain pending.",
+  "resume_instruction": "P08 is implemented and automated acceptance is verified on PR #2. Integrate the reviewed P08 branch before P09. Preserve P00/P01 rules, existing history and P07 merge evidence. Physical-phone acceptance and new-account hosting remain pending.",
   "previous_checkpoint_commit": "3c1950b136f6924fb8239b1f5436a71f2e1d7620",
   "original_remote_commit": "f4372a0cb8a6bbc42cf4e16a52ca7dd11e5a137a",
   "source_manifest": "docs/P06_SOURCE_RELEASE.json",
@@ -369,8 +369,8 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "P08 physician call-next/start/complete and clinical priority, starting from main after merged PR #1. Physical phone and new-account hosting remain pending; previous APK is offline P06 only.",
-  "next_development_stage": "P08",
+  "next_action": "Review and merge P08 PR #2, then implement P09 private patient tracking and waiting-room numbers. The previous APK remains offline P06 only.",
+  "next_development_stage": "P09",
   "browser_gaps": [
     "physical phone native browser and keyboard when a device is available"
   ],
@@ -378,11 +378,11 @@
   "current_ci": {
     "status": "completed",
     "conclusion": "success",
-    "run_id": 44953178031,
-    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178031",
-    "head_sha": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030",
-    "phpunit_tests": 139,
-    "phpunit_assertions": 945,
+    "run_id": 44956048283,
+    "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44956048283",
+    "head_sha": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+    "phpunit_tests": 171,
+    "phpunit_assertions": 1336,
     "build_migrate_seed_passed": true,
     "environment": "isolated GitHub Actions PostgreSQL test database"
   },
@@ -405,8 +405,8 @@
     ],
     "text_resize_percent": 200,
     "real_phone_tested": false,
-    "latest_successful_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44953178051",
-    "latest_verified_source_commit": "60ca57f5a8a672a1cf1fb3b20895c07b94d61030"
+    "latest_successful_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44956048269",
+    "latest_verified_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733"
   },
   "phone_verification": {
     "report": "results/p06_phone_apk_build.json",
@@ -457,10 +457,29 @@
       "real_phone_tested": false,
       "server_connected_phone_tested": false,
       "production_deployed": false
+    },
+    "p08_regression": {
+      "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+      "run_id": 44956048323,
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44956048323",
+      "filter_tests_passed": 38,
+      "filter_assertions": 268,
+      "browser_checks_passed": 15,
+      "responsive_layout_cases_passed": 12
     }
   },
-  "current_work_branch": "main",
+  "current_work_branch": "work/p08-doctor-20261122",
   "integration": {
+    "branch": "work/p08-doctor-20261122",
+    "target": "main",
+    "status": "ready_for_review",
+    "merged": false,
+    "pull_request": 2,
+    "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/2",
+    "tested_source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733"
+  },
+  "checks_this_session_scope": "Original source-import flags remain historical. P07 merge evidence is preserved in results/p07_validation.json. P08 implementation and current regressions are recorded in results/p08_validation.json against the tested source commit; a later documentation-only commit does not reattribute those measurements.",
+  "previous_integration": {
     "branch": "work/p07-reception-20261108",
     "target": "main",
     "status": "merged",
@@ -474,5 +493,29 @@
     "timezone": "Asia/Aden",
     "authorization": "Explicit user approval in the current conversation"
   },
-  "checks_this_session_scope": "Historical original source-import verification; these flags were not rerun or reassigned during the 2026-11-22 P07 merge review. See results/p07_validation.json merge_review for current evidence."
+  "doctor_verification": {
+    "id": "NOBTEEK-P08-1.0",
+    "report": "results/p08_validation.json",
+    "source_commit": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
+    "laravel_tests_passed": 171,
+    "laravel_assertions": 1336,
+    "new_phase_tests": 32,
+    "doctor_filter_tests_passed": 44,
+    "doctor_filter_assertions": 474,
+    "browser_checks_passed": 17,
+    "responsive_layout_cases_passed": 14,
+    "same_session_distinct_actor_race_passed": true,
+    "cross_session_one_active_visit_passed": true,
+    "uncertain_call_and_completion_exact_retry_passed": true,
+    "delegation_revocation_before_replay_passed": true,
+    "correction_preserves_state_and_times": true,
+    "text_resize_200_percent_tested": true,
+    "real_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "merged": false,
+    "pull_request": 2,
+    "next_stage": "P09",
+    "financial_phase": "P13"
+  }
 }
