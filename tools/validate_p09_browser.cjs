@@ -20,6 +20,8 @@ const fixture = JSON.parse(fs.readFileSync(path.join(output, 'fixture.json')));
 assert.equal(fixture.synthetic_only, true);
 const ticketFields = ['booking_state', 'visit_state', 'ticket_number', 'waiting_ahead', 'doctor_state', 'session_state', 'window_starts_at', 'window_ends_at', 'server_time', 'booking_version', 'visit_version'].sort();
 const roomFields = ['doctor_id', 'session_state', 'called_ticket_numbers', 'next_ticket_numbers', 'server_time'].sort();
+// Screenshot-only styling avoids mobile full-page mask-coordinate drift. Values remain intact.
+const screenshotPrivacyStyle = '.private-ticket-value{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;caret-color:transparent!important;background:#e7eff1!important}.private-ticket-value::selection{color:transparent!important;-webkit-text-fill-color:transparent!important;background:transparent!important}';
 const report = { schemaVersion: 1, phase: 'P09', passed: false, scope: 'real_Laravel_PostgreSQL_private_ticket_and_staff_waiting_room', checks: [], screenshots: [], layoutCases: [], runtimeErrors: [], serverErrors: [], apiResponsesMocked: false, syntheticOnly: true, physicalPhoneTested: false, textResizePercent: 200, faultInjection: ['one_committed_response_aborted', 'temporary_network_abort', 'browser_offline', 'document_visibility_events'] };
 let browser, activePage;
 function safe(value) { return String(value).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]').replace(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/gi, '[identifier]'); }
@@ -30,6 +32,8 @@ async function bounded(promise, milliseconds, label) {
   try { return await Promise.race([promise, new Promise((resolve, reject) => { timer = setTimeout(() => reject(new Error(label + ' exceeded ' + milliseconds + 'ms')), milliseconds); })]); }
   finally { clearTimeout(timer); }
 }
+async function jsonBody(response, label) { stage(label); return bounded(response.json(), 10000, label); }
+async function textBody(response, label) { stage(label); return bounded(response.text(), 10000, label); }
 async function step(id, name, work) {
   const check = { id, name, status: 'running' }; report.checks.push(check); report.activeStep = id; stage(name);
   let timer;
@@ -69,13 +73,14 @@ async function post(page, route, data, version, key = crypto.randomUUID()) {
   const headers = { Accept: 'application/json', 'X-XSRF-TOKEN': decodeURIComponent(csrf), 'Idempotency-Key': key };
   if (version !== undefined) headers['If-Match'] = String(version);
   const response = await page.request.post(new URL(route, base).href, { headers, data });
-  return { status: response.status(), body: await response.json() };
+  return { status: response.status(), body: await jsonBody(response, 'Decoding real HTTP command response') };
 }
-async function get(page, route) { stage('HTTP GET ' + new URL(route, base).pathname); const response = await page.request.get(new URL(route, base).href, { headers: { Accept: 'application/json' } }); assert.equal(response.status(), 200, 'Authorized read failed'); return response.json(); }
+async function get(page, route) { stage('HTTP GET ' + new URL(route, base).pathname); const response = await page.request.get(new URL(route, base).href, { headers: { Accept: 'application/json' } }); assert.equal(response.status(), 200, 'Authorized read failed'); return jsonBody(response, 'Decoding authorized real HTTP data'); }
 function bearer(url) { const value = new URL(url, base); assert.ok(value.origin === base && value.pathname === '/ticket' && /^#[a-f0-9]{64}$/.test(value.hash), 'Safe fragment link expected'); return value.hash.slice(1); }
 async function readTicket(page, link, query = '') {
+  stage('Reading private-ticket DTO through real HTTP client');
   const response = await page.request.get(base + '/v1/tickets/current' + query, { headers: { Accept: 'application/json', Authorization: 'Bearer ' + bearer(link) } });
-  const body = await response.json(); if (response.status() === 200) assert.deepEqual(Object.keys(body).sort(), ticketFields);
+  const body = await jsonBody(response, 'Decoding private-ticket HTTP response with status ' + response.status()); if (response.status() === 200) assert.deepEqual(Object.keys(body).sort(), ticketFields);
   return { status: response.status(), body, headers: response.headers() };
 }
 async function openTicket(page, link, expected = 200) {
@@ -84,6 +89,7 @@ async function openTicket(page, link, expected = 200) {
   await page.goto(base + '/help');
   const [response, shell] = await Promise.all([page.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current'), page.goto(link)]);
   assert.equal(response.status(), expected); await page.waitForFunction(() => location.hash === '');
+  stage(expected === 200 ? 'Rendering private ticket state' : 'Rendering unavailable private-link state');
   if (expected === 200) await page.locator('.ticket-status').waitFor();
   else await page.getByRole('heading', { name: 'الرابط غير متاح أو انتهت صلاحيته', exact: true }).waitFor();
   return { response, shell };
@@ -93,13 +99,13 @@ async function refreshTicket(page) {
   stage('Manual private-ticket refresh');
   const [response] = await Promise.all([page.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current'), page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).click()]);
   assert.equal(response.status(), 200); await page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).waitFor();
-  return response.json();
+  return jsonBody(response, 'Decoding browser manual-refresh body');
 }
 async function advancePoll(page, milliseconds, route) {
   activePage = page;
   stage('Automatic poll after ' + milliseconds + 'ms for ' + route);
   const response = page.waitForResponse(value => new URL(value.url()).pathname === route);
-  await page.clock.runFor(milliseconds); const result = await response; assert.equal(result.status(), 200); return result.json();
+  await page.clock.runFor(milliseconds); const result = await response; assert.equal(result.status(), 200); return jsonBody(result, 'Decoding browser automatic-poll body');
 }
 async function captureLayout(page, name) {
   activePage = page;
@@ -123,7 +129,7 @@ async function captureLayout(page, name) {
   }, width);
   const filename = name + '.png';
   stage('Masked screenshot for ' + name);
-  await page.screenshot({ path: path.join(output, filename), fullPage: true, mask: [page.locator('.private-ticket-value')], animations: 'disabled' });
+  await page.screenshot({ path: path.join(output, filename), fullPage: true, style: screenshotPrivacyStyle, animations: 'disabled' });
   metrics.screenshotWidth = fs.readFileSync(path.join(output, filename)).readUInt32BE(16);
   report.screenshots.push(filename); report.layoutCases.push({ name, ...metrics });
   assert.equal(metrics.direction, 'rtl');
@@ -146,7 +152,7 @@ async function shellProps(page) {
       if (typeof data.component === 'string' && typeof data.url === 'string' && data.props && typeof data.props === 'object') return data.props;
     }
     throw new Error('Initial Inertia page data is absent from the HTML shell');
-  }, await response.text());
+  }, await textBody(response, 'Reading unhydrated HTML shell body'));
 }
 
 (async () => {
@@ -191,7 +197,7 @@ async function shellProps(page) {
     await guest.getByLabel('الطبيب والجلسة', { exact: true }).selectOption(sid); await guest.getByLabel('نافذة الوصول', { exact: true }).selectOption(wid);
     await guest.getByLabel('اسم المراجع', { exact: true }).fill('مراجع المتابعة التجريبي'); await guest.getByLabel('رقم التواصل', { exact: true }).fill('777123456');
     const [response] = await Promise.all([guest.waitForResponse(value => new URL(value.url()).pathname === '/v1/booking-requests' && value.request().method() === 'POST'), guest.getByRole('button', { name: 'إرسال طلب الحجز', exact: true }).click()]);
-    assert.equal(response.status(), 201); receipt = await response.json(); bearer(receipt.ticket_url);
+    assert.equal(response.status(), 201); receipt = await jsonBody(response, 'Decoding browser public-booking receipt'); bearer(receipt.ticket_url);
     await guest.getByRole('heading', { name: 'تم حفظ الطلب · قيد المراجعة', exact: true }).waitFor();
     assert.ok(await guest.locator('.private-ticket-value').inputValue() === receipt.ticket_url, 'Receipt link matches issued link');
     assert.equal((await guest.locator('body').innerText()).includes(receipt.id), false, 'Internal booking reference is not public UI');
@@ -214,11 +220,11 @@ async function shellProps(page) {
       for (const name of ['pushState', 'replaceState']) { const native = history[name].bind(history); history[name] = (data, title, url) => { inspect(data); inspect(url); return native(data, title, url); }; }
       const encrypt = crypto.subtle.encrypt.bind(crypto.subtle); crypto.subtle.encrypt = (algorithm, key, data) => { window.__p09HistoryObservation.encryptionCalls++; inspect(data); return encrypt(algorithm, key, data); };
     }, [bearer(receipt.ticket_url), bearer(family.ticket_url)]);
-    const { response, shell } = await openTicket(ticket, receipt.ticket_url); const data = await response.json();
+    const { response, shell } = await openTicket(ticket, receipt.ticket_url); const data = await jsonBody(response, 'Decoding successful browser private-ticket read');
     assert.deepEqual(Object.keys(data).sort(), ticketFields); assert.equal(data.booking_state, 'pending'); assert.equal(data.ticket_number, null); assert.equal(data.waiting_ahead, null);
     assert.ok(response.headers()['cache-control'].includes('no-store')); assert.equal(response.headers()['referrer-policy'], 'no-referrer');
     assert.ok(shell.headers()['cache-control'].includes('no-store')); assert.equal(shell.headers()['referrer-policy'], 'no-referrer');
-    safeShell(await shellProps(ticket)); assert.equal((await shell.text()).includes(bearer(receipt.ticket_url)), false);
+    safeShell(await shellProps(ticket)); assert.equal((await textBody(shell, 'Inspecting browser private HTML shell')).includes(bearer(receipt.ticket_url)), false);
     const persisted = await ticket.evaluate(() => JSON.stringify({ local: { ...localStorage }, session: { ...sessionStorage }, history: history.state }));
     assert.equal(persisted.includes(bearer(receipt.ticket_url)), false); assert.equal(persisted.includes('waiting_ahead'), false);
     await ticket.waitForFunction(() => window.__p09HistoryObservation.encryptionCalls > 0);
@@ -240,8 +246,11 @@ async function shellProps(page) {
   });
   await step('P09B04', 'Wrong, expired, missing, guessed and tampered links reveal no booking or family lookup', async () => {
     const wrong = base + '/ticket#' + crypto.randomBytes(32).toString('hex');
-    const first = await openTicket(invalid, wrong, 404); const wrongBody = await first.response.json();
-    const expired = await openTicket(invalid, base + '/ticket#' + expiredSecret, 404); assert.deepEqual(await expired.response.json(), wrongBody);
+    await openTicket(invalid, wrong, 404);
+    const wrongRead = await readTicket(guest, wrong); assert.equal(wrongRead.status, 404);
+    const expiredLink = base + '/ticket#' + expiredSecret;
+    await openTicket(invalid, expiredLink, 404);
+    const expiredRead = await readTicket(guest, expiredLink); assert.equal(expiredRead.status, 404); assert.deepEqual(expiredRead.body, wrongRead.body);
     assert.equal(await invalid.locator('.ticket-status').count(), 0); assert.equal(await invalid.locator('.private-ticket-value').count(), 0);
     await captureLayout(invalid, 'ticket-expired-360');
     await invalid.goto(base + '/help'); await invalid.goto(base + '/ticket#' + receipt.id); await invalid.getByRole('heading', { name: 'افتح رابطك الخاص', exact: true }).waitFor();
@@ -337,7 +346,7 @@ async function shellProps(page) {
     const endpoint = '/v1/bookings/' + receipt.id + '/ticket-link';
     await owner.route('**' + endpoint, async route => {
       original = { url: route.request().url(), key: route.request().headers()['idempotency-key'], version: route.request().headers()['if-match'], data: route.request().postDataJSON() };
-      const response = await route.fetch(); assert.equal(response.status(), 200); committed = await response.json(); await route.abort('failed');
+      const response = await route.fetch(); assert.equal(response.status(), 200); committed = await jsonBody(response, 'Decoding committed recovery before intentional response loss'); await route.abort('failed');
     });
     await issueButton.click(); await panel.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).waitFor(); await owner.unroute('**' + endpoint);
     assert.equal(await owner.getByRole('button', { name: 'إرسال طلب الحجز', exact: true }).isDisabled(), true); assert.equal(await owner.getByRole('button', { name: 'عرض الحجوزات', exact: true }).isDisabled(), true);
@@ -348,7 +357,7 @@ async function shellProps(page) {
     assert.equal(refresh.status(), 200); await row.waitFor({ state: 'detached' }); await owner.getByRole('button', { name: 'تحديث البيانات', exact: true }).waitFor();
     const [retry] = await Promise.all([owner.waitForResponse(response => new URL(response.url()).pathname === endpoint && response.request().method() === 'POST'), panel.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).click()]);
     assert.equal(retry.status(), 200); assert.ok(retry.request().url() === original.url && retry.request().headers()['idempotency-key'] === original.key && retry.request().headers()['if-match'] === original.version, 'Recovery replay preserved URL, key and version'); assert.deepEqual(retry.request().postDataJSON(), original.data);
-    renewed = await retry.json(); assert.equal(renewed.replayed, true); assert.ok(renewed.ticket_url === committed.ticket_url, 'Replay returns same current link');
+    renewed = await jsonBody(retry, 'Decoding browser recovery replay'); assert.equal(renewed.replayed, true); assert.ok(renewed.ticket_url === committed.ticket_url, 'Replay returns same current link');
     await owner.locator('.ticket-recovery-receipt .private-ticket-value').waitFor(); assert.ok(await owner.locator('.ticket-recovery-receipt .private-ticket-value').inputValue() === renewed.ticket_url);
     assert.equal((await readTicket(guest, receipt.ticket_url)).status, 404); const result = await readTicket(guest, renewed.ticket_url); assert.equal(result.body.booking_state, 'cancelled'); assert.equal(result.body.waiting_ahead, null);
     const audit = await get(reception, '/v1/bookings/' + receipt.id); assert.equal(audit.events.filter(event => event.event_type === 'booking_ticket-link').length, 1);
@@ -381,7 +390,7 @@ async function shellProps(page) {
 })().catch(async error => {
   process.exitCode = 1; console.error(safe(error.stack));
   report.failure = { step: report.activeStep, stage: report.currentStage };
-  if (activePage) { try { report.failure.path = safe(new URL(activePage.url()).pathname); await bounded(activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true, mask: [activePage.locator('.private-ticket-value')], animations: 'disabled' }), 10000, 'Failure screenshot'); } catch (failure) { report.failure.screenshotError = safe(failure.message).slice(0, 300); } }
+  if (activePage) { try { report.failure.path = safe(new URL(activePage.url()).pathname); await bounded(activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true, style: screenshotPrivacyStyle, animations: 'disabled' }), 10000, 'Failure screenshot'); } catch (failure) { report.failure.screenshotError = safe(failure.message).slice(0, 300); } }
 }).finally(async () => {
   checkpoint();
   if (browser) await browser.close();

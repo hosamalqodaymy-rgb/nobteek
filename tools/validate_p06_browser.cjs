@@ -89,7 +89,7 @@ async function command(page, name, id, action, sid, wid) {
   await c.locator('p').filter({ hasText: 'إصدار ' + data.version }).waitFor();
 }
 async function capture(page, name) {
-  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true, mask: [page.locator('.private-ticket-value')] });
+  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true, style: '.private-ticket-value{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;caret-color:transparent!important;background:#e7eff1!important}.private-ticket-value::selection{color:transparent!important;-webkit-text-fill-color:transparent!important;background:transparent!important}' });
   report.screenshots.push(name + '.png');
 }
 async function layout(page, name) {
