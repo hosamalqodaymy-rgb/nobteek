@@ -10,12 +10,27 @@ use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceptionController;
 use App\Http\Controllers\SessionSetupController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\WaitingRoomController;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\ResolveBookingActor;
+use App\Http\Middleware\VerifyAccountSession;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Inertia\Inertia;
 
 Route::get('/clinics/{clinic}/book', [PublicBookingController::class, 'show'])->whereUuid('clinic')->middleware('throttle:120,1')->name('public.booking');
 Route::post('/v1/booking-requests', [BookingController::class, 'create'])->middleware([ResolveBookingActor::class, 'throttle:30,1'])->name('bookings.request');
+Route::get('/ticket', [TicketController::class, 'show'])->name('public.ticket');
+Route::get('/help', [TicketController::class, 'help'])->name('public.help');
+Route::get('/privacy', [TicketController::class, 'privacy'])->name('public.privacy');
+Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, PreventRequestForgery::class, VerifyAccountSession::class, HandleInertiaRequests::class])
+    ->middleware('throttle:120,1')->group(function (): void {
+        Route::get('/v1/tickets/current', [TicketController::class, 'current'])->name('public.ticket.current');
+        Route::get('/v1/tickets/{secret}', [TicketController::class, 'legacy'])->where('secret', '[a-f0-9]{64}')->name('public.ticket.data');
+    });
 
 Route::get('/', fn () => Inertia::render('Welcome'))->name('welcome');
 Route::get('/login', [AccountController::class, 'loginPage'])->name('login');
@@ -50,9 +65,11 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/workspace/sessions', [SessionSetupController::class, 'index'])->name('sessions.index');
             Route::post('/workspace/sessions', [SessionSetupController::class, 'create'])->name('sessions.create');
             Route::get('/workspace/sessions/{session}', [SessionSetupController::class, 'show'])->whereUuid('session')->name('sessions.show');
+            Route::get('/workspace/sessions/{session}/waiting', [WaitingRoomController::class, 'show'])->whereUuid('session')->name('waiting.index');
             Route::post('/workspace/sessions/{session}/schedule', [SessionSetupController::class, 'correct'])->whereUuid('session')->name('session.schedule.correct');
             Route::get('/v1/sessions', [SessionSetupController::class, 'index'])->name('sessions.api');
             Route::get('/v1/sessions/{session}', [SessionSetupController::class, 'show'])->whereUuid('session')->name('session.api.show');
+            Route::get('/v1/sessions/{session}/waiting', [WaitingRoomController::class, 'read'])->whereUuid('session')->name('waiting.api');
             Route::post('/v1/sessions/{session}/capacity/preview', [SessionSetupController::class, 'preview'])->whereUuid('session')->name('session.capacity.preview');
             Route::post('/v1/sessions/{session}/{command}', [SessionSetupController::class, 'command'])->whereUuid('session')->whereIn('command', ['open', 'pause', 'resume', 'close', 'capacity', 'extend'])->name('session.command');
 
@@ -71,6 +88,7 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/v1/visits/{visit}/{command}', [ReceptionController::class, 'command'])->whereUuid('visit')->whereIn('command', ['mark-away', 'return', 'leave', 'defer'])->name('reception.command');
             Route::get('/v1/bookings', [BookingController::class, 'index'])->name('bookings.api');
             Route::get('/v1/bookings/{booking}', [BookingController::class, 'show'])->whereUuid('booking')->name('bookings.show');
+            Route::post('/v1/bookings/{booking}/ticket-link', [BookingController::class, 'ticketLink'])->whereUuid('booking')->middleware('throttle:30,1')->name('booking.ticket-link');
             Route::post('/v1/bookings/{booking}/{command}', [BookingController::class, 'command'])->whereUuid('booking')->whereIn('command', ['confirm', 'reject', 'cancel', 'reschedule'])->name('booking.command');
 
             Route::get('/workspace/team', [TeamController::class, 'index'])->name('team');

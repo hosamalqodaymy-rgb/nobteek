@@ -11,7 +11,7 @@ export type Shared = {
   status: string | null;
   privateNotice: { recovery_code?: string; account_link?: string } | null;
 };
-export function AccountLayout({ title, children, narrow = false }: { title: string; children: ReactNode; narrow?: boolean }) {
+export function AccountLayout({ title, children, narrow = false, navigationBlocked = false }: { title: string; children: ReactNode; narrow?: boolean; navigationBlocked?: boolean }) {
   const page = usePage<Shared>();
   const { brand, auth, links, status } = page.props;
   const privateNotice = (page.flash.privateNotice ?? null) as Shared['privateNotice'];
@@ -19,8 +19,8 @@ export function AccountLayout({ title, children, narrow = false }: { title: stri
     <Head title={`${title} | ${brand.name}`} />
     <a className="skip-link" href="#main">انتقل إلى المحتوى</a>
     <header className="site-header"><div className="wrap header-row">
-      <Link className="brand" href={links.welcome}><img src={symbol} alt="" width="42" height="42" /><span><span className="brand-name">{brand.name}</span><span className="brand-en" lang="en" dir="ltr">NOBTEEK</span></span></Link>
-      <nav className="header-links" aria-label="القائمة الرئيسية">
+      <Link className="brand" href={links.welcome} aria-disabled={navigationBlocked || undefined} onClick={e => { if (navigationBlocked) e.preventDefault(); }}><img src={symbol} alt="" width="42" height="42" /><span><span className="brand-name">{brand.name}</span><span className="brand-en" lang="en" dir="ltr">NOBTEEK</span></span></Link>
+      <nav className="header-links" aria-label="القائمة الرئيسية" inert={navigationBlocked}>
         {auth ? <><Link className="nav-link" href={links.dashboard}>مساحة العمل</Link>{page.props.doctor_workspace_allowed && <Link className="nav-link" href={links['doctor.index']}>شاشة الطبيب</Link>}<Link className="nav-link" href={links.security}>أمان الحساب</Link><button className="btn btn--quiet" onClick={() => router.post(links.logout)}>خروج</button></> : <Link className="nav-link" href={links.login}>دخول العيادة</Link>}
       </nav>
     </div></header>

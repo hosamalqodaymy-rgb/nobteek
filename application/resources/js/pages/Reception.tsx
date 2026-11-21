@@ -1,6 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { useId, useState } from 'react';
 import { AccountLayout, type Shared } from '../components/AccountLayout';
+import { PrivateTicketLink } from '../components/PrivateTicketLink';
 import { bookingStates, SessionWindowFields, useBookingAttempt, type BookingOption } from '../components/BookingForms';
 import { bookingTransport, useBookingTransport } from '../components/BookingTransport';
 import { dateLabel, timeLabel } from '../components/ScheduleForm';
@@ -61,7 +62,7 @@ function WalkInForm({ sessions, serverTime, saved }: { sessions: ReceptionSessio
   const current = sessions.filter(s => s.accepting_arrivals).map(s => ({ ...s, windows: s.windows.filter(w => new Date(w.starts_at).getTime() <= now && now < new Date(w.ends_at).getTime() && w.reserved < w.capacity) })).filter(s => s.windows.length);
   const blocked = attempt.busy || attempt.uncertain;
   const options = blocked && submitted ? [submitted.session] : current;
-  if (receipt) return <div className="account-alert account-success" role="status"><h3>تم حفظ الحضور المباشر</h3><p>رقم التذكرة: <strong>{String(receipt.ticket_number)}</strong>. يظهر موضع الانتظار في قائمة الجلسة.</p><button className="btn btn--secondary" onClick={() => { setReceipt(null); setName(''); setPhone(''); }}>إضافة مراجع آخر</button></div>;
+  if (receipt) return <div className="account-alert account-success" role="status"><h3>تم حفظ الحضور المباشر</h3><p>رقم التذكرة: <strong>{String(receipt.ticket_number)}</strong>. يظهر موضع الانتظار في قائمة الجلسة.</p>{typeof receipt.ticket_url === 'string' && <PrivateTicketLink url={receipt.ticket_url} expiresAt={typeof receipt.ticket_expires_at === 'string' ? receipt.ticket_expires_at : null} />}<button className="btn btn--secondary" onClick={() => { setReceipt(null); setName(''); setPhone(''); }}>إضافة مراجع آخر</button></div>;
   if (!options.length) return <p className="account-alert account-warning">لا توجد نافذة وصول جارية بسعة متاحة للحضور المباشر في هذا اليوم. حدّث البيانات أو راجع الجلسات والسعة.</p>;
   return <form className="secure-form walk-in-form" onSubmit={async e => {
     e.preventDefault();

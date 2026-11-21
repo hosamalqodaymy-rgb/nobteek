@@ -21,7 +21,7 @@ class VerifyAccountSession
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
-                if ($request->is('login', 'recover', 'account-access', 'login/challenge')) {
+                if ($request->is('login', 'recover', 'account-access', 'login/challenge') || $request->routeIs('public.booking', 'public.ticket', 'public.help', 'public.privacy')) {
                     return $next($request);
                 }
                 if ($request->expectsJson()) {

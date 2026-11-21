@@ -89,7 +89,7 @@ async function command(page, name, id, action, sid, wid) {
   await c.locator('p').filter({ hasText: 'إصدار ' + data.version }).waitFor();
 }
 async function capture(page, name) {
-  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true });
+  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true, mask: [page.locator('.private-ticket-value')] });
   report.screenshots.push(name + '.png');
 }
 async function layout(page, name) {
@@ -281,7 +281,7 @@ async function layout(page, name) {
   if (activePage && !activePage.isClosed() && !/\/login|\/account/.test(activePage.url())) { try { await capture(activePage, 'failure'); } catch {} }
   process.exitCode = 1;
 }).finally(async () => {
-  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]') + '\n');
   console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, failed: report.checks.filter(x => x.status !== 'passed'), realPhoneTested: report.realPhoneTested }));
   if (browser) await browser.close();
 });

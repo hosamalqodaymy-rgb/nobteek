@@ -152,7 +152,7 @@ async function captureLayout(p, name) {
     };
   }, width);
   const filename = name + '.png';
-  await p.screenshot({ path: path.join(output, filename), fullPage: true });
+  await p.screenshot({ path: path.join(output, filename), fullPage: true, mask: [p.locator('.private-ticket-value')] });
   metrics.screenshotWidth = fs.readFileSync(path.join(output, filename)).readUInt32BE(16);
   report.screenshots.push(filename); report.layoutCases.push({ name, ...metrics });
   assert.equal(metrics.direction, 'rtl');
@@ -434,10 +434,10 @@ async function captureLayout(p, name) {
   });
   report.passed = true;
 })().catch(async e => {
-  process.exitCode = 1; console.error(String(e.stack));
-  if (activePage) { try { report.failure = { path: new URL(activePage.url()).pathname, body: (await activePage.locator('body').innerText()).slice(0, 2000) }; await activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true }); } catch {} }
+  process.exitCode = 1; console.error(String(e.stack).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]'));
+  if (activePage) { try { report.failure = { path: new URL(activePage.url()).pathname, body: (await activePage.locator('body').innerText()).slice(0, 2000) }; await activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true, mask: [activePage.locator('.private-ticket-value')] }); } catch {} }
 }).finally(async () => {
-  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]') + '\n');
   if (browser) await browser.close();
   console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, failed: report.checks.filter(c => c.status !== 'passed').map(c => c.id) }));
 });

@@ -132,7 +132,7 @@ class DoctorController extends Controller
             $session->state === 'scheduled' || now()->lt($session->starts_at) => 'scheduled',
             default => 'available',
         };
-        $actions = [];
+        $actions = ['waiting_room' => route('waiting.index', $session->id)];
         if ($session->state === 'open' && now()->gte($session->starts_at) && $available && ! $busy
             && DB::table('visits')->where('clinic_id', $session->clinic_id)->where('session_id', $session->id)->where('state', 'waiting')->exists()) {
             $actions['call_next'] = route('doctor.call-next', $session->id);

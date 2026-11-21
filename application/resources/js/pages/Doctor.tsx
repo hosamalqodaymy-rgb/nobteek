@@ -12,7 +12,7 @@ type Command = { url: string; data: Record<string, unknown>; version: number; la
 type Session = {
   id: string; doctor_id: string; doctor_name: string; starts_at: string; ends_at: string; state: string; version: number; intake_ended: boolean;
   availability: 'available' | 'busy' | 'delayed' | 'paused' | 'scheduled' | 'closed';
-  actions: Partial<Record<'call_next' | 'pause' | 'resume', string>>;
+  actions: Partial<Record<'call_next' | 'pause' | 'resume' | 'waiting_room', string>>;
 };
 type Visit = {
   id: string; booking_id: string; booking_state: string; booking_version: number; session_id: string; doctor_id: string; display_name: string;
@@ -116,6 +116,7 @@ function DoctorScreen() {
       {selected_session ? <>
         <section className="account-card doctor-session-state" aria-label="حالة جلسة الطبيب"><div className="section-heading"><h2>{selected_session.doctor_name}</h2><span className="state-pill">{availabilityLabels[selected_session.availability]}</span></div><p>{dateLabel(selected_session.starts_at)} · {timeLabel(selected_session.starts_at)} – {timeLabel(selected_session.ends_at)}</p>
           {selected_session.intake_ended && <p className="account-alert account-warning">انتهى استقبال حضور جديد. تستمر معالجة من سجلوا حضورهم حتى إتمام القائمة.</p>}
+          {selected_session.actions.waiting_room && <p><a className="btn btn--secondary" href={selected_session.actions.waiting_room} target="_blank" rel="noopener noreferrer">فتح شاشة الانتظار بالأرقام</a></p>}
           {selected_session.actions.call_next ? <button className="btn doctor-call-next" disabled={disabled} onClick={() => void submit({ url: selected_session.actions.call_next!, data: {}, version: selected_session.version, label: commandLabels.call_next, subject: selected_session.doctor_name })}>استدعاء التالي</button> : <p className="muted">الاستدعاء الجديد يتطلب جلسة مفتوحة ومراجعًا منتظرًا وطبيبًا دون زيارة نشطة.</p>}
           {permissions.can_practice && (selected_session.actions.pause || selected_session.actions.resume) && <details className="doctor-session-actions"><summary>تنظيم الاستدعاء والتأخر</summary><div className="doctor-reason-grid">{(['pause', 'resume'] as const).map(action => selected_session.actions[action] && <ReasonAction key={action} action={action} url={selected_session.actions[action]!} version={selected_session.version} subject={selected_session.doctor_name} options={reason_options[action] ?? []} disabled={disabled} submit={submit} />)}</div><p className="muted">التوقف يمنع استدعاء جديد، ويسمح ببدء الزيارة المستدعاة وإتمامها.</p></details>}
         </section>
