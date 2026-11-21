@@ -41,6 +41,7 @@ class OperationsP10Test extends TicketTestCase
 
     public function test_wait_is_arrival_to_start_only_for_completed_visits_with_valid_times(): void
     {
+        $baseline = $this->report();
         $first = $this->arrivedVisit();
         $second = $this->walkIn('مراجع سيناريو الانتظار')->assertCreated()->json('id');
         $this->doctor();
@@ -52,11 +53,11 @@ class OperationsP10Test extends TicketTestCase
         $this->owner();
         $this->visitCommand($second, 'leave')->assertOk();
         $report = $this->report();
-        $this->assertSame(2, $report['arrivals']);
-        $this->assertSame(1, $report['completed']);
-        $this->assertSame(1, $report['departed']);
-        $this->assertSame(1, $report['incomplete_times']);
-        $this->assertSame(1, $report['measured_count']);
+        $this->assertSame($baseline['arrivals'] + 2, $report['arrivals']);
+        $this->assertSame($baseline['completed'] + 1, $report['completed']);
+        $this->assertSame($baseline['departed'] + 1, $report['departed']);
+        $this->assertSame($baseline['incomplete_times'] + 1, $report['incomplete_times']);
+        $this->assertSame($baseline['measured_count'] + 1, $report['measured_count']);
         $this->assertEqualsWithDelta(6, $report['average_wait_minutes'], 0.01);
         $this->assertEqualsWithDelta(9, $report['average_service_minutes'], 0.01);
         $this->assertEqualsWithDelta(9, $report['total_service_minutes'], 0.01);
@@ -65,6 +66,7 @@ class OperationsP10Test extends TicketTestCase
 
     public function test_in_progress_visit_is_not_included_in_wait_averages(): void
     {
+        $baseline = $this->report();
         $visit = $this->arrivedVisit();
         $this->doctor();
         $this->callNext()->assertOk();
@@ -72,14 +74,17 @@ class OperationsP10Test extends TicketTestCase
         $this->doctorAction($visit, 'start')->assertOk();
         $this->owner();
         $report = $this->report();
-        $this->assertSame(1, $report['arrivals']);
-        $this->assertSame(0, $report['measured_count']);
-        $this->assertNull($report['average_wait_minutes']);
-        $this->assertSame(1, $report['incomplete_times']);
+        $this->assertSame($baseline['arrivals'] + 1, $report['arrivals']);
+        $this->assertSame($baseline['measured_count'], $report['measured_count']);
+        $this->assertSame($baseline['average_wait_minutes'], $report['average_wait_minutes']);
+        $this->assertSame($baseline['incomplete_times'] + 1, $report['incomplete_times']);
     }
 
     public function test_reports_are_owner_only_scoped_and_csv_requires_recent_mfa(): void
     {
+        $this->signIn('OWNER_B', true);
+        $baselineOther = $this->getJson('/workspace/operations?date=2026-11-07')->assertOk()->json();
+        $this->owner();
         $this->arrivedVisit();
         $owner = $this->getJson('/workspace/operations')->assertOk()->json();
         $this->assertSame($this->id('CLINIC_A'), DB::table('visits')->where('id', $this->id('VISIT_A1'))->value('clinic_id') ?? $this->id('CLINIC_A'));
@@ -98,8 +103,8 @@ class OperationsP10Test extends TicketTestCase
         $this->getJson('/workspace/operations')->assertForbidden();
         $this->signIn('OWNER_B', true);
         $other = $this->getJson('/workspace/operations?date=2026-11-07')->assertOk()->json();
-        $this->assertSame(0, $other['report']['arrivals']);
-        $this->assertSame([], $other['notifications']);
+        $this->assertSame($baselineOther['report']['arrivals'], $other['report']['arrivals']);
+        $this->assertSame($baselineOther['notifications'], $other['notifications']);
         $this->signIn('PLATFORM', true);
         $this->getJson('/workspace/operations')->assertNotFound();
         $this->getJson('/platform/operations')->assertOk();
