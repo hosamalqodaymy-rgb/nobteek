@@ -23,10 +23,21 @@ const roomFields = ['doctor_id', 'session_state', 'called_ticket_numbers', 'next
 const report = { schemaVersion: 1, phase: 'P09', passed: false, scope: 'real_Laravel_PostgreSQL_private_ticket_and_staff_waiting_room', checks: [], screenshots: [], layoutCases: [], runtimeErrors: [], serverErrors: [], apiResponsesMocked: false, syntheticOnly: true, physicalPhoneTested: false, textResizePercent: 200, faultInjection: ['one_committed_response_aborted', 'temporary_network_abort', 'browser_offline', 'document_visibility_events'] };
 let browser, activePage;
 function safe(value) { return String(value).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]').replace(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/gi, '[identifier]'); }
+function checkpoint() { fs.writeFileSync(path.join(output, 'report.json'), safe(JSON.stringify(report, null, 2)) + '\n'); }
+function stage(label) { report.currentStage = safe(label); checkpoint(); }
+async function bounded(promise, milliseconds, label) {
+  let timer;
+  try { return await Promise.race([promise, new Promise((resolve, reject) => { timer = setTimeout(() => reject(new Error(label + ' exceeded ' + milliseconds + 'ms')), milliseconds); })]); }
+  finally { clearTimeout(timer); }
+}
 async function step(id, name, work) {
-  const check = { id, name, status: 'running' }; report.checks.push(check);
-  try { await work(); check.status = 'passed'; console.log(JSON.stringify({ id, status: 'passed' })); }
-  catch (error) { check.status = 'failed'; check.error = safe(error.message).slice(0, 2000); throw error; }
+  const check = { id, name, status: 'running' }; report.checks.push(check); report.activeStep = id; stage(name);
+  let timer;
+  try {
+    await Promise.race([work(), new Promise((resolve, reject) => { timer = setTimeout(() => reject(new Error(id + ' exceeded 45000ms during: ' + report.currentStage)), 45000); })]);
+    check.status = 'passed'; report.activeStep = null; checkpoint(); console.log(JSON.stringify({ id, status: 'passed' }));
+  } catch (error) { check.status = 'failed'; check.error = safe(error.message).slice(0, 2000); check.failedStage = report.currentStage; checkpoint(); throw error; }
+  finally { clearTimeout(timer); }
 }
 function otp() {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '';
@@ -44,6 +55,7 @@ async function pageFor(context) {
 }
 async function login(page, username, mfa = false) {
   activePage = page;
+  stage('Clinic sign-in' + (mfa ? ' with MFA' : ''));
   await page.goto(base + '/login');
   await page.getByLabel('اسم الدخول', { exact: true }).fill(username);
   await page.getByLabel('كلمة المرور', { exact: true }).fill(password);
@@ -52,13 +64,14 @@ async function login(page, username, mfa = false) {
   await page.waitForURL('**/workspace');
 }
 async function post(page, route, data, version, key = crypto.randomUUID()) {
+  stage('HTTP POST ' + new URL(route, base).pathname);
   const cookies = await page.context().cookies(base); const csrf = cookies.find(cookie => cookie.name === 'XSRF-TOKEN')?.value || '';
   const headers = { Accept: 'application/json', 'X-XSRF-TOKEN': decodeURIComponent(csrf), 'Idempotency-Key': key };
   if (version !== undefined) headers['If-Match'] = String(version);
   const response = await page.request.post(new URL(route, base).href, { headers, data });
   return { status: response.status(), body: await response.json() };
 }
-async function get(page, route) { const response = await page.request.get(new URL(route, base).href, { headers: { Accept: 'application/json' } }); assert.equal(response.status(), 200, 'Authorized read failed'); return response.json(); }
+async function get(page, route) { stage('HTTP GET ' + new URL(route, base).pathname); const response = await page.request.get(new URL(route, base).href, { headers: { Accept: 'application/json' } }); assert.equal(response.status(), 200, 'Authorized read failed'); return response.json(); }
 function bearer(url) { const value = new URL(url, base); assert.ok(value.origin === base && value.pathname === '/ticket' && /^#[a-f0-9]{64}$/.test(value.hash), 'Safe fragment link expected'); return value.hash.slice(1); }
 async function readTicket(page, link, query = '') {
   const response = await page.request.get(base + '/v1/tickets/current' + query, { headers: { Accept: 'application/json', Authorization: 'Bearer ' + bearer(link) } });
@@ -67,6 +80,7 @@ async function readTicket(page, link, query = '') {
 }
 async function openTicket(page, link, expected = 200) {
   activePage = page;
+  stage('Opening private shell and waiting for bearer read');
   await page.goto(base + '/help');
   const [response, shell] = await Promise.all([page.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current'), page.goto(link)]);
   assert.equal(response.status(), expected); await page.waitForFunction(() => location.hash === '');
@@ -76,18 +90,22 @@ async function openTicket(page, link, expected = 200) {
 }
 async function refreshTicket(page) {
   activePage = page;
+  stage('Manual private-ticket refresh');
   const [response] = await Promise.all([page.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current'), page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).click()]);
   assert.equal(response.status(), 200); await page.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).waitFor();
   return response.json();
 }
 async function advancePoll(page, milliseconds, route) {
   activePage = page;
+  stage('Automatic poll after ' + milliseconds + 'ms for ' + route);
   const response = page.waitForResponse(value => new URL(value.url()).pathname === route);
   await page.clock.runFor(milliseconds); const result = await response; assert.equal(result.status(), 200); return result.json();
 }
 async function captureLayout(page, name) {
   activePage = page;
-  await page.evaluate(async () => { await document.fonts.ready; });
+  stage('Font readiness for ' + name);
+  await bounded(page.evaluate(async () => { await document.fonts.ready; }), 10000, 'Font readiness for ' + name);
+  stage('Layout measurement for ' + name);
   const width = page.viewportSize().width;
   const metrics = await page.evaluate(width => {
     const splitActionWords = [];
@@ -104,6 +122,7 @@ async function captureLayout(page, name) {
       controlsOutside: [...document.querySelectorAll('main input, main textarea, main select, main button, main article, main section, header nav')].filter(element => { const box = element.getBoundingClientRect(); return box.width && (box.left < -1 || box.right > width + 1); }).map(element => ({ tag: element.tagName })) };
   }, width);
   const filename = name + '.png';
+  stage('Masked screenshot for ' + name);
   await page.screenshot({ path: path.join(output, filename), fullPage: true, mask: [page.locator('.private-ticket-value')], animations: 'disabled' });
   metrics.screenshotWidth = fs.readFileSync(path.join(output, filename)).readUInt32BE(16);
   report.screenshots.push(filename); report.layoutCases.push({ name, ...metrics });
@@ -114,6 +133,7 @@ async function captureLayout(page, name) {
 async function textSize(page, percent) { await page.evaluate(value => { document.documentElement.style.fontSize = value + '%'; }, percent); }
 function safeShell(props) { for (const key of ['auth', 'privateNotice', 'status', 'doctor_workspace_allowed', 'errors']) assert.equal(Object.hasOwn(props, key), false, 'Private shared prop in public shell'); }
 async function shellProps(page) {
+  stage('Reading unhydrated public shell props');
   const url = new URL(page.url());
   const response = await page.request.get(url.origin + url.pathname + url.search, { headers: { Accept: 'text/html' } });
   assert.equal(response.status(), 200, 'Public HTML shell must load');
@@ -176,8 +196,10 @@ async function shellProps(page) {
     assert.ok(await guest.locator('.private-ticket-value').inputValue() === receipt.ticket_url, 'Receipt link matches issued link');
     assert.equal((await guest.locator('body').innerText()).includes(receipt.id), false, 'Internal booking reference is not public UI');
     await guest.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
+    stage('Copying private link to explicitly permitted clipboard');
     await guest.getByRole('button', { name: 'نسخ الرابط الخاص', exact: true }).click();
-    assert.ok(await guest.evaluate(() => navigator.clipboard.readText()) === receipt.ticket_url, 'Explicit copy preserved private link');
+    assert.ok(await bounded(guest.evaluate(() => navigator.clipboard.readText()), 10000, 'Private clipboard read') === receipt.ticket_url, 'Explicit copy preserved private link');
+    stage('Saving explicit private-link download');
     const [download] = await Promise.all([guest.waitForEvent('download'), guest.getByRole('button', { name: 'حفظ ملف الرابط', exact: true }).click()]);
     assert.equal(download.suggestedFilename(), 'nobteek-private-link.txt');
     let file = ''; for await (const chunk of await download.createReadStream()) file += chunk.toString(); assert.ok(file.trim() === receipt.ticket_url, 'Saved link matches receipt'); await download.delete();
@@ -203,11 +225,13 @@ async function shellProps(page) {
     assert.equal((await ticket.evaluate(() => window.__p09HistoryObservation)).leaked, false, 'Bearer never reaches encrypted-history plaintext');
     assert.equal(await ticket.locator('[data-ticket-number]').count(), 0); assert.equal(await ticket.locator('[data-waiting-ahead]').count(), 0);
     await captureLayout(ticket, 'ticket-pending-360');
+    stage('Native same-page private-link navigation');
     const switched = ticket.waitForResponse(value => new URL(value.url()).pathname === '/v1/tickets/current');
     await ticket.evaluate(link => { const anchor = document.createElement('a'); anchor.href = link; document.body.append(anchor); anchor.click(); anchor.remove(); }, family.ticket_url);
     assert.equal((await switched).status(), 200); await ticket.waitForFunction(() => location.hash === '');
     assert.ok(await ticket.locator('.private-ticket-value').inputValue() === family.ticket_url, 'Same-page saved link uses the new capability');
-    await ticket.goBack(); await ticket.goForward(); await ticket.waitForFunction(() => location.hash === '');
+    stage('Back and Forward with distinct component-key instants');
+    await ticket.clock.runFor(1); await ticket.goBack(); await ticket.clock.runFor(1); await ticket.goForward(); await ticket.waitForFunction(() => location.hash === '');
     assert.equal((await ticket.evaluate(() => window.__p09HistoryObservation)).leaked, false, 'Back and Forward cannot restore a secret from history');
     await openTicket(ticket, receipt.ticket_url);
     const ownerShell = await pageFor(owner.context()); await ownerShell.goto(base + '/ticket'); safeShell(await shellProps(ownerShell));
@@ -281,13 +305,16 @@ async function shellProps(page) {
     data = await refreshTicket(ticket); assert.equal(data.visit_state, 'waiting'); assert.equal(data.ticket_number, 4); assert.equal(data.waiting_ahead, 5);
   });
   await step('P09B09', 'Offline, hidden-tab pause and exponential retry preserve an honest stale state', async () => {
+    stage('Offline lifecycle and paused automatic requests');
     let count = ticketRequests; await ticket.context().setOffline(true); await ticket.getByRole('status').filter({ hasText: 'الاتصال منقطع' }).waitFor();
     await ticket.clock.runFor(60000); assert.equal(ticketRequests, count); await captureLayout(ticket, 'ticket-offline-360');
     const returned = ticket.waitForResponse(response => new URL(response.url()).pathname === '/v1/tickets/current'); await ticket.context().setOffline(false); assert.equal((await returned).status(), 200);
     await ticket.getByRole('status').filter({ hasText: 'الاتصال منقطع' }).waitFor({ state: 'detached' });
+    stage('Hidden-tab lifecycle and visible resume');
     await ticket.evaluate(() => { window.__p09Hidden = true; Object.defineProperty(document, 'hidden', { configurable: true, get: () => window.__p09Hidden }); document.dispatchEvent(new Event('visibilitychange')); });
     count = ticketRequests; await ticket.clock.runFor(60000); assert.equal(ticketRequests, count);
     const visible = ticket.waitForResponse(response => new URL(response.url()).pathname === '/v1/tickets/current'); await ticket.evaluate(() => { window.__p09Hidden = false; document.dispatchEvent(new Event('visibilitychange')); }); assert.equal((await visible).status(), 200);
+    stage('Aborted read and exponential backoff');
     await ticket.route('**/v1/tickets/current', route => route.abort('failed'));
     await ticket.getByRole('button', { name: 'تحديث حالة الحجز', exact: true }).click(); await ticket.getByRole('status').filter({ hasText: 'تعذر تأكيد آخر تحديث' }).waitFor();
     count = ticketRequests; await ticket.clock.runFor(39000); assert.equal(ticketRequests, count);
@@ -353,9 +380,10 @@ async function shellProps(page) {
   report.passed = true;
 })().catch(async error => {
   process.exitCode = 1; console.error(safe(error.stack));
-  if (activePage) { try { report.failure = { path: safe(new URL(activePage.url()).pathname) }; await activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true, mask: [activePage.locator('.private-ticket-value')], animations: 'disabled' }); } catch {} }
+  report.failure = { step: report.activeStep, stage: report.currentStage };
+  if (activePage) { try { report.failure.path = safe(new URL(activePage.url()).pathname); await bounded(activePage.screenshot({ path: path.join(output, 'failure.png'), fullPage: true, mask: [activePage.locator('.private-ticket-value')], animations: 'disabled' }), 10000, 'Failure screenshot'); } catch (failure) { report.failure.screenshotError = safe(failure.message).slice(0, 300); } }
 }).finally(async () => {
-  fs.writeFileSync(path.join(output, 'report.json'), safe(JSON.stringify(report, null, 2)) + '\n');
+  checkpoint();
   if (browser) await browser.close();
   console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, failed: report.checks.filter(check => check.status !== 'passed').map(check => check.id) }));
 });
