@@ -42,7 +42,9 @@ class DoctorOrderingTest extends DoctorTestCase
         $this->visitCommand($second, 'mark-away', 2)->assertOk();
         $this->doctorAction($second, 'priority', ['reason_code' => 'clinical_priority'])->assertConflict();
         $this->owner();
-        $this->visitCommand($second, 'return', 3)->assertOk()->assertJsonPath('priority', false)->assertJsonPath('ticket_number', 2);
+        $this->visitCommand($second, 'return', 3)->assertOk()->assertJsonPath('id', $second)->assertJsonPath('state', 'waiting')
+            ->assertJsonPath('version', 4)->assertJsonPath('ticket_number', 2)->assertJsonPath('ready_sequence', 4);
+        $this->assertDatabaseHas('visits', ['id' => $second, 'state' => 'waiting', 'version' => 4, 'priority' => false, 'ticket_number' => 2, 'ready_sequence' => 4]);
         $this->doctor();
         $this->doctorAction($first, 'start')->assertOk();
         $this->doctorAction($first, 'complete')->assertOk();

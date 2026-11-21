@@ -156,7 +156,7 @@ class DoctorCommands
                 abort_unless($booking->state === 'confirmed' && $visit->state === 'waiting' && $visit->started_at === null, 409, 'تغيرت حالة المراجع. حدث القائمة.');
                 $oldCalledAt = $visit->called_at;
                 $visit->state = 'called';
-                $visit->called_at = now();
+                $visit->called_at = now()->utc()->toIso8601String();
                 $visit->version = (int) $visit->version + 1;
                 DB::table('visits')->where('id', $visit->id)->update(['state' => $visit->state, 'called_at' => $visit->called_at, 'version' => $visit->version, 'updated_at' => now()]);
                 $session->version++;
@@ -164,7 +164,7 @@ class DoctorCommands
                 $this->audit($request, 'visit', $visit->id, 'visit_call_next', ['from' => 'waiting', 'to' => 'called', 'version' => $visit->version,
                     'ticket_number' => (int) $visit->ticket_number, 'ready_sequence' => (int) $visit->ready_sequence,
                     'previous_called_at' => $oldCalledAt ? CarbonImmutable::parse($oldCalledAt)->utc()->toIso8601String() : null,
-                    'called_at' => $visit->called_at->utc()->toIso8601String()], 'queue_order');
+                    'called_at' => $visit->called_at], 'queue_order');
 
                 return $this->remember($request, $key, $fingerprint, $this->result($session, $booking, $visit));
             }, 3);
@@ -199,19 +199,19 @@ class DoctorCommands
             if ($command === 'start') {
                 abort_unless($booking->state === 'confirmed' && $visit->state === 'called' && $visit->called_at !== null && $visit->started_at === null, 409, 'بدء الكشف متاح للمراجع المستدعى فقط.');
                 $visit->state = 'in_service';
-                $visit->started_at = now();
+                $visit->started_at = now()->utc()->toIso8601String();
                 $updates = ['state' => $visit->state, 'started_at' => $visit->started_at];
-                $changes['started_at'] = $visit->started_at->utc()->toIso8601String();
+                $changes['started_at'] = $visit->started_at;
                 $reason = 'consultation_started';
             } elseif ($command === 'complete') {
                 abort_unless($booking->state === 'confirmed' && $visit->state === 'in_service' && $visit->started_at !== null && $visit->completed_at === null, 409, 'إنهاء الزيارة متاح بعد بدء الكشف فقط.');
                 $visit->state = 'completed';
-                $visit->completed_at = now();
+                $visit->completed_at = now()->utc()->toIso8601String();
                 $updates = ['state' => $visit->state, 'completed_at' => $visit->completed_at];
                 $booking->state = 'fulfilled';
                 $booking->version = (int) $booking->version + 1;
                 DB::table('bookings')->where('clinic_id', $session->clinic_id)->where('id', $booking->id)->update(['state' => $booking->state, 'version' => $booking->version, 'updated_at' => now()]);
-                $changes['completed_at'] = $visit->completed_at->utc()->toIso8601String();
+                $changes['completed_at'] = $visit->completed_at;
                 $reason = 'consultation_completed';
                 $this->audit($request, 'booking', $booking->id, 'booking_fulfilled', ['from' => 'confirmed', 'to' => 'fulfilled', 'version' => $booking->version, 'visit_id' => $visit->id], $reason);
             } elseif ($command === 'priority') {

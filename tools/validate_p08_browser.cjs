@@ -344,19 +344,24 @@ async function captureLayout(p, name) {
     await doctor.goto(url(selectedOther, selectedOther === sid ? day : oldDay));
     await doctor.getByText('الزيارة الحالية من جلسة أخرى للطبيب نفسه.', { exact: false }).waitFor();
     assert.equal(await doctor.getByRole('button', { name: 'استدعاء التالي', exact: true }).count(), 0);
+    if (winner.session_id === fixture.old_session_id) {
+      await doctor.goto(base + '/workspace/doctor?date=' + day);
+      assert.equal(await doctor.getByLabel('جلسة الطبيب', { exact: true }).inputValue(), fixture.old_session_id);
+    }
     await uiVisit(doctor, winner.id, 'start', 'بدء الكشف');
     await uiVisit(doctor, winner.id, 'complete', 'إنهاء الزيارة');
     if (winner.session_id !== fixture.old_session_id) {
       const oldReady = await data(doctor, fixture.old_session_id, oldDay);
       const called = await post(doctor, '/v1/sessions/' + fixture.old_session_id + '/call-next', {}, oldReady.selected_session.version);
       assert.equal(called.status, 200); assert.equal(called.body.id, fixture.old_visit_id);
-      await doctor.goto(url());
-      await doctor.getByText('الزيارة الحالية من جلسة أخرى للطبيب نفسه.', { exact: false }).waitFor();
+      await doctor.goto(base + '/workspace/doctor?date=' + day);
+      assert.equal(await doctor.getByLabel('جلسة الطبيب', { exact: true }).inputValue(), fixture.old_session_id);
       await uiVisit(doctor, fixture.old_visit_id, 'start', 'بدء الكشف');
       await uiVisit(doctor, fixture.old_visit_id, 'complete', 'إنهاء الزيارة');
     }
+    await doctor.waitForFunction(id => document.getElementById('doctor-session')?.value === id, sid);
     assert.equal((await visit(fixture.old_visit_id, fixture.old_session_id, oldDay, 'completed')).booking_state, 'fulfilled');
-    report.crossSessionRace = { distinctActors: true, startDeltaMilliseconds: Math.abs(sent[1] - sent[0]), statuses: results.map(r => r.status), oneActiveAcrossSessions: true, activeShownInOtherSession: true, pastIntakeCompleted: true };
+    report.crossSessionRace = { distinctActors: true, startDeltaMilliseconds: Math.abs(sent[1] - sent[0]), statuses: results.map(r => r.status), oneActiveAcrossSessions: true, activeShownInOtherSession: true, pastIntakeCompleted: true, defaultSelectionRefreshed: true };
   });
   await step('D14', 'Stale browser command fails clearly and refresh reveals the existing recorded change', async () => {
     await doctor.goto(url());
