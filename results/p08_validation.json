@@ -681,5 +681,61 @@
     "runtime_source": "55791526239ee855fdfbbbe3eeeaada6fe5e2733",
     "source_workflow_runs_successful": 9,
     "merged_on_local": "2026-11-22"
-  }
+  },
+  "post_merge_verification": {
+    "phase": "P08",
+    "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_runs": [
+      {
+        "run_id": 44959170854,
+        "name": "Nobteek foundation",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170854"
+      },
+      {
+        "run_id": 44959170799,
+        "name": "Nobteek P06 browser acceptance",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170799"
+      },
+      {
+        "run_id": 44959170894,
+        "name": "Nobteek P07 reception",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170894"
+      },
+      {
+        "run_id": 44959170796,
+        "name": "Nobteek P08 doctor",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170796"
+      },
+      {
+        "run_id": 44959170840,
+        "name": "Nobteek P06 phone APK",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170840"
+      }
+    ],
+    "observed_at_utc": "2026-11-21T23:26:17Z",
+    "note": "These five runs verify the actual P08 merge commit. Earlier source measurements remain attributed to 55791526239ee855fdfbbbe3eeeaada6fe5e2733."
+  },
+  "historical_scope_note": "Implementation measurements and limits above describe the P08 checkpoint. The subsequent P09 implementation is recorded separately in results/p09_validation.json."
 }

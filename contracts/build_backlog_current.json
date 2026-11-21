@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.8",
+  "schema_version": "1.9",
   "as_of": "2026-11-22",
-  "status": "P08_doctor_merged_automated_verified_physical_device_pending",
+  "status": "P09_patient_implemented_automated_verified_pending_merge_physical_device_pending",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -10,9 +10,9 @@
     "delivery": "web_pwa",
     "locale": "ar-YE",
     "timezone": "Asia/Aden",
-    "application_implementation_status": "accounts_setup_bookings_reception_and_doctor_lifecycle_verified",
-    "design_implementation_status": "P01_identity_with_P08_doctor_and_delegation_forms",
-    "production_implementation_status": "pre_release_synthetic_only_P08_verified_remaining_phases_deployment_and_real_device_pending",
+    "application_implementation_status": "accounts_setup_bookings_reception_doctor_lifecycle_and_patient_followup_verified",
+    "design_implementation_status": "P01_identity_with_P09_patient_tracking_waiting_room_and_help",
+    "production_implementation_status": "pre_release_synthetic_only_P09_verified_pending_merge_remaining_phases_deployment_and_real_device_pending",
     "prototype_implementation_status": "frozen_interactive_prototype"
   },
   "billing_policy": {
@@ -492,18 +492,51 @@
         {
           "id": "T09A",
           "expected": "الرابط لا يعرض أسماء الآخرين ولا الهاتف ولا التشخيص؛ تبديل المعرف لا يكشف حجزا آخر.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p09_validation.json",
+            "acceptance_id": "T09A",
+            "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+            "run_id": 44961384763,
+            "scope": "real_Laravel_PostgreSQL_and_Chromium_private_ticket_recovery_waiting_room_and_state_journeys",
+            "application_integration_test": true,
+            "production_operational_release_test": false
+          }
         },
         {
           "id": "T09B",
           "expected": "انقطاع الاتصال أو إلغاء الجلسة يظهران بصراحة، والطلب قيد المراجعة لا يبدو مؤكدا.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p09_validation.json",
+            "acceptance_id": "T09B",
+            "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+            "run_id": 44961384763,
+            "scope": "real_Laravel_PostgreSQL_and_Chromium_private_ticket_recovery_waiting_room_and_state_journeys",
+            "application_integration_test": true,
+            "production_operational_release_test": false
+          }
         }
       ],
       "next": "يعتمد الرابط على الحالة الفعلية، ويعمل دون تطبيق أو حساب مريض.",
-      "status": "not_started"
+      "status": "implemented_synthetic_automated_verified_pending_merge",
+      "started_on": "2026-11-22",
+      "completed_on": "2026-11-22",
+      "implementation_status": "private_patient_links_verified_recovery_and_session_scoped_waiting_room_implemented",
+      "acceptance_status": "passed",
+      "completion_scope": "real_Laravel_PostgreSQL_and_Chromium_synthetic_automated_acceptance",
+      "browser_verification_limit": "Headless Chromium with mobile/touch emulation and 200% text resize. Physical device, Firefox/WebKit and browser-UI page zoom remain untested.",
+      "integration": {
+        "branch": "work/p09-patient-20261122",
+        "target": "main",
+        "status": "ready_for_review_pending_merge",
+        "merged": false,
+        "pull_request": 3,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/3",
+        "tested_source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+        "timezone": "Asia/Aden",
+        "authorization": "User approved completing P09 in the current conversation."
+      }
     },
     {
       "id": "P10",
@@ -887,6 +920,21 @@
       "path": "POST /workspace/team/{membership}/delegation",
       "purpose": "تفويض النداء للاستقبال أو سحبه بإصدار ومنع تكرار وتحقق حديث للمالك",
       "state": "call_next_only"
+    },
+    {
+      "path": "GET /v1/tickets/current",
+      "purpose": "قراءة خاصة من مسار ثابت باستخدام رمز رابط المتابعة في ترويسة Bearer دون جلسة موظف أو معلمات استعلام",
+      "state": "capability_limited"
+    },
+    {
+      "path": "POST /v1/bookings/{id}/ticket-link",
+      "purpose": "استعادة للمالك أو الاستقبال بعد التحقق اليدوي من الهوية، بإصدار ومنع تكرار وإبطال الروابط السابقة",
+      "state": "role_limited"
+    },
+    {
+      "path": "GET /v1/sessions/{id}/waiting",
+      "purpose": "أرقام الدور الحالي والتالية لجلسة محددة، بصلاحيات الموظف ونطاق العيادة والطبيب ودون بيانات المراجعين",
+      "state": "role_limited"
     }
   ],
   "release_policy": {
@@ -946,8 +994,8 @@
       "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
     }
   ],
-  "baseline_id": "NOBTEEK-P08-1.0",
-  "next_stage": "P09",
+  "baseline_id": "NOBTEEK-P09-1.0",
+  "next_stage": "P10",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -1123,5 +1171,91 @@
     "next_stage": "P09",
     "financial_phase": "P13",
     "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185"
+  },
+  "next_stage_gate": "P09_pull_request_3_merged_into_main",
+  "main_baseline_id": "NOBTEEK-P08-1.0",
+  "patient_baseline": {
+    "id": "NOBTEEK-P09-1.0",
+    "report": "results/p09_validation.json",
+    "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+    "run_id": 44961384763,
+    "scope": "real_Laravel_PostgreSQL_private_patient_ticket_verified_recovery_session_scoped_staff_waiting_room_and_Chromium_synthetic_acceptance",
+    "laravel_tests_passed": 205,
+    "laravel_assertions": 1966,
+    "new_phase_tests": 34,
+    "new_phase_assertions": 630,
+    "ticket_filter_tests_passed": 43,
+    "ticket_filter_assertions": 753,
+    "browser_checks_passed": 12,
+    "responsive_layout_cases_passed": 16,
+    "text_resize_200_percent_tested": true,
+    "ci_checks_passed": 9,
+    "all_ci_checks_passed": true,
+    "android_apk_build_passed": true,
+    "regressions_on_tested_source": {
+      "p06_browser_checks_passed": 24,
+      "p07_filter_tests_passed": 39,
+      "p07_filter_assertions": 280,
+      "p07_browser_checks_passed": 15,
+      "p08_filter_tests_passed": 47,
+      "p08_filter_assertions": 559,
+      "p08_browser_checks_passed": 17
+    },
+    "private_ticket_fields": 11,
+    "browser_ticket_link_format": "/ticket#<secret>",
+    "browser_ticket_read_endpoint": "GET /v1/tickets/current",
+    "browser_ticket_transport": "Authorization_Bearer_no_cookies_no_referrer_no_store",
+    "fragment_scrubbed_before_inertia": true,
+    "token_storage": "SHA256_digest_with_encrypted_idempotency_response",
+    "token_expiry": "48_hours_after_current_session_end_without_reviving_expired_or_revoked_links",
+    "recovery_endpoint": "POST /v1/bookings/{id}/ticket-link",
+    "recovery_requires": "owner_or_reception_in_booking_clinic_IfMatch_idempotency_key_patient_requested_recovery_and_verified_identity_true",
+    "recovery_revokes_all_prior_links": true,
+    "revoked_or_expired_token_replay_rejected": true,
+    "phone_only_recovery": false,
+    "family_booking_lookup": false,
+    "waiting_ahead": "present_waiting_only_priority_then_ready_sequence_excluding_active_and_unarrived_null_when_not_waiting",
+    "doctor_state_scope": "all_sessions_for_the_same_doctor_separate_from_selected_session_state",
+    "ticket_poll_seconds": 20,
+    "waiting_room_endpoint": "GET /v1/sessions/{id}/waiting",
+    "waiting_room_access": "owner_or_reception_in_selected_clinic_or_doctor_own_session_only",
+    "waiting_room_fields": [
+      "doctor_id",
+      "session_state",
+      "called_ticket_numbers",
+      "next_ticket_numbers",
+      "server_time"
+    ],
+    "waiting_room_current_states": [
+      "called",
+      "in_service"
+    ],
+    "waiting_room_next_limit": 5,
+    "waiting_room_poll_seconds": 5,
+    "offline_stale_state_and_last_confirmed_time": true,
+    "hidden_tab_polling_paused": true,
+    "canonical_secret_path_retained": "GET /v1/tickets/{secret}",
+    "canonical_secret_path_emitted_by_ui": false,
+    "canonical_path_upstream_access_log_redaction_verified": false,
+    "canonical_path_deployment_requirement": "Redact secret path segments in proxy, hosting and access logs before deployment; application redaction does not verify upstream logs.",
+    "synthetic_data_only": true,
+    "api_responses_mocked": false,
+    "real_patient_data": false,
+    "real_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "merged": false,
+    "pull_request": 3,
+    "next_stage": "P10",
+    "next_stage_gate": "P09_pull_request_3_merged_into_main",
+    "financial_phase": "P13",
+    "limits": [
+      "Automated synthetic acceptance does not complete P11 security, recovery and performance or P12 operational acceptance.",
+      "Physical phone, Firefox/WebKit, browser-UI page zoom and production hosting remain untested.",
+      "Android APK build success is a build check, not a physical-device or server-connected patient journey.",
+      "P09 is ready for review in PR 3 and remains unmerged; main retains the P08 baseline.",
+      "P10 through P13 have not started; external payments and paid messaging remain disabled before P13."
+    ],
+    "private_data_or_secret_automatically_persisted_in_browser": false
   }
 }
