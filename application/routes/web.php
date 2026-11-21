@@ -6,6 +6,8 @@ use App\Http\Controllers\ClinicAccessController;
 use App\Http\Controllers\ClinicSetupController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PlatformClinicController;
+use App\Http\Controllers\PlatformOperationsController;
+use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\PublicBookingController;
 use App\Http\Controllers\ReceptionController;
 use App\Http\Controllers\SessionSetupController;
@@ -56,8 +58,14 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/platform/accounts', [TeamController::class, 'platform'])->name('platform');
         Route::post('/platform/accounts/{user}/access', [TeamController::class, 'accountLink'])->whereUuid('user')->name('platform.account.link')->middleware('throttle:10,1');
         Route::get('/platform/clinics', [PlatformClinicController::class, 'index'])->name('platform.clinics');
+        Route::get('/platform/operations', [PlatformOperationsController::class, 'index'])->name('platform.operations');
+        Route::post('/platform/support/{support}/resolve', [PlatformOperationsController::class, 'resolve'])->whereUuid('support')->name('platform.support.resolve');
         Route::post('/platform/clinics', [PlatformClinicController::class, 'create'])->name('platform.clinic.create')->middleware('throttle:10,1');
         Route::middleware('clinic')->group(function (): void {
+            Route::get('/workspace/operations', [OperationsController::class, 'index'])->name('operations.index');
+            Route::get('/v1/operations/report.csv', [OperationsController::class, 'export'])->name('operations.export');
+            Route::post('/v1/operations/simulate', [OperationsController::class, 'simulate'])->name('operations.simulate');
+            Route::post('/v1/operations/support', [OperationsController::class, 'openSupport'])->name('operations.support');
             Route::get('/workspace/clinic', [ClinicSetupController::class, 'index'])->name('clinic.settings');
             Route::post('/workspace/clinic', [ClinicSetupController::class, 'update'])->name('clinic.settings.update');
             Route::post('/workspace/doctors', [ClinicSetupController::class, 'createDoctor'])->name('clinic.doctor.create');
