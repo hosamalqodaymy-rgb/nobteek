@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\AccountGrants;
 use App\Services\AccountSecurity;
+use App\Services\DoctorCommands;
 use App\Services\SecurityAudit;
 use App\Support\TenantContext;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -53,9 +55,30 @@ class TeamController extends Controller
         $this->owner($request);
         $context = app(TenantContext::class);
         $members = DB::table('memberships as m')->join('users as u', 'u.id', '=', 'm.user_id')->where('m.clinic_id', $context->clinicId())
-            ->orderBy('m.role')->get(['m.id', 'm.role', 'u.username', 'u.display_name', 'u.login_enabled', 'u.access_suspended', 'u.mfa_confirmed_at']);
+            ->orderBy('m.role')->get(['m.id', 'm.role', 'm.active', 'm.delegated_permissions', 'm.delegation_version', 'u.username', 'u.display_name', 'u.login_enabled', 'u.access_suspended', 'u.mfa_confirmed_at'])
+            ->map(function ($member): array {
+                $permissions = json_decode($member->delegated_permissions, true, flags: JSON_THROW_ON_ERROR);
+                unset($member->delegated_permissions);
+
+                return [...(array) $member, 'active' => (bool) $member->active, 'call_next' => ($permissions['call_next'] ?? false) === true,
+                    'delegation_version' => (int) $member->delegation_version, 'delegation_url' => $member->role === 'reception' ? route('team.delegation', $member->id) : null];
+            });
 
         return Inertia::render('Team', ['members' => $members, 'clinic' => $context->membership['clinic_name'] ?? 'عيادتي']);
+    }
+
+    public function delegation(Request $request, string $membership, DoctorCommands $commands): JsonResponse
+    {
+        $this->owner($request);
+        $data = $request->validate(['call_next' => ['required', 'boolean'], 'reason_code' => ['required', Rule::in(['delegation_granted', 'delegation_revoked'])],
+            'clinic_id' => ['prohibited'], 'user_id' => ['prohibited'], 'role' => ['prohibited'], 'version' => ['prohibited'], 'delegation_version' => ['prohibited'],
+            'delegated_permissions' => ['prohibited'], 'active' => ['prohibited'], 'notes' => ['prohibited']]);
+        $data['call_next'] = (bool) $data['call_next'];
+        if ($data['reason_code'] !== ($data['call_next'] ? 'delegation_granted' : 'delegation_revoked')) {
+            throw ValidationException::withMessages(['reason_code' => 'اختر سببًا مطابقًا لمنح التفويض أو سحبه.']);
+        }
+
+        return response()->json($commands->delegate($request, $membership, $data));
     }
 
     public function create(Request $request): RedirectResponse

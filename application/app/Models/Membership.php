@@ -12,6 +12,6 @@ class Membership extends TenantRecord
 
     protected function casts(): array
     {
-        return ['active' => 'boolean', 'delegated_permissions' => 'array'];
+        return ['active' => 'boolean', 'delegated_permissions' => 'array', 'delegation_version' => 'integer'];
     }
 }

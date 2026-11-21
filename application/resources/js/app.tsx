@@ -17,6 +17,7 @@ import '../css/app.css';
 
 createInertiaApp({
   resolve: (name) => {
+    if (name === 'Doctor') return import('./pages/Doctor').then(module => module.default);
     const pages = { Welcome, Account, Workspace, Team, Platform, Error: ErrorPage, PlatformClinics, ClinicSettings, SessionList, SessionDetail, BookingList, PublicBooking, Reception };
     if (name in pages) return pages[name as keyof typeof pages];
     throw new Error(`Unknown page: ${name}`);

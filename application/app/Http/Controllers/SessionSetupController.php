@@ -91,7 +91,7 @@ class SessionSetupController extends Controller
 
     public function command(Request $request, string $session, string $command, SessionCommands $commands): JsonResponse
     {
-        $rules = ['reason_code' => ['required', Rule::in(SessionCommands::REASONS)], 'clinic_id' => ['prohibited'], 'doctor_id' => ['prohibited'], 'user_id' => ['prohibited'], 'version' => ['prohibited'], 'state' => ['prohibited']];
+        $rules = ['reason_code' => ['required', Rule::in($command === 'pause' ? SessionCommands::PAUSE_REASONS : SessionCommands::REASONS)], 'clinic_id' => ['prohibited'], 'doctor_id' => ['prohibited'], 'user_id' => ['prohibited'], 'version' => ['prohibited'], 'state' => ['prohibited']];
         if ($command === 'capacity') {
             $rules += ['window_id' => ['required', 'uuid'], 'capacity' => ['required', 'integer', 'min:1', 'max:1000'], 'preview_token' => ['required', 'string', 'max:8192'], 'acknowledged' => ['required', 'accepted']];
         } elseif ($command === 'extend') {
