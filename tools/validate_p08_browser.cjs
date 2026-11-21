@@ -128,13 +128,29 @@ async function captureLayout(p, name) {
   activePage = p;
   await p.evaluate(async () => { await document.fonts.ready; await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); });
   const width = p.viewportSize().width;
-  const metrics = await p.evaluate(width => ({
-    requestedWidth: width, actualWidth: innerWidth, rootWidth: document.documentElement.scrollWidth, bodyWidth: document.body.scrollWidth,
-    direction: getComputedStyle(document.documentElement).direction,
-    controlsOutside: [...document.querySelectorAll('main input, main select, main button, main article, main section, header nav')].filter(e => {
-      const r = e.getBoundingClientRect(); return r.width && (r.left < -1 || r.right > width + 1);
-    }).map(e => ({ tag: e.tagName, label: (e.getAttribute('aria-label') || e.textContent || '').slice(0, 80) })),
-  }), width);
+  const metrics = await p.evaluate(width => {
+    const splitActionWords = [];
+    for (const button of document.querySelectorAll('.doctor-workspace button, .team-grid button')) {
+      const bounds = button.getBoundingClientRect(); if (!bounds.width || !bounds.height) continue;
+      const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        for (const match of node.textContent.matchAll(/[\p{L}\p{M}]{3,}/gu)) {
+          const range = document.createRange(); range.setStart(node, match.index); range.setEnd(node, match.index + match[0].length);
+          const lines = [];
+          for (const rect of range.getClientRects()) if (rect.width && rect.height && !lines.some(top => Math.abs(top - rect.top) <= 1)) lines.push(rect.top);
+          if (lines.length > 1) splitActionWords.push({ label: button.textContent.trim(), word: match[0], lines: lines.length });
+        }
+      }
+    }
+    return {
+      requestedWidth: width, actualWidth: innerWidth, rootWidth: document.documentElement.scrollWidth, bodyWidth: document.body.scrollWidth,
+      direction: getComputedStyle(document.documentElement).direction, splitActionWords,
+      controlsOutside: [...document.querySelectorAll('main input, main select, main button, main article, main section, header nav')].filter(e => {
+        const r = e.getBoundingClientRect(); return r.width && (r.left < -1 || r.right > width + 1);
+      }).map(e => ({ tag: e.tagName, label: (e.getAttribute('aria-label') || e.textContent || '').slice(0, 80) })),
+    };
+  }, width);
   const filename = name + '.png';
   await p.screenshot({ path: path.join(output, filename), fullPage: true });
   metrics.screenshotWidth = fs.readFileSync(path.join(output, filename)).readUInt32BE(16);
@@ -142,6 +158,7 @@ async function captureLayout(p, name) {
   assert.equal(metrics.direction, 'rtl');
   for (const key of ['actualWidth', 'rootWidth', 'bodyWidth', 'screenshotWidth']) assert.ok(Math.abs(metrics[key] - width) <= 1, JSON.stringify(metrics));
   assert.deepEqual(metrics.controlsOutside, []);
+  assert.deepEqual(metrics.splitActionWords, [], 'Action words must remain whole at this text size.');
 }
 (async () => {
   browser = await chromium.launch({ headless: true });
