@@ -252,6 +252,9 @@ class SessionCommands
             abort_unless($end->greaterThan($session->ends_at) && $end->greaterThan(now()) && $end->isSameDay($session->starts_at->setTimezone('Asia/Aden')), 409, 'التمديد يزيد النهاية إلى وقت لاحق ضمن يوم الجلسة نفسه.');
             $previous = $session->ends_at->utc()->toIso8601String();
             $session->ends_at = $end;
+            DB::table('ticket_tokens')->where('clinic_id', $session->clinic_id)->whereNull('revoked_at')->where('expires_at', '>', now())
+                ->whereIn('booking_id', DB::table('bookings')->where('clinic_id', $session->clinic_id)->where('session_id', $session->id)->select('id'))
+                ->update(['expires_at' => $end->addHours(48)->utc()->toIso8601String()]);
 
             return ['old_ends_at' => $previous, 'ends_at' => $end->utc()->toIso8601String()];
         } elseif ($command === 'capacity') {

@@ -9,6 +9,7 @@ use App\Services\BookingCommands;
 use App\Services\SessionCommands;
 use App\Support\TenantContext;
 use App\Support\YemeniPhone;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,12 +74,26 @@ class BookingController extends Controller
         return response()->json($commands->execute($request, $booking, $command, $request->validate($rules)));
     }
 
+    public function ticketLink(Request $request, string $booking, BookingCommands $commands): JsonResponse
+    {
+        Gate::authorize('viewAny', Booking::class);
+        abort_if(array_diff(array_keys($request->all()), ['reason_code', 'verified_identity']) !== [], 422, 'بيانات استعادة الرابط غير صالحة.');
+        $data = $request->validate(['reason_code' => ['required', Rule::in(['patient_requested_recovery'])], 'verified_identity' => ['required', 'boolean']]);
+        if ($data['verified_identity'] !== true) {
+            throw ValidationException::withMessages(['verified_identity' => 'تحقق من هوية صاحب الحجز قبل إصدار رابط بديل.']);
+        }
+
+        return response()->json($commands->execute($request, $booking, 'ticket-link', $data));
+    }
+
     public function index(Request $request): Response|JsonResponse
     {
         Gate::authorize('viewAny', Booking::class);
         $data = $request->validate(['date' => ['nullable', 'date_format:Y-m-d'], 'state' => ['nullable', Rule::in(['pending', 'confirmed', 'rejected', 'cancelled', 'fulfilled'])], 'phone' => ['prohibited'], 'clinic_id' => ['prohibited']]);
         $date = $data['date'] ?? now('Asia/Aden')->toDateString();
-        $query = Booking::whereIn('session_id', ClinicSession::whereDate('starts_at', $date)->select('id'));
+        $start = CarbonImmutable::parse($date, 'Asia/Aden')->startOfDay()->utc();
+        $end = $start->addDay();
+        $query = Booking::whereIn('session_id', ClinicSession::where('starts_at', '>=', $start->toIso8601String())->where('starts_at', '<', $end->toIso8601String())->select('id'));
         if (! empty($data['state'])) {
             $query->where('state', $data['state']);
         }

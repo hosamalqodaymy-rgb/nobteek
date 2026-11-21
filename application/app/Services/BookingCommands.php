@@ -18,7 +18,7 @@ class BookingCommands
 {
     public const REASONS = ['booking_reviewed', 'capacity_full', 'patient_request', 'clinic_unavailable', 'duplicate_request', 'contact_unreachable', 'schedule_change', 'entered_in_error'];
 
-    public function __construct(private ClinicAuthority $authority, private BookingGuests $guests) {}
+    public function __construct(private ClinicAuthority $authority, private BookingGuests $guests, private TicketLinks $tickets) {}
 
     private function expectedVersion(Request $request): int
     {
@@ -76,7 +76,10 @@ class BookingCommands
         }
         abort_unless(hash_equals($record->request_fingerprint, $fingerprint), 409, 'استخدم مفتاح محاولة جديدًا لإجراء أو بيانات مختلفة.');
 
-        return [...json_decode(Crypt::decryptString($record->response_ciphertext), true, flags: JSON_THROW_ON_ERROR), 'replayed' => true];
+        $result = json_decode(Crypt::decryptString($record->response_ciphertext), true, flags: JSON_THROW_ON_ERROR);
+        $this->tickets->assertReplayCurrent($result);
+
+        return [...$result, 'replayed' => true];
     }
 
     private function remember(string $clinic, array $actor, string $key, string $fingerprint, array $result): array
@@ -173,7 +176,7 @@ class BookingCommands
             $this->audit($request, $actor, $session->clinic_id, $id, 'booking_requested', ['to' => 'pending', 'version' => 1, 'session_id' => $session->id, 'window_id' => $data['window_id'], 'source' => $actor['kind'] === 'guest' ? 'web' : $data['source']], 'request_received');
             $record = DB::table('bookings')->where('id', $id)->firstOrFail();
 
-            return $this->remember($session->clinic_id, $actor, $key, $fingerprint, $this->result($request, $record));
+            return $this->remember($session->clinic_id, $actor, $key, $fingerprint, [...$this->result($request, $record), ...$this->tickets->issue($record, $session)]);
         }, 3);
     }
 
@@ -201,6 +204,7 @@ class BookingCommands
             abort_unless($booking->session_id === $initial->session_id && (int) $booking->version === $expected, 409, 'تغير الحجز. حدث البيانات قبل تنفيذ الإجراء.');
             $old = $booking->state;
             $changes = ['from' => $old, 'version' => $expected + 1];
+            $receipt = [];
             if ($command === 'confirm') {
                 abort_unless($old === 'pending', 409, 'يمكن تأكيد الطلب المعلق فقط.');
                 $this->available($sessions[$booking->session_id], $booking->window_id, true);
@@ -218,10 +222,19 @@ class BookingCommands
                 abort_if($booking->session_id === $data['session_id'] && $booking->window_id === $data['window_id'], 422, 'اختر نافذة مختلفة للتأجيل.');
                 $this->available($sessions[$data['session_id']], $data['window_id'], $old === 'confirmed', $id);
                 $changes += ['old_session_id' => $booking->session_id, 'old_window_id' => $booking->window_id, 'session_id' => $data['session_id'], 'window_id' => $data['window_id']];
+                if (CarbonImmutable::parse($sessions[$booking->session_id]->ends_at)->addHours(48)->lte(now())) {
+                    DB::table('ticket_tokens')->where('clinic_id', $actor['clinic'])->where('booking_id', $id)->whereNull('revoked_at')->update(['revoked_at' => now()]);
+                }
                 $booking->session_id = $data['session_id'];
                 $booking->window_id = $data['window_id'];
-                $tokens = DB::table('ticket_tokens')->where('clinic_id', $actor['clinic'])->where('booking_id', $id)->whereNull('revoked_at');
-                $tokens->update(['expires_at' => CarbonImmutable::parse($sessions[$data['session_id']]->ends_at)->addHours(48)]);
+                $tokens = DB::table('ticket_tokens')->where('clinic_id', $actor['clinic'])->where('booking_id', $id)->whereNull('revoked_at')->where('expires_at', '>', now());
+                $tokens->update(['expires_at' => CarbonImmutable::parse($sessions[$data['session_id']]->ends_at)->addHours(48)->utc()->toIso8601String()]);
+            } elseif ($command === 'ticket-link') {
+                abort_unless(($data['verified_identity'] ?? null) === true && ($data['reason_code'] ?? null) === 'patient_requested_recovery', 422, 'يلزم تحقق الاستقبال من هوية صاحب الحجز.');
+                abort_if(CarbonImmutable::parse($sessions[$booking->session_id]->ends_at)->addHours(48)->lte(now()), 409, 'انتهت مدة متابعة هذا الحجز.');
+                $revoked = DB::table('ticket_tokens')->where('clinic_id', $actor['clinic'])->where('booking_id', $id)->whereNull('revoked_at')->update(['revoked_at' => now()]);
+                $receipt = $this->tickets->issue($booking, $sessions[$booking->session_id]);
+                $changes += ['link_rotated' => true, 'revoked_links' => $revoked, 'verified_identity' => true];
             } else {
                 abort(404);
             }
@@ -230,7 +243,7 @@ class BookingCommands
             $this->bump($sessionIds);
             $this->audit($request, $actor, $actor['clinic'], $id, 'booking_'.$command, [...$changes, 'to' => $booking->state], $data['reason_code']);
 
-            return $this->remember($actor['clinic'], $actor, $key, $fingerprint, $this->result($request, $booking));
+            return $this->remember($actor['clinic'], $actor, $key, $fingerprint, [...$this->result($request, $booking), ...$receipt]);
         }, 3);
     }
 

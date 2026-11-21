@@ -89,7 +89,7 @@ async function command(page, name, id, action, sid, wid) {
   await c.locator('p').filter({ hasText: 'إصدار ' + data.version }).waitFor();
 }
 async function capture(page, name) {
-  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true });
+  await page.evaluate(() => document.fonts.ready); await page.screenshot({ path: path.join(output, name + '.png'), fullPage: true, style: '.private-ticket-value{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;caret-color:transparent!important;background:#e7eff1!important}.private-ticket-value::selection{color:transparent!important;-webkit-text-fill-color:transparent!important;background:transparent!important}' });
   report.screenshots.push(name + '.png');
 }
 async function layout(page, name) {
@@ -230,9 +230,17 @@ async function layout(page, name) {
     await fillRequest(guest.locator('form'), sid, w2, 'فحص متصفح إعادة محاولة');
     await guest.getByRole('button', { name: 'إرسال طلب الحجز', exact: true }).click();
     await guest.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).waitFor();
-    await guest.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).click();
+    const [retryResponse] = await Promise.all([
+      guest.waitForResponse(response => new URL(response.url()).pathname === '/v1/booking-requests' && response.request().method() === 'POST'),
+      guest.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).click(),
+    ]);
+    assert.equal(retryResponse.status(), 201);
+    const replay = await retryResponse.json();
+    assert.equal(replay.id, saved.id); assert.equal(replay.replayed, true);
+    assert.ok(replay.ticket_url === saved.ticket_url, 'Retry must preserve the same private ticket link');
     await guest.getByRole('heading', { name: 'تم حفظ الطلب · قيد المراجعة', exact: true }).waitFor();
-    assert.equal(await guest.locator('.booking-reference').innerText(), saved.id);
+    assert.ok(await guest.locator('.private-ticket-value').inputValue() === saved.ticket_url, 'Public receipt must show the issued private link');
+    assert.equal(await guest.locator('.booking-reference').count(), 0, 'Internal booking reference is not displayed publicly');
     const result = await api(staff, '/v1/bookings/' + saved.id); assert.equal(result.events.length, 1);
     await guest.unroute('**/v1/booking-requests');
   });
@@ -281,7 +289,7 @@ async function layout(page, name) {
   if (activePage && !activePage.isClosed() && !/\/login|\/account/.test(activePage.url())) { try { await capture(activePage, 'failure'); } catch {} }
   process.exitCode = 1;
 }).finally(async () => {
-  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, failed: report.checks.filter(x => x.status !== 'passed'), realPhoneTested: report.realPhoneTested }));
+  fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]') + '\n');
+  console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, failed: report.checks.filter(x => x.status !== 'passed'), realPhoneTested: report.realPhoneTested }).replace(/[a-f0-9]{64}/gi, '[private bearer redacted]'));
   if (browser) await browser.close();
 });

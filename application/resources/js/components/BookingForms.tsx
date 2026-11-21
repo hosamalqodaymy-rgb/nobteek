@@ -1,7 +1,8 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { dateLabel, timeLabel } from './ScheduleForm';
 import { useBookingTransport } from './BookingTransport';
 import { OfflineNotice, useOnline } from './SetupForm';
+import { PrivateTicketLink } from './PrivateTicketLink';
 
 export type BookingOption = { id: string; doctor_name: string; starts_at: string; windows: { id: string; starts_at: string; ends_at: string }[] };
 export const bookingStates: Record<string, string> = { pending: 'قيد المراجعة', confirmed: 'مؤكد', rejected: 'مرفوض', cancelled: 'ملغى', fulfilled: 'منجز' };
@@ -10,14 +11,15 @@ export const bookingReasons: Record<string, string> = { booking_reviewed: 'مر�
 export function useBookingAttempt() {
   const transport = useBookingTransport(); const online = useOnline(); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [uncertain, setUncertain] = useState(false);
   const attempt = useRef<{ signature: string; key: string } | null>(null);
+  const inFlight = useRef(false);
   async function run(url: string, data: Record<string, unknown>, version?: number) {
-    if (!online || busy) return null;
+    if (!online || inFlight.current) return null;
     const signature = JSON.stringify({ url, data, version });
     if (attempt.current?.signature !== signature) {
       if (uncertain) { setError('لم نتأكد من نتيجة المحاولة السابقة. أعد الطلب نفسه قبل تغيير البيانات.'); return null; }
       attempt.current = { signature, key: crypto.randomUUID() };
     }
-    setBusy(true); setError('');
+    inFlight.current = true; setBusy(true); setError('');
     try {
       const result = await transport.post(url, data, { 'Idempotency-Key': attempt.current.key, ...(version === undefined ? {} : { 'If-Match': `"${version}"` }) });
       if (result.status >= 500) { setUncertain(true); setError('تعذر التأكد من الحفظ. أعد المحاولة نفسها؛ سيمنع النظام تكرار أثرها.'); return null; }
@@ -29,7 +31,7 @@ export function useBookingAttempt() {
       attempt.current = null;
       return result.body;
     } catch { setUncertain(true); setError('انقطع الاتصال قبل تأكيد النتيجة. احتفظ بهذه الصفحة وأعد المحاولة نفسها عند عودة الاتصال.'); return null; }
-    finally { setBusy(false); }
+    finally { inFlight.current = false; setBusy(false); }
   }
   return { run, busy, error, uncertain, online };
 }
@@ -40,14 +42,15 @@ export function SessionWindowFields({ sessions, sessionId, windowId, setSession,
     <div className="account-field"><label htmlFor={`${prefix}-window`}>نافذة الوصول</label><select id={`${prefix}-window`} value={windowId} disabled={disabled || !selected} required onChange={e => setWindow(e.target.value)}><option value="">اختر نافذة وصول</option>{selected?.windows.map(w => <option key={w.id} value={w.id}>{timeLabel(w.starts_at)} – {timeLabel(w.ends_at)}</option>)}</select><small>الأوقات بتوقيت اليمن. نافذة الوصول لا تعني موعد كشف دقيقًا.</small></div>
   </>;
 }
-export function BookingRequestForm({ sessions, url, staff = false }: { sessions: BookingOption[]; url: string; staff?: boolean }) {
+export function BookingRequestForm({ sessions, url, staff = false, disabled = false, onBlockedChange }: { sessions: BookingOption[]; url: string; staff?: boolean; disabled?: boolean; onBlockedChange?: (blocked: boolean) => void }) {
   const uid = useId(); const a = useBookingAttempt(); const transport = useBookingTransport();
   const [sessionId, setSession] = useState(''); const [windowId, setWindow] = useState(''); const [name, setName] = useState(''); const [phone, setPhone] = useState(''); const [source, setSource] = useState('phone');
   const [receipt, setReceipt] = useState<Record<string, unknown> | null>(null);
-  const blocked = a.busy || a.uncertain;
-  if (receipt) return <div className="account-alert account-success" role="status"><h2>تم حفظ الطلب · قيد المراجعة</h2><p>لم يتأكد الحجز بعد ولم يصدر رقم دور. {staff ? 'راجع الطلب في القائمة ثم أكده إذا كانت السعة متاحة.' : 'تواصل مع العيادة لتأكيد قبول الطلب قبل الحضور.'}</p><p>مرجع الطلب: <bdi className="booking-reference">{String(receipt.id)}</bdi></p><button className="btn btn--secondary" onClick={() => { setReceipt(null); setName(''); setPhone(''); }}>تقديم طلب آخر</button></div>;
+  const blocked = disabled || a.busy || a.uncertain;
+  useEffect(() => { onBlockedChange?.(a.busy || a.uncertain); return () => onBlockedChange?.(false); }, [a.busy, a.uncertain, onBlockedChange]);
+  if (receipt) return <div className="account-alert account-success" role="status"><h2>تم حفظ الطلب · قيد المراجعة</h2><p>لم يتأكد الحجز بعد ولم يصدر رقم دور. {staff ? 'راجع الطلب في القائمة ثم أكده إذا كانت السعة متاحة.' : 'تواصل مع العيادة لتأكيد قبول الطلب قبل الحضور.'}</p>{staff && <p>مرجع الطلب: <bdi className="booking-reference">{String(receipt.id)}</bdi></p>}{typeof receipt.ticket_url === 'string' && <PrivateTicketLink url={receipt.ticket_url} expiresAt={typeof receipt.ticket_expires_at === 'string' ? receipt.ticket_expires_at : null} />}<button className="btn btn--secondary" disabled={disabled} onClick={() => { setReceipt(null); setName(''); setPhone(''); }}>تقديم طلب آخر</button></div>;
   return <form className="secure-form" onSubmit={async e => {
-    e.preventDefault();
+    e.preventDefault(); if (disabled) return;
     const result = await a.run(url, { session_id: sessionId, window_id: windowId, display_name: name, contact_phone: phone || null, ...(staff ? { source } : {}) });
     if (result) { setReceipt(result); if (staff) transport.refresh(); }
   }}>
@@ -58,6 +61,6 @@ export function BookingRequestForm({ sessions, url, staff = false }: { sessions:
     {staff && <div className="account-field"><label htmlFor={`${uid}-source`}>مصدر الحجز</label><select id={`${uid}-source`} value={source} disabled={blocked} onChange={e => setSource(e.target.value)}><option value="phone">اتصال هاتفي</option><option value="walk_in">من العيادة</option></select></div>}
     <div className="account-field"><label htmlFor={`${uid}-phone`}>رقم التواصل {staff && source === 'walk_in' ? '· اختياري' : ''}</label><input id={`${uid}-phone`} type="tel" dir="ltr" inputMode="tel" autoComplete="off" value={phone} disabled={blocked} onChange={e => setPhone(e.target.value)} maxLength={40} required={!staff || source !== 'walk_in'} aria-describedby={`${uid}-phone-hint`} /><small id={`${uid}-phone-hint`}>رقم يمني من تسعة أرقام يبدأ بسبعة. يمكن استخدام رقم الأسرة لأكثر من مراجع دون دمجهم.</small></div>
     <p className="muted">هذا طلب حجز قيد المراجعة. لا يحجز مكانًا ولا يسجل الحضور أو يمنح رقم دور قبل تأكيد العيادة.</p>
-    <button className="btn" disabled={!a.online || a.busy || sessions.length === 0}>{a.busy ? 'جارٍ إرسال الطلب…' : a.uncertain ? 'إعادة المحاولة نفسها' : 'إرسال طلب الحجز'}</button>
+    <button className="btn" disabled={disabled || !a.online || a.busy || sessions.length === 0}>{a.busy ? 'جارٍ إرسال الطلب…' : a.uncertain ? 'إعادة المحاولة نفسها' : 'إرسال طلب الحجز'}</button>
   </form>;
 }

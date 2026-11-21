@@ -1,0 +1,911 @@
+{
+  "schema_version": 1,
+  "phase": "P09",
+  "release_id": "NOBTEEK-P09-1.0",
+  "as_of": "2026-11-22",
+  "timezone": "Asia/Aden",
+  "status": "implemented_automated_verified_pending_merge_physical_device_pending",
+  "scope": "real_Laravel_PostgreSQL_and_Chromium_with_isolated_synthetic_data",
+  "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+  "source_tree": "70a27d9e77e4ad217d19bcec881a716f92910975",
+  "base_main_commit": "6eea719bea1a5b9ec86a563c7c608827a98a79ae",
+  "integration": {
+    "branch": "work/p09-patient-20261122",
+    "target": "main",
+    "status": "ready_for_review_pending_merge",
+    "merged": false,
+    "pull_request": 3,
+    "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/3",
+    "tested_source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+    "main_contains": "P00 through P08",
+    "next_action": "Review and merge P09, then implement P10 notifications, reports and platform administration."
+  },
+  "prior_integration": {
+    "phase": "P08",
+    "pull_request": 2,
+    "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/2",
+    "merged": true,
+    "merge_commit": "950b1089c8b0ff6519ef011188f193fcd8067185",
+    "merged_at": "2026-11-21T22:54:59Z",
+    "merged_on_local": "2026-11-22",
+    "post_merge_workflows": [
+      {
+        "run_id": 44959170854,
+        "name": "Nobteek foundation",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170854"
+      },
+      {
+        "run_id": 44959170799,
+        "name": "Nobteek P06 browser acceptance",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170799"
+      },
+      {
+        "run_id": 44959170894,
+        "name": "Nobteek P07 reception",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170894"
+      },
+      {
+        "run_id": 44959170796,
+        "name": "Nobteek P08 doctor",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170796"
+      },
+      {
+        "run_id": 44959170840,
+        "name": "Nobteek P06 phone APK",
+        "event": "push",
+        "head_sha": "950b1089c8b0ff6519ef011188f193fcd8067185",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44959170840"
+      }
+    ]
+  },
+  "implementation": {
+    "private_ticket": {
+      "issue_on": [
+        "public booking request",
+        "staff booking request",
+        "direct walk-in"
+      ],
+      "secret_entropy_bits": 256,
+      "token_storage": "SHA-256 only in ticket_tokens; idempotent receipts use authenticated application encryption",
+      "expires": "session ends_at + 48 hours; equality is expired",
+      "ui_url": "/ticket#secret",
+      "browser_read_endpoint": "GET /v1/tickets/current",
+      "browser_transport": "Authorization: Bearer; credentials omitted; no-store; no-referrer",
+      "canonical_compatibility_endpoint": "GET /v1/tickets/{secret}",
+      "capture": "Fragment is captured and removed before Inertia initialization, retained only in module/page memory, and excluded from history and browser persistence.",
+      "dto_fields": [
+        "booking_state",
+        "visit_state",
+        "ticket_number",
+        "waiting_ahead",
+        "doctor_state",
+        "session_state",
+        "window_starts_at",
+        "window_ends_at",
+        "server_time",
+        "booking_version",
+        "visit_version"
+      ],
+      "excludes": [
+        "patient names",
+        "phone numbers",
+        "diagnoses",
+        "internal booking or visit identifiers"
+      ],
+      "waiting_count": "Only present waiting visits ordered by medical priority then ready sequence; excludes the current active visit, unarrived, away and departed people. Null unless the subject is waiting.",
+      "doctor_state": "Derived across all sessions of the doctor and kept separate from the selected session state.",
+      "fail_closed": "Invalid, revoked and expired capabilities have a generic 404; unexpected query parameters are rejected; current clinic/session/window/visit bindings are verified.",
+      "session_changes": "Extension and rescheduling update eligible expiry without resurrecting expired or revoked capabilities."
+    },
+    "recovery": {
+      "endpoint": "POST /v1/bookings/{id}/ticket-link",
+      "roles": [
+        "owner",
+        "reception"
+      ],
+      "scope": "current clinic membership",
+      "body": {
+        "reason_code": "patient_requested_recovery",
+        "verified_identity": true
+      },
+      "guards": [
+        "If-Match version",
+        "Idempotency-Key",
+        "current authorization before replay",
+        "explicit identity confirmation"
+      ],
+      "transaction": [
+        "revoke all previous links",
+        "issue new link",
+        "increment booking and session versions",
+        "audit",
+        "disabled external outbox",
+        "encrypted exact receipt"
+      ],
+      "retry": "UI retains the same URL, payload, version and key after an uncertain response, including partial refresh and disappearance of the booking from the current list.",
+      "phone_only_lookup_supported": false
+    },
+    "waiting_room": {
+      "page": "/workspace/sessions/{session}/waiting",
+      "endpoint": "GET /v1/sessions/{session}/waiting",
+      "access": "authenticated owner/reception in their clinic; doctor for their own session",
+      "current": "Called or in-service ticket in the selected session only",
+      "next_limit": 5,
+      "dto_fields": [
+        "doctor_id",
+        "session_state",
+        "called_ticket_numbers",
+        "next_ticket_numbers",
+        "server_time"
+      ],
+      "display": "Ticket numbers only; no patient or staff names, phone numbers or opaque doctor identifier in the visible hall.",
+      "empty_state": "No active turn in this session; does not claim that the doctor is globally available."
+    },
+    "interface": {
+      "pages": [
+        "private ticket",
+        "session waiting room",
+        "Arabic help",
+        "Arabic privacy"
+      ],
+      "private_link_actions": [
+        "explicit copy",
+        "explicit file download",
+        "open saved link"
+      ],
+      "public_receipt": "Pending remains pending and the internal booking UUID is not displayed.",
+      "ticket_poll_seconds": 20,
+      "waiting_room_poll_seconds": 5,
+      "network_behavior": [
+        "pause while page hidden",
+        "pause while offline",
+        "mark retained data stale",
+        "immediate reconnect refresh",
+        "bounded exponential retry",
+        "manual refresh"
+      ],
+      "booking_day_filter": "Asia/Aden date boundaries converted to UTC, including sessions crossing the UTC midnight boundary."
+    }
+  },
+  "acceptance": {
+    "T09A": {
+      "status": "passed",
+      "expected": "The link exposes no other names, phone or diagnosis, and changing identifiers cannot reveal another booking.",
+      "evidence": {
+        "phpunit_classes": [
+          "TicketSecurityTest",
+          "TicketRecoveryTest",
+          "TicketWaitingRoomTest"
+        ],
+        "browser_checks": [
+          "P09B03",
+          "P09B04",
+          "P09B07",
+          "P09B10",
+          "P09B12"
+        ],
+        "run_id": 44961384763
+      }
+    },
+    "T09B": {
+      "status": "passed",
+      "expected": "Offline and cancelled/closed states are explicit, and a pending request is not presented as confirmed.",
+      "evidence": {
+        "phpunit_classes": [
+          "TicketLifecycleTest",
+          "TicketWaitingRoomTest"
+        ],
+        "browser_checks": [
+          "P09B03",
+          "P09B08",
+          "P09B09",
+          "P09B11"
+        ],
+        "run_id": 44961384763
+      }
+    }
+  },
+  "review_fixes": [
+    "Capture and scrub the capability before Inertia starts; handle same-page saved links and Back/Forward without persisting the secret.",
+    "Make both ticket read endpoints stateless so the compatibility path cannot enter Laravel's previous-URL session state; sanitize application errors and do-not-flash private values.",
+    "Prevent rescheduling from reviving effectively expired or revoked links, even when a legacy stored expiry is longer.",
+    "Keep recovery retries immutable when a refresh changes the version or removes the booking row.",
+    "Use Yemen-local date boundaries when selecting sessions in the recovery booking list.",
+    "Read the real unhydrated Inertia 3 shell in browser checks; update the P06 receipt assertion to preserve replay and one-audit checks after removing the public booking UUID.",
+    "Bound browser diagnostic waits; compare generic error DTOs through actual HTTP requests while retaining browser response-status and unavailable-state assertions.",
+    "Redact private-link text using screenshot-only CSS across P06 through P09 harnesses, preserving DOM values, layout, copy and download behavior."
+  ],
+  "changed_source_files": [
+    ".github/workflows/p09-patient.yml",
+    "application/app/Http/Controllers/BookingController.php",
+    "application/app/Http/Controllers/DoctorController.php",
+    "application/app/Http/Controllers/SessionSetupController.php",
+    "application/app/Http/Controllers/TicketController.php",
+    "application/app/Http/Controllers/WaitingRoomController.php",
+    "application/app/Http/Middleware/HandleInertiaRequests.php",
+    "application/app/Http/Middleware/VerifyAccountSession.php",
+    "application/app/Http/Resources/BookingResource.php",
+    "application/app/Services/BookingCommands.php",
+    "application/app/Services/ReceptionCommands.php",
+    "application/app/Services/SessionCommands.php",
+    "application/app/Services/TicketLinks.php",
+    "application/bootstrap/app.php",
+    "application/resources/css/app.css",
+    "application/resources/js/app.tsx",
+    "application/resources/js/components/AccountLayout.tsx",
+    "application/resources/js/components/BookingForms.tsx",
+    "application/resources/js/components/PrivateTicketFragment.ts",
+    "application/resources/js/components/PrivateTicketLink.tsx",
+    "application/resources/js/components/PublicLayout.tsx",
+    "application/resources/js/components/PublicPolling.tsx",
+    "application/resources/js/pages/BookingList.tsx",
+    "application/resources/js/pages/Doctor.tsx",
+    "application/resources/js/pages/Information.tsx",
+    "application/resources/js/pages/PublicBooking.tsx",
+    "application/resources/js/pages/Reception.tsx",
+    "application/resources/js/pages/SessionDetail.tsx",
+    "application/resources/js/pages/Ticket.tsx",
+    "application/resources/js/pages/WaitingRoom.tsx",
+    "application/routes/web.php",
+    "application/tests/Feature/TicketAtomicityTest.php",
+    "application/tests/Feature/TicketLifecycleTest.php",
+    "application/tests/Feature/TicketRecoveryTest.php",
+    "application/tests/Feature/TicketSecurityTest.php",
+    "application/tests/Feature/TicketWaitingRoomTest.php",
+    "application/tests/TicketTestCase.php",
+    "tools/prepare_p09_browser.php",
+    "tools/validate_p06_browser.cjs",
+    "tools/validate_p07_browser.cjs",
+    "tools/validate_p08_browser.cjs",
+    "tools/validate_p09_browser.cjs"
+  ],
+  "frozen_scope": {
+    "p00_contract_changed": false,
+    "reference_model_changed": false,
+    "frozen_p01_assets_changed": false,
+    "foundation_schema_changed": false,
+    "dependency_locks_changed": false,
+    "proof": "GitHub compare base_main_commit...source_commit contains exactly the 42 application, test, workflow and browser-harness files listed here. The later checkpoint changes only status documentation and validation reports.",
+    "reference_workflow_tests_rerun": 38,
+    "reference_workflow_tests_passed": 38,
+    "reference_51_tests_rerun": false,
+    "frozen_57_file_hash_check_rerun": false
+  },
+  "provenance": {
+    "first_implementation_commit": "7c8fe821c6c3d12621015615f71a43c1bdf66c70",
+    "browser_shell_and_receipt_harness_commit": "6239e64ba118eb866cb8ff39c1082d0cf5014343",
+    "bounded_browser_harness_commit": "b72d50f8e57365d57e1a384343da243dafded76e",
+    "final_http_and_screenshot_harness_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+    "production_code_unchanged_since_first_implementation": true,
+    "evidence_note": "All runtime measurements below belong to the exact source commit. The subsequent documentation-only checkpoint does not reattribute these runs to its own SHA.",
+    "execution_environment": "PHP/Composer/PostgreSQL tests, Pint, application build and browser execution ran in GitHub Actions. Local checks used Python reference tests and JavaScript syntax/source inspection.",
+    "earlier_browser_attempts": "Harness failures were resolved before acceptance. They are not counted as passing evidence."
+  },
+  "verification": {
+    "foundation": {
+      "run_id": 44961389112,
+      "name": "Nobteek foundation",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389112",
+      "job_id": 137020740782,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389112/job/137020740782",
+      "tests": 205,
+      "assertions": 1966,
+      "build_migrate_seed_passed": true
+    },
+    "p09": {
+      "run_id": 44961384763,
+      "name": "Nobteek P09 patient tracking",
+      "event": "push",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961384763",
+      "job_id": 137020726797,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961384763/job/137020726797",
+      "filter": "Ticket",
+      "tests": 43,
+      "assertions": 753,
+      "new_phase_tests": 34,
+      "new_phase_assertions": 630,
+      "browser_checks": 12,
+      "layout_cases": 16,
+      "pint_passed": true,
+      "pint_diff_bytes": 0,
+      "build_migrate_seed_passed": true
+    },
+    "p09_new_test_classes": [
+      {
+        "name": "TicketAtomicityTest",
+        "tests": 2,
+        "assertions": 6
+      },
+      {
+        "name": "TicketLifecycleTest",
+        "tests": 7,
+        "assertions": 154
+      },
+      {
+        "name": "TicketRecoveryTest",
+        "tests": 8,
+        "assertions": 88
+      },
+      {
+        "name": "TicketSecurityTest",
+        "tests": 13,
+        "assertions": 276
+      },
+      {
+        "name": "TicketWaitingRoomTest",
+        "tests": 4,
+        "assertions": 106
+      }
+    ],
+    "p08_regression": {
+      "run_id": 44961389131,
+      "name": "Nobteek P08 doctor",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389131",
+      "job_id": 137020741131,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389131/job/137020741131",
+      "tests": 47,
+      "assertions": 559,
+      "browser_checks": 17,
+      "pint_passed": true
+    },
+    "p07_regression": {
+      "run_id": 44961389235,
+      "name": "Nobteek P07 reception",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389235",
+      "job_id": 137020741888,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389235/job/137020741888",
+      "tests": 39,
+      "assertions": 280,
+      "browser_checks": 15,
+      "pint_passed": true
+    },
+    "p06_regression": {
+      "run_id": 44961389126,
+      "name": "Nobteek P06 browser acceptance",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389126",
+      "job_id": 137020740676,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389126/job/137020740676",
+      "browser_checks": 24
+    },
+    "apk_regression": {
+      "run_id": 44961389154,
+      "name": "Nobteek P06 phone APK",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389154",
+      "job_id": 137020741226,
+      "job_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389154/job/137020741226",
+      "build_verify_install_launch_passed": true,
+      "public_screen": true,
+      "staff_screen": true,
+      "text_200": true,
+      "physical_phone_tested": false,
+      "scope": "existing offline P06 fixtures on Android API 35 emulator; not the P09 application"
+    },
+    "local_reference": {
+      "command": "python3 -m unittest discover -s tests -q",
+      "tests": 38,
+      "passed": true,
+      "scope": "frozen Python reference workflow tests only"
+    }
+  },
+  "all_source_workflow_runs": [
+    {
+      "run_id": 44961389112,
+      "name": "Nobteek foundation",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389112"
+    },
+    {
+      "run_id": 44961389126,
+      "name": "Nobteek P06 browser acceptance",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389126"
+    },
+    {
+      "run_id": 44961389143,
+      "name": "Nobteek P09 patient tracking",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389143"
+    },
+    {
+      "run_id": 44961389235,
+      "name": "Nobteek P07 reception",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389235"
+    },
+    {
+      "run_id": 44961389131,
+      "name": "Nobteek P08 doctor",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389131"
+    },
+    {
+      "run_id": 44961389154,
+      "name": "Nobteek P06 phone APK",
+      "event": "pull_request",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961389154"
+    },
+    {
+      "run_id": 44961384796,
+      "name": "Nobteek foundation",
+      "event": "push",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961384796"
+    },
+    {
+      "run_id": 44961384765,
+      "name": "Nobteek P06 browser acceptance",
+      "event": "push",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961384765"
+    },
+    {
+      "run_id": 44961384763,
+      "name": "Nobteek P09 patient tracking",
+      "event": "push",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44961384763"
+    }
+  ],
+  "browser": {
+    "schemaVersion": 1,
+    "phase": "P09",
+    "passed": true,
+    "scope": "real_Laravel_PostgreSQL_private_ticket_and_staff_waiting_room",
+    "checks": [
+      {
+        "id": "P09B01",
+        "name": "Owner MFA and distinct reception, physician, unrelated physician, and anonymous contexts",
+        "status": "passed"
+      },
+      {
+        "id": "P09B02",
+        "name": "Public doctor/window booking receipt offers explicit private copy and file save",
+        "status": "passed"
+      },
+      {
+        "id": "P09B03",
+        "name": "Pending ticket uses exact private DTO and bearer header with fragment scrubbed and no persisted data",
+        "status": "passed"
+      },
+      {
+        "id": "P09B04",
+        "name": "Wrong, expired, missing, guessed and tampered links reveal no booking or family lookup",
+        "status": "passed"
+      },
+      {
+        "id": "P09B05",
+        "name": "Confirmed arrival assigns a fixed ticket and excludes unarrived family bookings from the waiting count",
+        "status": "passed"
+      },
+      {
+        "id": "P09B06",
+        "name": "Priority, current service and session pause remain distinct from present waiting count; automatic 20s polling",
+        "status": "passed"
+      },
+      {
+        "id": "P09B07",
+        "name": "Staff waiting display is session scoped, numbers only, and refreshes automatically every 5 seconds",
+        "status": "passed"
+      },
+      {
+        "id": "P09B08",
+        "name": "Away and return states preserve ticket number and return to the end without inventing a count",
+        "status": "passed"
+      },
+      {
+        "id": "P09B09",
+        "name": "Offline, hidden-tab pause and exponential retry preserve an honest stale state",
+        "status": "passed"
+      },
+      {
+        "id": "P09B10",
+        "name": "Verified recovery survives lost committed response, refreshed version and disappearing row, with one immutable replay",
+        "status": "passed"
+      },
+      {
+        "id": "P09B11",
+        "name": "Doctor busy in another session never appears as available; rejected and closed states stay honest",
+        "status": "passed"
+      },
+      {
+        "id": "P09B12",
+        "name": "Arabic help and privacy remain readable at 200 percent and no private URLs enter persistence or errors",
+        "status": "passed"
+      }
+    ],
+    "screenshots": [
+      "public-booking-receipt-360.png",
+      "public-booking-receipt-360-text200.png",
+      "ticket-pending-360.png",
+      "ticket-expired-360.png",
+      "ticket-waiting-360.png",
+      "ticket-waiting-360-text200.png",
+      "waiting-room-1440.png",
+      "waiting-room-768.png",
+      "waiting-room-360.png",
+      "waiting-room-360-text200.png",
+      "ticket-offline-360.png",
+      "staff-recovery-360-text200.png",
+      "ticket-cancelled-360.png",
+      "waiting-room-empty-360.png",
+      "help-360-text200.png",
+      "privacy-360-text200.png"
+    ],
+    "layoutCases": [
+      {
+        "name": "public-booking-receipt-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "public-booking-receipt-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-pending-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-expired-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-waiting-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-waiting-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "waiting-room-1440",
+        "requestedWidth": 1440,
+        "actualWidth": 1440,
+        "rootWidth": 1440,
+        "bodyWidth": 1440,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 1440
+      },
+      {
+        "name": "waiting-room-768",
+        "requestedWidth": 768,
+        "actualWidth": 768,
+        "rootWidth": 768,
+        "bodyWidth": 768,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 768
+      },
+      {
+        "name": "waiting-room-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "waiting-room-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-offline-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "staff-recovery-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "ticket-cancelled-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "waiting-room-empty-360",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "help-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      },
+      {
+        "name": "privacy-360-text200",
+        "requestedWidth": 360,
+        "actualWidth": 360,
+        "rootWidth": 360,
+        "bodyWidth": 360,
+        "direction": "rtl",
+        "splitActionWords": [],
+        "controlsOutside": [],
+        "screenshotWidth": 360
+      }
+    ],
+    "runtimeErrors": [],
+    "serverErrors": [],
+    "apiResponsesMocked": false,
+    "syntheticOnly": true,
+    "physicalPhoneTested": false,
+    "textResizePercent": 200,
+    "faultInjection": [
+      "one_committed_response_aborted",
+      "temporary_network_abort",
+      "browser_offline",
+      "document_visibility_events"
+    ],
+    "activeStep": null,
+    "currentStage": "Masked screenshot for privacy-360-text200",
+    "privateTransport": {
+      "fragmentScrubbedBeforeInertia": true,
+      "encryptedHistoryPlaintextInspected": true,
+      "samePageSavedLinkHandled": true,
+      "backForwardContainsNoCapability": true,
+      "bearerHeaderOnly": true,
+      "cookieOmitted": true,
+      "noReferrer": true,
+      "noStore": true,
+      "noBrowserPersistence": true,
+      "exactFields": 11
+    },
+    "waitingSemantics": {
+      "activeExcluded": true,
+      "unarrivedExcluded": true,
+      "priorityOrdered": true,
+      "sessionStateSeparate": true,
+      "ticketPollSeconds": 20
+    },
+    "waitingRoom": {
+      "staffOnly": true,
+      "tenantAndDoctorScoped": true,
+      "currentIncludesInService": true,
+      "selectedSessionOnly": true,
+      "nextLimit": 5,
+      "safeFields": 5,
+      "pollSeconds": 5
+    },
+    "polling": {
+      "hiddenPaused": true,
+      "resumedOnVisible": true,
+      "offlineRetainsStaleData": true,
+      "reconnectImmediate": true,
+      "failedReadBackoffFirstMilliseconds": 40000,
+      "manualRefreshWorks": true
+    },
+    "recovery": {
+      "explicitIdentityRequired": true,
+      "phoneOnlyRejected": true,
+      "oldLinkRevoked": true,
+      "sameUrlDataVersionAndKey": true,
+      "rowDisappearedAfterRefresh": true,
+      "auditEvents": 1,
+      "replayed": true
+    },
+    "sessionLifecycle": {
+      "doctorBusyAcrossSessions": true,
+      "emptyHallDoesNotClaimDoctorAvailable": true,
+      "rejectedLinkReadable": true,
+      "cancelledLinkReadable": true,
+      "closedWithoutInventedTicket": true,
+      "completedLinkReadable": true
+    }
+  },
+  "artifact": {
+    "id": 14729247997,
+    "name": "nobteek-p09-evidence",
+    "size_in_bytes": 3020596,
+    "url": "https://api.github.com/repos/hosamalqodaymy-rgb/nobteek/actions/artifacts/14729247997",
+    "archive_download_url": "https://api.github.com/repos/hosamalqodaymy-rgb/nobteek/actions/artifacts/14729247997/zip",
+    "expired": false,
+    "created_at": "2026-11-21T23:23:07Z",
+    "expires_at": "2026-12-05T23:23:05Z",
+    "updated_at": "2026-11-21T23:23:07Z",
+    "digest": "sha256:e59e4b5bb50196d956c21555e893612f91ea17ff29a5bf4a9ba142638843232f",
+    "workflow_run": {
+      "id": 44961384763,
+      "repository_id": 1448800704,
+      "head_repository_id": 1448800704,
+      "head_branch": "work/p09-patient-20261122",
+      "head_sha": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2"
+    },
+    "sha256_verified_after_download": true,
+    "retention_days": 14,
+    "contents": "Machine browser report, JUnit, Pint patch, synthetic fixture, server log, formatted PHP snapshots and 16 screenshots; GitHub artifact retention is finite."
+  },
+  "visual_review": {
+    "source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
+    "assistant_visual_inspection": true,
+    "independent_review": true,
+    "passed": true,
+    "screenshots": [
+      "ticket-waiting-360.png",
+      "ticket-waiting-360-text200.png",
+      "waiting-room-1440.png",
+      "waiting-room-360-text200.png",
+      "public-booking-receipt-360.png",
+      "public-booking-receipt-360-text200.png",
+      "staff-recovery-360-text200.png",
+      "privacy-360-text200.png",
+      "ticket-offline-360.png",
+      "ticket-cancelled-360.png",
+      "ticket-expired-360.png",
+      "waiting-room-empty-360.png",
+      "help-360-text200.png"
+    ],
+    "observations": "All 13 inspected final screenshots are readable without overlapping or clipped controls. Private-link text is fully hidden in its own field. 200% mobile action labels wrap as whole words. Offline, cancelled, expired and empty-session states remain honest. All 16 automated layout cases report no overflow or split Arabic action words.",
+    "coverage": "Automated layout coverage: hall at 360/768/1440 normal text plus 360 at 200%; receipt and ticket mobile at normal/200%; help, privacy and recovery mobile at 200%. Direct visual inspection covers only the 13 screenshots listed above. This is not a full page-by-viewport cross product."
+  },
+  "limits": {
+    "real_patient_data_used": false,
+    "physical_phone_tested": false,
+    "server_connected_phone_tested": false,
+    "production_deployed": false,
+    "hosting_configured": false,
+    "browsers_tested": [
+      "Chromium"
+    ],
+    "firefox_tested": false,
+    "webkit_tested": false,
+    "browser_chrome_zoom_tested": false,
+    "text_resize_percent": 200,
+    "external_messages_sent": false,
+    "payments_enabled": false,
+    "upstream_log_redaction": "Before deployment, redact Authorization and /v1/tickets/{secret} in proxy/web-server/APM request logs. The compatibility endpoint remains under the frozen contract; the application browser uses /v1/tickets/current.",
+    "previous_apk_scope": "Offline P06 fixtures only; does not include the P09 connected application.",
+    "next_development_phase": "P10",
+    "p10_to_p13_started": false
+  },
+  "observed_at_utc": "2026-11-21T23:26:17Z"
+}

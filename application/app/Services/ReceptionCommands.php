@@ -22,7 +22,7 @@ class ReceptionCommands
         'defer' => ['patient_request', 'administrative_correction'],
     ];
 
-    public function __construct(private ClinicAuthority $authority) {}
+    public function __construct(private ClinicAuthority $authority, private TicketLinks $tickets) {}
 
     private function expectedVersion(Request $request): int
     {
@@ -63,15 +63,18 @@ class ReceptionCommands
         }
         abort_unless(hash_equals($record->request_fingerprint, $fingerprint), 409, 'استخدم مفتاح محاولة جديدًا لإجراء أو بيانات مختلفة.');
 
-        return [...json_decode(Crypt::decryptString($record->response_ciphertext), true, flags: JSON_THROW_ON_ERROR), 'replayed' => true];
+        $result = json_decode(Crypt::decryptString($record->response_ciphertext), true, flags: JSON_THROW_ON_ERROR);
+        $this->tickets->assertReplayCurrent($result);
+
+        return [...$result, 'replayed' => true];
     }
 
-    private function remember(Request $request, string $key, string $fingerprint, stdClass $visit, int $bookingVersion): array
+    private function remember(Request $request, string $key, string $fingerprint, stdClass $visit, int $bookingVersion, array $receipt = []): array
     {
         $context = app(TenantContext::class);
         $result = ['id' => $visit->id, 'visit_id' => $visit->id, 'booking_id' => $visit->booking_id, 'session_id' => $visit->session_id,
             'state' => $visit->state, 'version' => (int) $visit->version, 'booking_version' => $bookingVersion, 'ticket_number' => (int) $visit->ticket_number,
-            'ready_sequence' => (int) $visit->ready_sequence, 'server_time' => now()->utc()->toIso8601String(), 'request_id' => $request->attributes->get('security_request_id')];
+            'ready_sequence' => (int) $visit->ready_sequence, 'server_time' => now()->utc()->toIso8601String(), 'request_id' => $request->attributes->get('security_request_id'), ...$receipt];
         DB::table('command_replays')->insert(['id' => (string) Str::uuid(), 'clinic_id' => $context->clinicId(),
             'actor_scope_digest' => hash_hmac('sha256', $context->membership['id'], config('app.key')), 'key_digest' => $key, 'request_fingerprint' => $fingerprint,
             'response_ciphertext' => Crypt::encryptString(json_encode($result, JSON_THROW_ON_ERROR)), 'created_at' => now(), 'expires_at' => now()->addHours(48)]);
@@ -181,7 +184,7 @@ class ReceptionCommands
             $booking = DB::table('bookings')->where('id', $bookingId)->firstOrFail();
             $visit = $this->arrive($request, $session, $booking, $window, true);
 
-            return $this->remember($request, $key, $fingerprint, $visit, $booking->version);
+            return $this->remember($request, $key, $fingerprint, $visit, $booking->version, $this->tickets->issue($booking, $session));
         }, 3);
     }
 

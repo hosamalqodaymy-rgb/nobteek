@@ -54,6 +54,7 @@ class SessionSetupController extends Controller
         foreach (['open', 'pause', 'resume', 'close', 'capacity', 'extend'] as $command) {
             $actions[$command] = route('session.command', ['session' => $record->id, 'command' => $command]);
         }
+        $actions['waiting_room'] = route('waiting.index', $record->id);
 
         return Inertia::render('SessionDetail', ['session' => $commands->dto($record), 'role' => app(TenantContext::class)->role(), 'events' => $events, 'actions' => [...$actions, 'preview' => route('session.capacity.preview', $record->id), 'correct' => route('session.schedule.correct', $record->id)], 'doctors' => Doctor::where('active', true)->get(['id', 'display_name'])]);
     }

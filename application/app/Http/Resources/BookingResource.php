@@ -19,6 +19,7 @@ class BookingResource extends JsonResource
         foreach (['confirm', 'reject', 'cancel', 'reschedule'] as $command) {
             $actions[$command] = route('booking.command', ['booking' => $this->id, 'command' => $command]);
         }
+        $actions['ticket_link'] = route('booking.ticket-link', $this->id);
 
         return ['id' => $this->id, 'patient_id' => $patient->id, 'display_name' => $patient->display_name, 'contact_phone' => $patient->contact_phone, 'state' => $this->state,
             'version' => $this->version, 'source' => $this->source, 'session_id' => $this->session_id, 'window_id' => $this->window_id,
