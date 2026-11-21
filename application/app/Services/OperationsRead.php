@@ -70,6 +70,10 @@ SQL)->first();
         $seconds = (float) $result->total_wait_seconds;
         $service = (float) $result->total_service_seconds;
 
+        $support = DB::table('support_requests')->where('clinic_id', $clinic)
+            ->where('opened_at', '>=', $start->toIso8601String())->where('opened_at', '<', $end->toIso8601String())
+            ->where('state', 'resolved')->selectRaw("count(*) as resolved, coalesce(sum(extract(epoch from resolved_at - opened_at)),0) as support_seconds")->first();
+
         return [
             'date' => $date, 'timezone' => 'Asia/Aden',
             'arrivals' => (int) $result->arrivals, 'completed' => (int) $result->completed,
@@ -79,6 +83,8 @@ SQL)->first();
             'average_wait_minutes' => $count ? round($seconds / 60 / $count, 2) : null,
             'average_service_minutes' => $count ? round($service / 60 / $count, 2) : null,
             'total_service_minutes' => round($service / 60, 2),
+            'resolved_support_count' => (int) $support->resolved,
+            'total_support_minutes' => round((float) $support->support_seconds / 60, 2),
             'server_time' => now()->utc()->toIso8601String(),
         ];
     }

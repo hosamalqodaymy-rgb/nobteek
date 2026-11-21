@@ -4,12 +4,18 @@ namespace Tests\Feature;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TicketTestCase;
 
 #[Group('postgres')]
 class OperationsP10Test extends TicketTestCase
 {
+    private function support(string $category = 'technical', ?string $key = null): \Illuminate\Testing\TestResponse
+    {
+        return $this->postJson('/v1/operations/support', ['category' => $category], ['Idempotency-Key' => $key ?? (string) Str::uuid()]);
+    }
+
     private function report(string $date = '2026-11-07'): array
     {
         return $this->getJson('/workspace/operations?date='.$date)->assertOk()->json('report');
@@ -112,9 +118,12 @@ class OperationsP10Test extends TicketTestCase
 
     public function test_support_requests_are_scoped_and_platform_can_resolve_once_with_audit(): void
     {
-        $this->postJson('/v1/operations/support', ['category' => 'technical', 'description' => 'مراجع خاص'])->assertUnprocessable();
-        $receipt = $this->postJson('/v1/operations/support', ['category' => 'technical'])->assertCreated();
+        $this->postJson('/v1/operations/support', ['category' => 'technical', 'description' => 'مراجع خاص'], ['Idempotency-Key' => (string) Str::uuid()])->assertUnprocessable();
+        $key = (string) Str::uuid();
+        $receipt = $this->support('technical', $key)->assertCreated()->assertJsonPath('replayed', false);
         $id = $receipt->json('id');
+        $this->support('technical', $key)->assertCreated()->assertJsonPath('id', $id)->assertJsonPath('replayed', true);
+        $this->support('access', $key)->assertConflict();
         $this->assertDatabaseHas('support_requests', ['id' => $id, 'clinic_id' => $this->id('CLINIC_A'), 'state' => 'open', 'version' => 1]);
         $this->assertSame(1, DB::table('audit_events')->where('event_type', 'support_opened')->where('entity_id', $id)->count());
         $this->assertSame(1, DB::table('outbox_messages')->where('event_id', DB::table('audit_events')->where('entity_id', $id)->value('id'))->count());
@@ -133,7 +142,7 @@ class OperationsP10Test extends TicketTestCase
         $this->assertSame(1, DB::table('security_events')->where('event_type', 'support_resolved')->count());
         $this->assertDatabaseHas('support_requests', ['id' => $id, 'state' => 'resolved', 'version' => 2]);
         $this->signIn('RECEPTION_A');
-        $this->postJson('/v1/operations/support', ['category' => 'access'])->assertForbidden();
+        $this->support('access')->assertForbidden();
         $this->getJson('/platform/operations')->assertForbidden();
         $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 2, 'reason_code' => 'support_resolved'])->assertForbidden();
     }

@@ -80,15 +80,16 @@ class OperationsController extends Controller
             abort_unless($event, 404);
             $existing = DB::table('notification_simulations')->where('clinic_id', $clinic)->where('event_id', $event->event_id)
                 ->where('channel', $data['channel'])->first();
+            $inserted = 0;
             if (! $existing) {
-                DB::table('notification_simulations')->insertOrIgnore([
+                $inserted = DB::table('notification_simulations')->insertOrIgnore([
                     'id' => (string) Str::uuid(), 'clinic_id' => $clinic, 'event_id' => $event->event_id,
                     'channel' => $data['channel'], 'status' => 'simulated_not_sent',
                     'actor_membership_id' => app(TenantContext::class)->membership['id'], 'simulated_at' => now(),
                 ]);
             }
             return ['event_id' => $event->event_id, 'channel' => $data['channel'], 'state' => 'simulated_not_sent',
-                'replayed' => $existing !== null,
+                'replayed' => $existing !== null || $inserted === 0,
                 'external_delivery' => false];
         }, 3);
 
@@ -101,14 +102,27 @@ class OperationsController extends Controller
         $data = $request->validate(['category' => ['required', Rule::in(['access', 'schedule', 'technical', 'other'])],
             'patient_id' => ['prohibited'], 'message' => ['prohibited'], 'description' => ['prohibited'],
             'clinic_id' => ['prohibited']]);
-        $result = DB::transaction(function () use ($request, $authority, $clinic, $data): array {
+        $key = $request->header('Idempotency-Key');
+        abort_unless(is_string($key) && Str::isUuid($key), 428, 'أرسل مفتاح محاولة صالحًا.');
+        $keyDigest = hash_hmac('sha256', strtolower($key), (string) config('app.key'));
+        $fingerprint = hash('sha256', $data['category']);
+        $result = DB::transaction(function () use ($request, $authority, $clinic, $data, $keyDigest, $fingerprint): array {
             $authority->actor($request, ['owner']);
+            $membershipId = app(TenantContext::class)->membership['id'];
+            $existing = DB::table('support_requests')->where('clinic_id', $clinic)->where('opened_by_membership_id', $membershipId)
+                ->where('request_key_digest', $keyDigest)->lockForUpdate()->first();
+            if ($existing) {
+                abort_unless(hash_equals($existing->request_fingerprint, $fingerprint), 409, 'لا تستخدم مفتاح المحاولة لطلب مختلف.');
+
+                return ['id' => $existing->id, 'state' => 'open', 'version' => 1, 'replayed' => true];
+            }
             $id = (string) Str::uuid();
             DB::table('support_requests')->insert(['id' => $id, 'clinic_id' => $clinic, 'category' => $data['category'],
-                'opened_by_membership_id' => app(TenantContext::class)->membership['id'], 'opened_at' => now()]);
+                'request_key_digest' => $keyDigest, 'request_fingerprint' => $fingerprint,
+                'opened_by_membership_id' => $membershipId, 'opened_at' => now()]);
             $authority->audit($request, 'support_opened', 'support', $id, ['version' => 1], 'support_request');
 
-            return ['id' => $id, 'state' => 'open', 'version' => 1];
+            return ['id' => $id, 'state' => 'open', 'version' => 1, 'replayed' => false];
         }, 3);
 
         return response()->json($result, 201);

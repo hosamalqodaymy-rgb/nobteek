@@ -1,9 +1,9 @@
 import { router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AccountLayout, type Shared } from '../components/AccountLayout';
 import { postJSON } from '../components/SessionTransport';
 
-type Report = { date: string; timezone: string; arrivals: number; completed: number; departed: number; away: number; incomplete_times: number; measured_count: number; average_wait_minutes: number | null; average_service_minutes: number | null; total_service_minutes: number; server_time: string };
+type Report = { date: string; timezone: string; arrivals: number; completed: number; departed: number; away: number; incomplete_times: number; measured_count: number; average_wait_minutes: number | null; average_service_minutes: number | null; total_service_minutes: number; resolved_support_count: number; total_support_minutes: number; server_time: string };
 type Notification = { event_id: string; title: string; at: string; internal_state: string; external_state: string };
 type Event = { event_id: string; event_type: string; reason_code: string | null; at: string };
 type Support = { id: string; category: string; state: string; version: number; opened_at: string };
@@ -19,6 +19,8 @@ export default function Operations({ report, notifications, audit, simulation_ur
   const [error, setError] = useState('');
   const [channel, setChannel] = useState('sms');
   const [selected, setSelected] = useState('');
+  const supportAttempt = useRef<{ category: string; key: string } | null>(null);
+  const [uncertainSupport, setUncertainSupport] = useState(false);
   async function act(url: string, data: Record<string, unknown>, success: string) {
     if (busy || !navigator.onLine) return;
     setBusy(true); setError(''); setNotice('');
@@ -28,6 +30,24 @@ export default function Operations({ report, notifications, audit, simulation_ur
       setNotice(success);
       router.reload({ only: ['notifications', 'audit', 'support_requests'] });
     } catch { setError('تعذر التأكد من نتيجة الاتصال. حدّث القائمة قبل إعادة الإجراء.'); }
+    finally { setBusy(false); }
+  }
+  async function openSupport() {
+    if (busy || !navigator.onLine) return;
+    if (!supportAttempt.current) supportAttempt.current = { category, key: crypto.randomUUID() };
+    if (supportAttempt.current.category !== category) { setError('أعد محاولة الطلب السابق قبل تغيير تصنيف المشكلة.'); return; }
+    setBusy(true); setNotice(''); setError('');
+    try {
+      const result = await postJSON(support_url, { category }, { 'Idempotency-Key': supportAttempt.current.key });
+      if (result.status >= 500) { setUncertainSupport(true); setError('لم نتأكد من الحفظ. أعد المحاولة نفسها دون تغيير النوع.'); return; }
+      if (result.status < 200 || result.status >= 300) {
+        setUncertainSupport(false); supportAttempt.current = null;
+        setError(String(result.body.message ?? 'تعذر حفظ الطلب.')); return;
+      }
+      setUncertainSupport(false); supportAttempt.current = null;
+      setNotice(result.body.replayed ? 'تمت استعادة نتيجة الطلب السابق دون تكرار.' : 'تم تسجيل طلب الدعم دون بيانات مراجعين.');
+      router.reload({ only: ['support_requests', 'notifications', 'audit'] });
+    } catch { setUncertainSupport(true); setError('انقطع الاتصال. أعد المحاولة بنفس النوع لمنع طلب دعم مكرر.'); }
     finally { setBusy(false); }
   }
   return <AccountLayout title="تقارير وتنبيهات العيادة">
@@ -45,6 +65,7 @@ export default function Operations({ report, notifications, audit, simulation_ur
       <p>متوسط الانتظار: <strong>{minute(report.average_wait_minutes)}</strong></p>
       <p>متوسط مدة الكشف: <strong>{minute(report.average_service_minutes)}</strong></p>
       <p>مجموع دقائق الكشف: <strong>{minute(report.total_service_minutes)}</strong></p>
+      <p>دقائق الدعم المكتملة للطلبات المفتوحة في هذا اليوم: <strong>{minute(report.total_support_minutes)}</strong> · عدد الطلبات المحسومة: <strong>{report.resolved_support_count}</strong></p>
       <p className="muted">يُقاس الانتظار من الوصول إلى بدء الكشف للزيارة المكتملة ذات الأوقات الصحيحة فقط. الغائبون والمغادرون ونقص الأوقات منفصلون. لا يمثل ذلك وعدًا بموعد كشف.</p>
       <a className="btn btn--secondary" href={export_url + '?date=' + encodeURIComponent(report.date)}>تصدير التقرير CSV بصلاحية مالك وتحقق حديث</a>
     </section>
@@ -56,9 +77,9 @@ export default function Operations({ report, notifications, audit, simulation_ur
       {selected && <p className="muted">الحدث المحدد: <bdi>{selected}</bdi></p>}
     </section>
     <section className="account-card"><h2>طلبات الدعم</h2><p className="muted">اختر نوع المشكلة فقط؛ لا تضع اسم مراجع أو رقم هاتف أو تفاصيل طبية.</p>
-      <form className="secure-form" onSubmit={e => { e.preventDefault(); void act(support_url, { category }, 'تم تسجيل طلب الدعم دون بيانات مراجعين.'); }}>
-        <label htmlFor="support-category">نوع الطلب</label><select id="support-category" value={category} onChange={e => setCategory(e.target.value)}>{Object.entries(categories).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select>
-        <button className="btn" disabled={busy}>فتح طلب دعم</button></form>
+      <form className="secure-form" onSubmit={e => { e.preventDefault(); void openSupport(); }}>
+        <label htmlFor="support-category">نوع الطلب</label><select id="support-category" value={category} disabled={uncertainSupport || busy} onChange={e => setCategory(e.target.value)}>{Object.entries(categories).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select>
+        <button className="btn" disabled={busy}>{uncertainSupport ? 'إعادة المحاولة نفسها' : 'فتح طلب دعم'}</button></form>
       {support_requests.length ? <ul className="team-list">{support_requests.map(s => <li key={s.id}><div><strong>{categories[s.category] ?? 'استفسار'}</strong><p className="muted">{s.state === 'open' ? 'مفتوح' : 'تمت معالجته'} · {new Date(s.opened_at).toLocaleString('ar-YE', { timeZone: 'Asia/Aden' })}</p></div></li>)}</ul> : <p>لا توجد طلبات دعم.</p>}
     </section>
     <section className="account-card"><h2>سجل التدقيق المختصر</h2><p className="muted">نوع الحدث وسببه وتوقيته فقط، دون بيانات المراجعين أو محتوى الرسائل.</p>
