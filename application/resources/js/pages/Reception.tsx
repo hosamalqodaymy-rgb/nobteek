@@ -22,7 +22,7 @@ const reasons: Record<string, Record<string, string>> = {
   leave: { patient_left: 'غادر المراجع', entered_in_error: 'تصحيح حضور أدخل بالخطأ' },
   defer: { patient_request: 'طلب المراجع التأخر في الدور', administrative_correction: 'تصحيح إداري مصرح' },
 };
-const transport = { post: postJSON, refresh() { router.reload({ only: ['arrivals', 'sessions', 'summary', 'server_time'] }); } };
+const transport = { post: postJSON, refresh() { router.reload({ only: ['arrivals', 'sessions', 'summary', 'server_time', 'pagination'] }); } };
 
 function ArrivalAction({ row, saved }: { row: Arrival; saved: (s: string) => void }) {
   const uid = useId(); const attempt = useBookingAttempt(); const api = useBookingTransport();
@@ -56,20 +56,24 @@ function WalkInForm({ sessions, serverTime, saved }: { sessions: ReceptionSessio
   const [session, setSession] = useState(''); const [window, setWindow] = useState('');
   const [name, setName] = useState(''); const [phone, setPhone] = useState('');
   const [receipt, setReceipt] = useState<Record<string, unknown> | null>(null);
+  const [submitted, setSubmitted] = useState<{ session: ReceptionSession; data: Record<string, unknown> } | null>(null);
   const now = new Date(serverTime).getTime();
   const current = sessions.filter(s => s.accepting_arrivals).map(s => ({ ...s, windows: s.windows.filter(w => new Date(w.starts_at).getTime() <= now && now < new Date(w.ends_at).getTime() && w.reserved < w.capacity) })).filter(s => s.windows.length);
   const blocked = attempt.busy || attempt.uncertain;
+  const options = blocked && submitted ? [submitted.session] : current;
   if (receipt) return <div className="account-alert account-success" role="status"><h3>تم حفظ الحضور المباشر</h3><p>رقم التذكرة: <strong>{String(receipt.ticket_number)}</strong>. يظهر موضع الانتظار في قائمة الجلسة.</p><button className="btn btn--secondary" onClick={() => { setReceipt(null); setName(''); setPhone(''); }}>إضافة مراجع آخر</button></div>;
-  if (!current.length) return <p className="account-alert account-warning">لا توجد نافذة وصول جارية بسعة متاحة للحضور المباشر في هذا اليوم. حدّث البيانات أو راجع الجلسات والسعة.</p>;
+  if (!options.length) return <p className="account-alert account-warning">لا توجد نافذة وصول جارية بسعة متاحة للحضور المباشر في هذا اليوم. حدّث البيانات أو راجع الجلسات والسعة.</p>;
   return <form className="secure-form walk-in-form" onSubmit={async e => {
     e.preventDefault();
     const target = current.find(s => s.id === session);
-    if (!target) return;
-    const result = await attempt.run(target.walk_in_url, { window_id: window, display_name: name, contact_phone: phone || null });
-    if (result) { setReceipt(result); saved('تم حفظ الحجز المؤكد والحضور المباشر معًا.'); api.refresh(); }
+    const request = blocked && submitted ? submitted : target ? { session: target, data: { window_id: window, display_name: name, contact_phone: phone || null } } : null;
+    if (!request) return;
+    setSubmitted(request);
+    const result = await attempt.run(request.session.walk_in_url, request.data);
+    if (result) { setSubmitted(null); setReceipt(result); saved('تم حفظ الحجز المؤكد والحضور المباشر معًا.'); api.refresh(); }
   }}>
     <OfflineNotice online={attempt.online} />{attempt.error && <p className="account-alert account-error" role="alert">{attempt.error}</p>}
-    <SessionWindowFields sessions={current} sessionId={session} windowId={window} setSession={setSession} setWindow={setWindow} disabled={blocked} prefix={uid} />
+    <SessionWindowFields sessions={options} sessionId={session} windowId={window} setSession={setSession} setWindow={setWindow} disabled={blocked} prefix={uid} />
     <div className="account-field"><label htmlFor={uid + '-name'}>اسم المراجع المباشر</label><input id={uid + '-name'} value={name} onChange={e => setName(e.target.value)} minLength={2} maxLength={80} required disabled={blocked} autoComplete="off" /></div>
     <div className="account-field"><label htmlFor={uid + '-phone'}>جوال المراجع المباشر · اختياري</label><input id={uid + '-phone'} type="tel" inputMode="tel" dir="ltr" value={phone} onChange={e => setPhone(e.target.value)} maxLength={40} disabled={blocked} autoComplete="off" /><small>يمكن تركه فارغًا. رقم الأسرة لا يدمج أشخاصًا مختلفين.</small></div>
     <p className="muted">يضيف هذا الإجراء حجزًا مؤكدًا وحضورًا معًا داخل السعة المتاحة. استخدم تسجيل الحضور في البطاقة إذا كان للمراجع حجز مؤكد بالفعل.</p>

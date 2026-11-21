@@ -112,7 +112,7 @@ async function captureLayout(p, name) {
   });
   await step('R02', 'Open synthetic current session using real application commands', async () => {
     const doctor = JSON.parse(fs.readFileSync(path.join(output, 'fixture.json'))).doctor_id;
-    const r = await post(owner, '/workspace/sessions', { doctor_id: doctor, starts_at: day + 'T00:00', ends_at: day + 'T23:59', windows: [{ starts_at: day + 'T00:00', ends_at: day + 'T23:59', capacity: 20 }] });
+    const r = await post(owner, '/workspace/sessions', { doctor_id: doctor, starts_at: day + 'T00:00', ends_at: day + 'T23:59', windows: [{ starts_at: day + 'T00:00', ends_at: day + 'T23:59', capacity: 21 }] });
     assert.equal(r.status, 201); sid = r.body.data.id; wid = r.body.data.windows[0].id;
     assert.equal((await post(owner, '/v1/sessions/' + sid + '/open', { reason_code: 'scheduled_start' }, 1)).status, 200);
     entries = [await booked('وصول متزامن أول'), await booked('وصول متزامن ثان')];
@@ -235,6 +235,74 @@ async function captureLayout(p, name) {
         await captureLayout(staff, 'empty-' + width + '-text' + scale);
       }
     }
+  });
+  await step('R15', 'Last-slot lost walk-in response survives refresh and updates pagination from 20 to 21 arrivals', async () => {
+    activePage = staff;
+    const endpoint = '/v1/sessions/' + sid + '/walk-ins';
+    const listing = '/v1/reception?date=' + day + '&session_id=' + sid;
+    for (let ticket = 6; ticket <= 20; ticket++) {
+      const added = await post(staff, endpoint, { window_id: wid, display_name: 'حضور لاختبار الصفحات ' + ticket, contact_phone: null });
+      assert.equal(added.status, 201); assert.equal(added.body.ticket_number, ticket);
+    }
+    const before = await get(staff, listing);
+    assert.equal(before.arrivals.length, 20); assert.equal(before.pagination.next, null);
+    const windowBefore = before.sessions.find(s => s.id === sid).windows.find(w => w.id === wid);
+    assert.equal(windowBefore.capacity, 21); assert.equal(windowBefore.reserved, 20);
+    await staff.setViewportSize({ width: 360, height: 800 });
+    await staff.goto(url());
+    await staff.waitForFunction(() => document.querySelectorAll('article.reception-card').length === 20);
+    const pages = staff.getByRole('navigation', { name: 'صفحات القائمة', exact: true });
+    assert.equal(await pages.getByRole('link', { name: 'التالي', exact: true }).count(), 0);
+    await staff.getByText('إضافة حضور مباشر', { exact: true }).click();
+    const form = staff.locator('form.walk-in-form');
+    await form.getByLabel('الطبيب والجلسة', { exact: true }).selectOption(sid);
+    await form.getByLabel('نافذة الوصول', { exact: true }).selectOption(wid);
+    await form.getByLabel('اسم المراجع المباشر', { exact: true }).fill('آخر حضور مع انقطاع الرد');
+    const route = '**' + endpoint;
+    let committed, original;
+    await staff.route(route, async r => {
+      original = { url: r.request().url(), data: r.request().postDataJSON(), key: r.request().headers()['idempotency-key'] };
+      const response = await r.fetch(); assert.equal(response.status(), 201);
+      committed = await response.json(); await r.abort('failed');
+    });
+    await form.getByRole('button', { name: 'حفظ الحضور المباشر وإصدار التذكرة', exact: true }).click();
+    await form.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).waitFor();
+    assert.equal(committed.ticket_number, 21); assert.ok(original.key);
+    await staff.unroute(route);
+    const [refresh] = await Promise.all([
+      staff.waitForResponse(r => new URL(r.url()).pathname === '/workspace/reception' && r.request().method() === 'GET'),
+      staff.getByRole('button', { name: 'تحديث قائمة الحضور', exact: true }).click(),
+    ]);
+    assert.equal(refresh.status(), 200);
+    const refreshed = (await refresh.json()).props;
+    const fullWindow = refreshed.sessions.find(s => s.id === sid).windows.find(w => w.id === wid);
+    assert.equal(fullWindow.capacity, 21); assert.equal(fullWindow.reserved, 21);
+    await pages.getByRole('link', { name: 'التالي', exact: true }).waitFor();
+    await form.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).waitFor();
+    assert.equal(await form.getByLabel('الطبيب والجلسة', { exact: true }).inputValue(), sid);
+    assert.equal(await form.getByLabel('اسم المراجع المباشر', { exact: true }).isDisabled(), true);
+    const [retry] = await Promise.all([
+      staff.waitForResponse(r => r.url() === original.url && r.request().method() === 'POST'),
+      form.getByRole('button', { name: 'إعادة المحاولة نفسها', exact: true }).click(),
+    ]);
+    assert.equal(retry.status(), 201);
+    assert.equal(retry.request().url(), original.url);
+    assert.equal(retry.request().headers()['idempotency-key'], original.key);
+    assert.deepEqual(retry.request().postDataJSON(), original.data);
+    const result = await retry.json();
+    assert.equal(result.replayed, true); assert.equal(result.id, committed.id); assert.equal(result.ticket_number, 21);
+    await staff.getByRole('heading', { name: 'تم حفظ الحضور المباشر', exact: true }).waitFor();
+    assert.equal((await get(staff, '/v1/visits/' + result.id)).events.filter(e => e.event_type === 'visit_check_in').length, 1);
+    const firstPage = await get(staff, listing), secondPage = await get(staff, listing + '&page=2');
+    const all = [...firstPage.arrivals, ...secondPage.arrivals];
+    assert.equal(all.length, 21); assert.equal(new Set(all.map(row => row.booking_id)).size, 21);
+    assert.equal(all.filter(row => row.visit?.id === result.id).length, 1);
+    assert.equal(secondPage.arrivals.length, 1); assert.equal(secondPage.arrivals[0].visit.id, direct.id); assert.equal(secondPage.pagination.next, null);
+    await pages.getByRole('link', { name: 'التالي', exact: true }).click();
+    await staff.waitForURL(/page=2/);
+    await card(staff, 'حضور مباشر من المتصفح').waitFor();
+    assert.equal(await staff.locator('article.reception-card').count(), 1);
+    report.walkInRefreshRetry = { rowsBefore: 20, rowsAfter: 21, windowCapacity: 21, sameRequestAndKey: true, replayed: true, ticket: 21, oneArrivalEvent: true, secondPageReachable: true };
   });
   await step('R14', 'No unexpected JavaScript or server errors', async () => {
     assert.deepEqual(report.runtimeErrors, []); assert.deepEqual(report.serverErrors, []);
