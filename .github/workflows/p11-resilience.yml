@@ -30,7 +30,6 @@ jobs:
       DB_USERNAME: nobteek_test
       DB_PASSWORD: nobteek_ci_only
       NOBTEEK_DEMO_SEED: "true"
-      NOBTEEK_PG_CONTAINER: ${{ job.services.postgres.id }}
     defaults:
       run:
         working-directory: application
@@ -47,6 +46,8 @@ jobs:
           node-version-file: application/.node-version
           cache: npm
           cache-dependency-path: application/package-lock.json
+      - name: Identify isolated postgres service container
+        run: echo "NOBTEEK_PG_CONTAINER=${{ job.services.postgres.id }}" >> "$GITHUB_ENV"
       - name: Install locked dependencies
         run: |
           composer install --no-interaction --prefer-dist --no-progress
