@@ -37,8 +37,10 @@
     "initial_end_to_end_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967503096",
     "initial_run_only_issue": "Pint formatting outage controller; all runtime/unit/browser/restore steps passed",
     "final_source_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967861200",
-    "final_source_run_status": "runner_startup_failure_without_execution_steps; one retry attempted, same runner startup failure",
-    "full_final_verification": false
+    "final_source_run_status": "Fourth attempt of GitHub Actions run 44967861200 also failed before runner assignment; runner_name empty and zero steps executed. Final-source CI not verified. Possible account billing/usage/runners issue requires owner's GitHub UI diagnosis.",
+    "full_final_verification": false,
+    "final_source_runner_attempts": 4,
+    "blocker_user_action": "In GitHub, inspect Actions > run 44967861200 > failed job banner and Settings > Billing and licensing > Actions usage/spending limit; check Settings > Actions > General permissions and whether hosted runners are available. Do not change billing or visibility automatically."
   },
   "limits": [
     "No production hosting, no live patient data, no physical phone test",
@@ -48,5 +50,5 @@
     "No outgoing paid messages, payments or actual public deployment",
     "External security/pentest/backup exercises required before live patient data"
   ],
-  "next_action": "Retry final GitHub workflows when runners start; verify Pint, P06-P10 regressions, and mark PR #5 ready only after green"
+  "next_action": "Owner verifies exact pre-runner failure banner and usage allowance, then re-run final P11 CI; do not merge P11 or start P12 until final checks pass."
 }
