@@ -1,0 +1,67 @@
+{
+  "phase": "P10",
+  "release_id": "NOBTEEK-P10-1.0",
+  "as_of": "2026-11-22",
+  "timezone": "Asia/Aden",
+  "status": "implemented_automated_verified_pending_PR4_review_physical_device_pending",
+  "integration": {
+    "branch": "work/p10-operations-20261122",
+    "base": "main",
+    "merged": false,
+    "pr_number": 4,
+    "pr_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/4",
+    "draft": true,
+    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+    "next_action": "Review PR #4, merge after CI is confirmed; P11 security/offline/performance awaits further authorization."
+  },
+  "functions": {
+    "notifications": "Per-audit-event owner-only event feed from outbox, no PII, external channels disabled",
+    "simulator": "SMS/WhatsApp/email simulated only; unique per event and channel, never delivered",
+    "report": "Owner-only Asia/Aden daily aggregate: arrival, completion, departed, away, valid completed visit wait/service minutes, missing times, resolved support duration",
+    "export": "CSV owner-only with recent MFA and no PHI",
+    "support": "Owner creates category-only case with idempotency key, platform resolves with version and idempotency key, security audit",
+    "interface": "Arabic RTL owner and platform operation screens, responsive layout"
+  },
+  "acceptance": {
+    "T10A": {
+      "expected": "No duplicate notification per event; simulator never marks external delivery",
+      "status": "passed",
+      "evidence": {
+        "tests": "OperationsP10Test",
+        "workflow_run": 44964758639
+      }
+    },
+    "T10B": {
+      "expected": "Wait from arrival to service start for only completed/valid timestamps, departed and missing separate",
+      "status": "passed",
+      "evidence": {
+        "tests": "OperationsP10Test",
+        "workflow_run": 44964758639
+      }
+    }
+  },
+  "checks": {
+    "full_phpunit": {
+      "tests": 210,
+      "assertions": "at least 2061; exact latest final run to be confirmed",
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758605"
+    },
+    "p10_browser": {
+      "checks": 8,
+      "layout_cases": 10,
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758639"
+    },
+    "p10_feature": {
+      "tests": 5,
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758639"
+    },
+    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c"
+  },
+  "limitations": [
+    "Synthetic Laravel/PostgreSQL/Chromium tests only; physical devices and production not tested.",
+    "Production proxy/APM logs must redact legacy secret URL segments and Authorization header before deployment.",
+    "SMS/WhatsApp/email integrations, real delivery and charges remain disabled through P10; billing P13.",
+    "P06 APK is a local preview and does not include P07-P10 connected functions.",
+    "Firefox, WebKit, operational alert delivery, backups and security/performance remain for later phases."
+  ]
+}

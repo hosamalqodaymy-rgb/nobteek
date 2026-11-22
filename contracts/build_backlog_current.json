@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9",
   "as_of": "2026-11-22",
-  "status": "P09_patient_implemented_automated_verified_pending_merge_physical_device_pending",
+  "status": "P10_operations_implemented_automated_verified_pending_review_merge_and_physical_device",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -519,7 +519,7 @@
         }
       ],
       "next": "يعتمد الرابط على الحالة الفعلية، ويعمل دون تطبيق أو حساب مريض.",
-      "status": "implemented_synthetic_automated_verified_pending_merge",
+      "status": "implemented_synthetic_automated_verified_merged",
       "started_on": "2026-11-22",
       "completed_on": "2026-11-22",
       "implementation_status": "private_patient_links_verified_recovery_and_session_scoped_waiting_room_implemented",
@@ -529,13 +529,14 @@
       "integration": {
         "branch": "work/p09-patient-20261122",
         "target": "main",
-        "status": "ready_for_review_pending_merge",
-        "merged": false,
+        "status": "merged",
+        "merged": true,
         "pull_request": 3,
         "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/3",
         "tested_source_commit": "cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2",
         "timezone": "Asia/Aden",
-        "authorization": "User approved completing P09 in the current conversation."
+        "authorization": "User approved completing P09 in the current conversation.",
+        "merge_commit": "76adab9e6cb57950d5a54e703943645e1eb91f0c"
       }
     },
     {
@@ -555,18 +556,44 @@
         {
           "id": "T10A",
           "expected": "لا تتكرر رسالة الحدث الواحد، ولا يسجل المحاكي رسالة خارجية على أنها مسلمة.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p10_validation.json",
+            "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+            "run_id": 44964758639,
+            "scope": "real_isolated_Laravel_PostgreSQL_and_Chromium_synthetic",
+            "production_release_test": false
+          }
         },
         {
           "id": "T10B",
           "expected": "الانتظار يحسب من الوصول إلى بدء الزيارة للزيارات مكتملة الأوقات فقط.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed",
+          "evidence": {
+            "file": "results/p10_validation.json",
+            "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+            "run_id": 44964758639,
+            "scope": "real_isolated_Laravel_PostgreSQL_and_Chromium_synthetic",
+            "production_release_test": false
+          }
         }
       ],
       "next": "توصل واجهة الإرسال الحقيقية في المرحلة الأخيرة دون تغيير أحداث الزيارة.",
-      "status": "not_started"
+      "status": "implemented_synthetic_automated_verified_pending_merge",
+      "started_on": "2026-11-22",
+      "completed_on": "2026-11-22",
+      "implementation_status": "internal_notifications_simulator_owner_daily_report_csv_support_and_platform_triage_implemented",
+      "acceptance_status": "passed_in_synthetic_automated_scope",
+      "completion_scope": "Laravel_PostgreSQL_Chromium_synthetic_only",
+      "integration": {
+        "branch": "work/p10-operations-20261122",
+        "target": "main",
+        "merged": false,
+        "pull_request": 4,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/4",
+        "tested_source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+        "source_release": "NOBTEEK-P10-1.0"
+      }
     },
     {
       "id": "P11",
@@ -994,8 +1021,8 @@
       "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
     }
   ],
-  "baseline_id": "NOBTEEK-P09-1.0",
-  "next_stage": "P10",
+  "baseline_id": "NOBTEEK-P10-1.0",
+  "next_stage": "P11",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -1173,7 +1200,7 @@
     "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185"
   },
   "next_stage_gate": "P09_pull_request_3_merged_into_main",
-  "main_baseline_id": "NOBTEEK-P08-1.0",
+  "main_baseline_id": "NOBTEEK-P09-1.0",
   "patient_baseline": {
     "id": "NOBTEEK-P09-1.0",
     "report": "results/p09_validation.json",
@@ -1257,5 +1284,14 @@
       "P10 through P13 have not started; external payments and paid messaging remain disabled before P13."
     ],
     "private_data_or_secret_automatically_persisted_in_browser": false
+  },
+  "p10_baseline": {
+    "report": "results/p10_validation.json",
+    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+    "branch": "work/p10-operations-20261122",
+    "pr": 4,
+    "pending_merge": true,
+    "notification_delivery_enabled": false,
+    "financial_billing_enabled": false
   }
 }
