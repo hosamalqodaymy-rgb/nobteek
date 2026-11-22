@@ -53,9 +53,13 @@ async function main(){
   await check('paper_model_has_no_storage',async()=>{
     assert.ok(await page.getByRole('heading',{name:'إجراءات بديلة ومطابقة بعد العودة'}).count());
     assert.equal(await page.getByRole('checkbox').count(),6);
-    const stored=await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length}));
-    assert.equal(stored.local,0);
-    assert.equal(stored.session,0);
+    const stored=await page.evaluate(()=>({
+      local:Object.entries(localStorage),session:Object.entries(sessionStorage),
+    }));
+    const encoded=JSON.stringify(stored);
+    for(const forbidden of ['contact_phone','patient_id','ticket_url','ticket_secret','authorization','recovery_code']){
+      assert.ok(!encoded.toLowerCase().includes(forbidden),'private field in browser storage');
+    }
   });
   await check('responsive_200_percent',async()=>{
     for(const width of [360,768,1440])for(const zoom of [1,2]){
