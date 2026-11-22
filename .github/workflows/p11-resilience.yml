@@ -75,7 +75,7 @@ jobs:
           dump="$RUNNER_TEMP/p11-synthetic-backup.dump"
           docker exec "$NOBTEEK_PG_CONTAINER" pg_dump -U postgres -d nobteek_test_ci --format=custom --no-owner --no-acl > "$dump"
           test -s "$dump"
-          docker exec -i "$NOBTEEK_PG_CONTAINER" pg_restore -U postgres -d nobteek_test_restore --no-owner --no-acl --exit-on-error < "$dump"
+          docker exec -i "$NOBTEEK_PG_CONTAINER" pg_restore -U nobteek_test -d nobteek_test_restore --no-owner --no-acl --exit-on-error < "$dump"
           python3 ../tools/p11_verify_restore.py
       - name: Exercise restored booking and duplicate response replay
         env:
