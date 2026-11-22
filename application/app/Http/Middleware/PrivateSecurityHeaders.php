@@ -18,6 +18,11 @@ class PrivateSecurityHeaders
         $response->headers->set('Referrer-Policy', 'no-referrer');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
+        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        if ($request->isSecure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
+        }
         $response->headers->set('X-Request-Id', $request->attributes->get('security_request_id'));
 
         return $response;

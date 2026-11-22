@@ -59,3 +59,7 @@
 .p10-platform .team-list strong,.p10-platform .team-list p,.p10-platform h1,.p10-platform h2,.p10-platform h3{overflow-wrap:anywhere}
 .p10-platform .btn{max-width:100%;white-space:normal;overflow-wrap:normal;word-break:normal;text-align:center}
 @media(max-width:650px){.p10-platform .account-card{padding-inline:12px}.p10-platform .btn{padding-inline:8px}}
+
+/* P11: safe paper fallback, no patient data stored in browser. */
+.p11-step{display:flex;gap:.75rem;align-items:flex-start;max-width:100%;overflow-wrap:anywhere}.p11-step input{width:1.3rem;height:1.3rem;flex:none;accent-color:var(--color-primary);margin-top:.35rem}.p11-paper ol{padding-inline-start:1.5rem}.p11-paper li{margin-bottom:1rem}.p11-print-only{display:none}
+@media print{body{background:white!important}.p11-print-only{display:block!important;break-inside:avoid;border:2px solid #333;padding:1rem;margin-top:1.5rem}.header-row,.account-footer,button,.p11-paper .actions{display:none!important}.account-card{box-shadow:none!important;padding:1rem!important}}
