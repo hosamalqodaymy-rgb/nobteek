@@ -1,0 +1,102 @@
+name: Nobteek P11 resilience and restored snapshot
+on:
+  push:
+    branches: [main, 'work/p11-*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  resilience:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nobteek_ci_only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nobteek_test_ci
+      DB_USERNAME: nobteek_test
+      DB_PASSWORD: nobteek_ci_only
+      NOBTEEK_DEMO_SEED: "true"
+      NOBTEEK_PG_CONTAINER: ${{ job.services.postgres.id }}
+    defaults:
+      run:
+        working-directory: application
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, dom, curl, zip, pdo_pgsql
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - name: Install locked dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci --no-audit --no-fund
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+      - name: Create isolated test and restore databases
+        env:
+          PGPASSWORD: nobteek_ci_only
+        run: |
+          psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE nobteek_test LOGIN PASSWORD 'nobteek_ci_only' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+          CREATE DATABASE nobteek_test_ci OWNER nobteek_test;
+          CREATE DATABASE nobteek_test_restore OWNER nobteek_test;
+          SQL
+      - name: Build and test offline, tenant, transport, and security
+        run: |
+          npm run build
+          php artisan migrate --seed --force --no-interaction
+          php artisan test --compact --filter=P11OutageTest
+      - name: Dump and independently restore synthetic snapshot
+        run: |
+          set -euo pipefail
+          umask 077
+          dump="$RUNNER_TEMP/p11-synthetic-backup.dump"
+          docker exec "$NOBTEEK_PG_CONTAINER" pg_dump -U postgres -d nobteek_test_ci --format=custom --no-owner --no-acl > "$dump"
+          test -s "$dump"
+          docker exec -i "$NOBTEEK_PG_CONTAINER" pg_restore -U postgres -d nobteek_test_restore --no-owner --no-acl --exit-on-error < "$dump"
+          python3 ../tools/p11_verify_restore.py
+      - name: Exercise restored booking and duplicate response replay
+        env:
+          DB_DATABASE: nobteek_test_restore
+          NOBTEEK_DEMO_SEED: "false"
+          NOBTEEK_RESTORE_SMOKE: "true"
+        run: |
+          php artisan test --compact --filter=P11RestoreSmokeTest
+      - name: Observe synthetic queue and report latency
+        run: |
+          python3 ../tools/p11_performance_probe.py
+      - name: Verify PHP formatting and no uncommitted source changes
+        run: |
+          vendor/bin/pint --test app/Http/Controllers/OutageController.php app/Http/Middleware/PrivateSecurityHeaders.php routes/web.php tests/Feature/P11OutageTest.php tests/Feature/P11RestoreSmokeTest.php
+          git diff --exit-code
+      - name: Remove private snapshot
+        if: always()
+        run: rm -f "$RUNNER_TEMP/p11-synthetic-backup.dump"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nobteek-p11-synthetic-evidence
+          retention-days: 14
+          if-no-files-found: warn
+          path: results/p11-ci/
