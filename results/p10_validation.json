@@ -10,9 +10,10 @@
     "merged": false,
     "pr_number": 4,
     "pr_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/4",
-    "draft": true,
+    "draft": false,
     "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
-    "next_action": "Review PR #4, merge after CI is confirmed; P11 security/offline/performance awaits further authorization."
+    "next_action": "Review PR #4, merge after CI is confirmed; P11 security/offline/performance awaits further authorization.",
+    "review_status": "ready_for_review_not_merged"
   },
   "functions": {
     "notifications": "Per-audit-event owner-only event feed from outbox, no PII, external channels disabled",
@@ -43,19 +44,27 @@
   "checks": {
     "full_phpunit": {
       "tests": 210,
-      "assertions": "at least 2061; exact latest final run to be confirmed",
-      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758605"
+      "assertions": 2069,
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964948995"
     },
     "p10_browser": {
       "checks": 8,
       "layout_cases": 10,
-      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758639"
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964948997"
     },
     "p10_feature": {
       "tests": 5,
-      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964758639"
+      "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964948997"
     },
-    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c"
+    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+    "regressions": {
+      "P06_browser": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964948971",
+      "P07": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964949011",
+      "P08": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964949027",
+      "P09": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44964949013",
+      "P06_APK_emulator": "pending at time of writing, prior P06 baseline passed"
+    },
+    "final_ci_status": "All P10/full application/P06-P09 checks successful. Prior P06 phone emulator check currently running, not claimed passed."
   },
   "limitations": [
     "Synthetic Laravel/PostgreSQL/Chromium tests only; physical devices and production not tested.",
