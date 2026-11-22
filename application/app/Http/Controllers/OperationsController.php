@@ -114,7 +114,7 @@ class OperationsController extends Controller
             if ($existing) {
                 abort_unless(hash_equals($existing->request_fingerprint, $fingerprint), 409, 'لا تستخدم مفتاح المحاولة لطلب مختلف.');
 
-                return ['id' => $existing->id, 'state' => 'open', 'version' => 1, 'replayed' => true];
+                return ['id' => $existing->id, 'state' => $existing->state, 'version' => (int) $existing->version, 'replayed' => true];
             }
             $id = (string) Str::uuid();
             DB::table('support_requests')->insert(['id' => $id, 'clinic_id' => $clinic, 'category' => $data['category'],

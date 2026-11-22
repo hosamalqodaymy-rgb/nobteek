@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -49,19 +50,27 @@ class PlatformOperationsController extends Controller
             'reason_code' => ['required', 'in:support_resolved'],
             'patient_id' => ['prohibited'], 'clinic_id' => ['prohibited'],
             'description' => ['prohibited'], 'message' => ['prohibited']]);
-        $result = DB::transaction(function () use ($request, $support, $authority, $audit, $data): array {
+        $key = $request->header('Idempotency-Key');
+        abort_unless(is_string($key) && Str::isUuid($key), 428, 'أرسل مفتاح محاولة صالحًا.');
+        $keyDigest = hash_hmac('sha256', strtolower($key), (string) config('app.key'));
+        $result = DB::transaction(function () use ($request, $support, $authority, $audit, $data, $keyDigest): array {
             $actor = $authority->platform($request);
             $record = DB::table('support_requests')->where('id', $support)->lockForUpdate()->first();
             abort_unless($record, 404);
+            if ($record->state === 'resolved' && $record->resolved_by_user_id === $actor->id &&
+                hash_equals((string) $record->resolution_key_digest, $keyDigest) &&
+                (int) $record->version === (int) $data['version'] + 1) {
+                return ['id' => $support, 'state' => 'resolved', 'version' => (int) $record->version, 'replayed' => true];
+            }
             abort_unless($record->state === 'open' && (int) $record->version === (int) $data['version'], 409, 'تغير طلب الدعم. حدّث القائمة.');
             DB::table('support_requests')->where('id', $support)->update([
                 'state' => 'resolved', 'version' => $record->version + 1,
-                'resolved_at' => now(), 'resolved_by_user_id' => $actor->id,
+                'resolved_at' => now(), 'resolved_by_user_id' => $actor->id, 'resolution_key_digest' => $keyDigest,
             ]);
             $audit->record('support_resolved', $actor->id, clinic: $record->clinic_id,
                 request: $request, context: ['result' => 'resolved']);
 
-            return ['id' => $support, 'state' => 'resolved', 'version' => (int) $record->version + 1];
+            return ['id' => $support, 'state' => 'resolved', 'version' => (int) $record->version + 1, 'replayed' => false];
         }, 3);
 
         return response()->json($result);

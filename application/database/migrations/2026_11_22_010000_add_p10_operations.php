@@ -33,11 +33,13 @@ CREATE TABLE support_requests (
  opened_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
  resolved_at timestamptz,
  resolved_by_user_id uuid REFERENCES users(id),
+ resolution_key_digest char(64) CHECK (resolution_key_digest ~ '^[0-9a-f]{64}$'),
  UNIQUE (clinic_id,id),
  UNIQUE (clinic_id,opened_by_membership_id,request_key_digest),
+ UNIQUE (resolved_by_user_id,resolution_key_digest),
  FOREIGN KEY (clinic_id,opened_by_membership_id) REFERENCES memberships(clinic_id,id),
- CHECK ((state='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL) OR
-        (state='resolved' AND resolved_at IS NOT NULL AND resolved_by_user_id IS NOT NULL))
+ CHECK ((state='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL AND resolution_key_digest IS NULL) OR
+        (state='resolved' AND resolved_at IS NOT NULL AND resolved_by_user_id IS NOT NULL AND resolution_key_digest IS NOT NULL))
 );
 CREATE INDEX support_requests_clinic_state ON support_requests(clinic_id,state,opened_at);
 SQL);

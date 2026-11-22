@@ -135,15 +135,21 @@ class OperationsP10Test extends TicketTestCase
         $this->assertCount(1, $data['cases']);
         $this->assertSame('technical', $data['cases'][0]['category']);
         $this->assertArrayNotHasKey('patient_id', $data['cases'][0]);
-        $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 99, 'reason_code' => 'support_resolved'])->assertConflict();
-        $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 1, 'reason_code' => 'support_resolved'])
-            ->assertOk()->assertJsonPath('version', 2)->assertJsonPath('state', 'resolved');
-        $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 1, 'reason_code' => 'support_resolved'])->assertConflict();
+        $resolveKey = (string) Str::uuid();
+        $endpoint = '/platform/support/'.$id.'/resolve';
+        $this->postJson($endpoint, ['version' => 1, 'reason_code' => 'support_resolved'])->assertStatus(428);
+        $this->postJson($endpoint, ['version' => 99, 'reason_code' => 'support_resolved'], ['Idempotency-Key' => (string) Str::uuid()])->assertConflict();
+        $this->postJson($endpoint, ['version' => 1, 'reason_code' => 'support_resolved'], ['Idempotency-Key' => $resolveKey])
+            ->assertOk()->assertJsonPath('version', 2)->assertJsonPath('state', 'resolved')->assertJsonPath('replayed', false);
+        $this->postJson($endpoint, ['version' => 1, 'reason_code' => 'support_resolved'], ['Idempotency-Key' => $resolveKey])->assertOk()->assertJsonPath('replayed', true);
+        $this->postJson($endpoint, ['version' => 1, 'reason_code' => 'support_resolved'], ['Idempotency-Key' => (string) Str::uuid()])->assertConflict();
         $this->assertSame(1, DB::table('security_events')->where('event_type', 'support_resolved')->count());
         $this->assertDatabaseHas('support_requests', ['id' => $id, 'state' => 'resolved', 'version' => 2]);
+        $this->signIn('OWNER_A', true);
+        $this->support('technical', $key)->assertCreated()->assertJsonPath('replayed', true)->assertJsonPath('state', 'resolved')->assertJsonPath('version', 2);
         $this->signIn('RECEPTION_A');
         $this->support('access')->assertForbidden();
         $this->getJson('/platform/operations')->assertForbidden();
-        $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 2, 'reason_code' => 'support_resolved'])->assertForbidden();
+        $this->postJson('/platform/support/'.$id.'/resolve', ['version' => 2, 'reason_code' => 'support_resolved'], ['Idempotency-Key' => (string) Str::uuid()])->assertForbidden();
     }
 }
