@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AccountLayout } from '../components/AccountLayout';
 
 type Session = { id: string; doctor_name: string; starts_at: string; state: string; version: number; issued_tickets: number; not_arrived: number; waiting: number; called: number; in_service: number; away: number; completed: number; left: number };
@@ -7,7 +7,9 @@ type Snapshot = { date: string; server_time: string; sessions: Session[]; synchr
 const stateNames: Record<string,string> = { scheduled:'مجدولة',open:'مفتوحة',paused:'متوقفة مؤقتًا',closed:'مغلقة' };
 function time(value: string) { return new Date(value).toLocaleString('ar-YE',{timeZone:'Asia/Aden'}); }
 
-export default function Outage({date,server_time,sessions,status_url,reception_url,bookings_url}:Snapshot & {status_url:string;reception_url:string;bookings_url:string}) {
+type OutageProps = Snapshot & { status_url: string; doctor_url: string | null; reception_url: string | null; bookings_url: string | null };
+
+export default function Outage({ date, server_time, sessions, status_url, doctor_url, reception_url, bookings_url }: OutageProps) {
   const [snapshot,setSnapshot] = useState<Snapshot>({date,server_time,sessions,synchronized:true});
   const [connected,setConnected] = useState(typeof navigator==='undefined' ? true : navigator.onLine);
   const [error,setError] = useState('');
@@ -15,25 +17,78 @@ export default function Outage({date,server_time,sessions,status_url,reception_u
   const [clock,setClock] = useState(()=>performance.now());
   const [lastConfirmedAt,setLastConfirmedAt] = useState(()=>performance.now());
   const [checked,setChecked] = useState<string[]>([]);
+  const pending = useRef<AbortController | null>(null);
+
   async function refresh() {
-    if (!navigator.onLine || busy) { setConnected(false); setError('الاتصال غير مؤكد. لا تنفذ أي حفظ أو إصدار تذكرة.'); return; }
+    if (pending.current) return;
+    if (!navigator.onLine) {
+      setConnected(false);
+      setError('الاتصال غير مؤكد. لا تنفذ أي حفظ أو إصدار تذكرة.');
+      return;
+    }
+
+    const request = new AbortController();
+    pending.current = request;
+    const timeout = window.setTimeout(() => request.abort(), 8000);
     setBusy(true);
     try {
-      const response=await fetch(status_url+'?date='+encodeURIComponent(date),{headers:{Accept:'application/json'},credentials:'same-origin',cache:'no-store'});
+      const response = await fetch(status_url, {
+        headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store', signal: request.signal,
+      });
       if (!response.ok) throw new Error('server');
       const payload=await response.json() as Snapshot;
       if (!payload.synchronized || !Array.isArray(payload.sessions)) throw new Error('invalid');
-      setSnapshot(payload);setLastConfirmedAt(performance.now());setClock(performance.now());setConnected(true);setError('');
-    } catch {setConnected(false);setError('تعذر التحقق من الخادم وقاعدة البيانات. آخر بيانات محفوظة بالصفحة قديمة؛ لا تصدر تذاكر بناءً عليها.');}
-    finally {setBusy(false);}
+      if (pending.current !== request) return;
+      if (request.signal.aborted || !navigator.onLine) throw new Error('disconnected');
+
+      const verifiedAt = performance.now();
+      setSnapshot(payload);
+      setLastConfirmedAt(verifiedAt);
+      setClock(verifiedAt);
+      setConnected(true);
+      setError('');
+    } catch {
+      if (pending.current === request) {
+        setConnected(false);
+        setError('تعذر التحقق من الخادم وقاعدة البيانات. آخر بيانات محفوظة بالصفحة قديمة؛ لا تصدر تذاكر بناءً عليها.');
+      }
+    } finally {
+      window.clearTimeout(timeout);
+      if (pending.current === request) {
+        pending.current = null;
+        setBusy(false);
+      }
+    }
   }
-  useEffect(()=>{
-    const online=()=>{setConnected(false);setError('عاد اتصال الجهاز؛ تحقّق من الخادم قبل المطابقة.');};
-    const offline=()=>{setConnected(false);setError('الاتصال منقطع؛ توقفت العمليات الإلكترونية. استخدم السجل الورقي مؤقتًا.');};
-    const interval=window.setInterval(()=>setClock(performance.now()),5000);
-    window.addEventListener('online',online);window.addEventListener('offline',offline);
-    return ()=>{window.clearInterval(interval);window.removeEventListener('online',online);window.removeEventListener('offline',offline);};
-  },[]);
+  useEffect(() => {
+    const cancelRefresh = () => {
+      const request = pending.current;
+      pending.current = null;
+      request?.abort();
+    };
+    const invalidate = (message: string) => {
+      cancelRefresh();
+      setBusy(false);
+      setConnected(false);
+      setError(message);
+    };
+    const online = () => invalidate('عاد اتصال الجهاز؛ تحقّق من الخادم قبل المطابقة.');
+    const offline = () => invalidate('الاتصال منقطع؛ توقفت العمليات الإلكترونية. استخدم السجل الورقي مؤقتًا.');
+    const restored = (event: PageTransitionEvent) => {
+      if (event.persisted) invalidate('استُعيدت الصفحة من سجل المتصفح؛ تحقّق من الخادم قبل المطابقة.');
+    };
+    const interval = window.setInterval(() => setClock(performance.now()), 5000);
+    window.addEventListener('online', online);
+    window.addEventListener('offline', offline);
+    window.addEventListener('pageshow', restored);
+    return () => {
+      cancelRefresh();
+      window.clearInterval(interval);
+      window.removeEventListener('online', online);
+      window.removeEventListener('offline', offline);
+      window.removeEventListener('pageshow', restored);
+    };
+  }, [status_url]);
   const stale=clock-lastConfirmedAt>30000;
   const valid=connected&&!stale&&!error;
   const tasks=[
@@ -46,7 +101,11 @@ export default function Outage({date,server_time,sessions,status_url,reception_u
   ];
   return <AccountLayout title="خطة الانقطاع والمطابقة">
     <div className="page-heading"><div><p className="eyebrow">P11 · سلامة التشغيل</p><h1>الانقطاع والمطابقة مع السجل الورقي</h1><p className="muted">السجل الورقي المؤقت خارج النظام، ولا تعطي هذه الصفحة أرقام تذاكر أو تحفظ أي بيانات مراجعين على جهازك.</p></div>
-      <div className="actions"><Link className="btn btn--secondary" href={reception_url}>الاستقبال</Link><Link className="btn btn--secondary" href={bookings_url}>الحجوزات</Link></div></div>
+      <div className="actions">
+        {doctor_url && <Link className="btn btn--secondary" href={doctor_url}>شاشة الطبيب</Link>}
+        {reception_url && <Link className="btn btn--secondary" href={reception_url}>الاستقبال</Link>}
+        {bookings_url && <Link className="btn btn--secondary" href={bookings_url}>الحجوزات</Link>}
+      </div></div>
     {!valid ? <div role="alert" className="account-alert account-warning"><strong>وضع احتياطي — لا يوجد تأكيد حي من الخادم.</strong><p>{error || 'بيانات الجلسات قديمة؛ تحديث مطلوب.'}</p><p>لا تفسّر ظهور الإنترنت وحده على أنه نجاح الحفظ.</p></div>
       : <p className="account-alert account-success" role="status">الخادم متصل وقاعدة البيانات أجابت. آخر قراءة: {time(snapshot.server_time)}</p>}
     <section className="account-card"><h2>التحقق من الحالة الحية</h2>

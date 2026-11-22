@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\ReceptionTestCase;
 
@@ -80,6 +81,29 @@ class P11OutageTest extends ReceptionTestCase
 
         $this->post('/logout')->assertRedirect();
         $this->getJson('/v1/outage/status')->assertUnauthorized();
+    }
+
+    public function test_outage_refresh_keeps_the_session_and_links_only_to_authorized_workspaces(): void
+    {
+        $filters = ['date' => '2026-11-07', 'session_id' => $this->id('SESSION_C')];
+        $status = route('outage.status', $filters);
+
+        $this->get(route('outage.index', $filters))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->component('Outage')
+            ->has('sessions', 1)
+            ->where('sessions.0.id', $filters['session_id'])
+            ->where('status_url', $status)
+            ->where('reception_url', route('reception.index', $filters))
+            ->where('doctor_url', null));
+        $this->getJson($status)->assertOk()->assertJsonCount(1, 'sessions')
+            ->assertJsonPath('sessions.0.id', $filters['session_id']);
+
+        $this->signIn('DOCTOR_C');
+        $this->get(route('outage.index', $filters))->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->component('Outage')
+            ->where('doctor_url', route('doctor.index', $filters))
+            ->where('reception_url', null)
+            ->where('bookings_url', null));
     }
 
     public function test_security_headers_apply_only_https_hsts_and_disable_sensitive_browser_features(): void

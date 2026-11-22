@@ -50,6 +50,23 @@ async function main(){
     await page.getByText('الخادم متصل وقاعدة البيانات أجابت.',{exact:false}).waitFor();
     assert.equal(attemptedWrites,0);
   });
+  await check('refresh_keeps_the_selected_session',async()=>{
+    const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, '../application/database/fixtures/foundation_demo.json'), 'utf8'));
+    const date = '2026-11-07';
+    const sessionId = fixture.ids.SESSION_C;
+    await page.goto(base + '/workspace/outage?' + new URLSearchParams({date, session_id: sessionId}));
+    const refresh = page.getByRole('button', {name: 'فحص الخادم وتحديث الأعداد'});
+    await refresh.waitFor();
+    const [response] = await Promise.all([
+      page.waitForResponse(result => new URL(result.url()).pathname === '/v1/outage/status'),
+      refresh.click(),
+    ]);
+    const url = new URL(response.url());
+    const snapshot = await response.json();
+    assert.equal(url.searchParams.get('date'), date);
+    assert.equal(url.searchParams.get('session_id'), sessionId);
+    assert.deepEqual(snapshot.sessions.map(session => session.id), [sessionId]);
+  });
   await check('paper_model_has_no_storage',async()=>{
     assert.ok(await page.getByRole('heading',{name:'إجراءات بديلة ومطابقة بعد العودة'}).count());
     assert.equal(await page.getByRole('checkbox').count(),6);

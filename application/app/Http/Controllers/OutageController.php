@@ -40,42 +40,39 @@ class OutageController extends Controller
         if (isset($data['session_id']) && $data['session_id'] !== '') {
             $sessions->where('s.id', $data['session_id']);
         }
-        $rows = $sessions->orderBy('s.starts_at')->orderBy('s.id')->limit(50)->get([
-            's.id', 's.state', 's.version', 's.ticket_counter', 's.doctor_id',
-            's.starts_at', 'd.display_name as doctor_name',
-        ]);
-        $ids = $rows->pluck('id')->all();
-        $visitCounts = empty($ids) ? collect() : DB::table('visits')->where('clinic_id', $context->clinicId())
-            ->whereIn('session_id', $ids)->groupBy('session_id')->selectRaw(
-                "session_id, count(*) FILTER (WHERE state='waiting') AS waiting, ".
+        $visitCounts = DB::table('visits')->whereColumn('clinic_id', 's.clinic_id')
+            ->whereColumn('session_id', 's.id')->selectRaw(
+                "count(*) FILTER (WHERE state='waiting') AS waiting, ".
                 "count(*) FILTER (WHERE state='called') AS called, ".
                 "count(*) FILTER (WHERE state='in_service') AS in_service, ".
                 "count(*) FILTER (WHERE state='away') AS away, ".
                 "count(*) FILTER (WHERE state='completed') AS completed, ".
                 "count(*) FILTER (WHERE state='left') AS left_total"
-            )->get()->keyBy('session_id');
-        $notArrived = empty($ids) ? collect() : DB::table('bookings as b')
+            );
+        $notArrived = DB::table('bookings as b')
             ->leftJoin('visits as v', function ($join): void {
                 $join->on('v.booking_id', '=', 'b.id')->on('v.clinic_id', '=', 'b.clinic_id');
-            })->where('b.clinic_id', $context->clinicId())->whereIn('b.session_id', $ids)
-            ->where('b.state', 'confirmed')->whereNull('v.id')->groupBy('b.session_id')
-            ->selectRaw('b.session_id, count(*) AS not_arrived')->pluck('not_arrived', 'session_id');
+            })->whereColumn('b.clinic_id', 's.clinic_id')->whereColumn('b.session_id', 's.id')
+            ->where('b.state', 'confirmed')->whereNull('v.id')->selectRaw('count(*)');
+        $rows = $sessions->leftJoinLateral($visitCounts, 'counts')
+            ->select('s.id', 's.state', 's.version', 's.ticket_counter', 's.starts_at', 'd.display_name as doctor_name', 'counts.*')
+            ->selectSub($notArrived, 'not_arrived')
+            ->orderBy('s.starts_at')->orderBy('s.id')->limit(50)->get();
 
         return [
             'date' => $date,
             'server_time' => now()->utc()->toIso8601String(),
             'synchronized' => true,
-            'sessions' => $rows->map(function ($row) use ($visitCounts, $notArrived): array {
-                $v = $visitCounts->get($row->id);
+            'sessions' => $rows->map(function ($row): array {
                 return [
                     'id' => $row->id, 'doctor_name' => $row->doctor_name,
                     'state' => $row->state, 'version' => (int) $row->version,
                     'starts_at' => CarbonImmutable::parse($row->starts_at)->utc()->toIso8601String(),
                     'issued_tickets' => (int) $row->ticket_counter,
-                    'not_arrived' => (int) ($notArrived[$row->id] ?? 0),
-                    'waiting' => (int) ($v->waiting ?? 0), 'called' => (int) ($v->called ?? 0),
-                    'in_service' => (int) ($v->in_service ?? 0), 'away' => (int) ($v->away ?? 0),
-                    'completed' => (int) ($v->completed ?? 0), 'left' => (int) ($v->left_total ?? 0),
+                    'not_arrived' => (int) $row->not_arrived,
+                    'waiting' => (int) $row->waiting, 'called' => (int) $row->called,
+                    'in_service' => (int) $row->in_service, 'away' => (int) $row->away,
+                    'completed' => (int) $row->completed, 'left' => (int) $row->left_total,
                 ];
             })->all(),
         ];
@@ -84,12 +81,15 @@ class OutageController extends Controller
     public function index(Request $request): Response|JsonResponse
     {
         $data = $this->snapshot($request);
+        $filters = ['date' => $data['date'], 'session_id' => $request->input('session_id')];
+        $doctor = app(TenantContext::class)->role() === 'doctor';
 
         return $request->expectsJson() ? response()->json($data) : Inertia::render('Outage', [
             ...$data,
-            'status_url' => route('outage.status'),
-            'reception_url' => route('reception.index'),
-            'bookings_url' => route('bookings.index'),
+            'status_url' => route('outage.status', $filters),
+            'doctor_url' => $doctor ? route('doctor.index', $filters) : null,
+            'reception_url' => $doctor ? null : route('reception.index', $filters),
+            'bookings_url' => $doctor ? null : route('bookings.index', $filters),
         ]);
     }
 

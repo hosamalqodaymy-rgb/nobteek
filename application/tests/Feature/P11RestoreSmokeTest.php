@@ -14,7 +14,7 @@ class P11RestoreSmokeTest extends TestCase
 {
     public function test_restored_synthetic_database_can_process_a_booking_arrival_without_duplicate_ticket(): void
     {
-        if (env('NOBTEEK_RESTORE_SMOKE') !== 'true' ||
+        if (env('NOBTEEK_RESTORE_SMOKE', false) !== true ||
             config('database.connections.pgsql.database') !== 'nobteek_test_restore' ||
             ! app()->environment('testing')) {
             $this->markTestSkipped('Only runs on the P11 isolated restored snapshot.');
@@ -42,9 +42,11 @@ class P11RestoreSmokeTest extends TestCase
             ]);
         });
         $doctor = User::findOrFail($fixture['DOCTOR_C']);
-        $doctor->forceFill(['login_enabled' => true, 'access_suspended' => false])->save();
+        $doctor->forceFill([
+            'password' => Hash::make(Str::random(40)), 'login_enabled' => true, 'access_suspended' => false,
+        ])->save();
         $user = User::findOrFail($fixture['RECEPTION_A']);
-        $user->forceFill(['password' => Hash::make('SyntheticRecoveryOnlyPassword123'), 'login_enabled' => true])->save();
+        $user->forceFill(['password' => Hash::make(Str::random(40)), 'login_enabled' => true])->save();
         $this->actingAs($user)->withSession(['membership_id' => $fixture['MEM_RECEPTION_A'],
             'security_version' => $user->security_version, 'auth_confirmed_at' => $now->timestamp]);
         $key = (string) Str::uuid();
@@ -56,7 +58,12 @@ class P11RestoreSmokeTest extends TestCase
         $this->assertSame(1, DB::table('visits')->where('booking_id', $bookingId)->count());
         $this->assertSame(1, (int) DB::table('clinic_sessions')->where('id', $sessionId)->value('ticket_counter'));
         $this->assertSame(1, DB::table('audit_events')->where('entity_id', $id)->where('event_type', 'visit_check_in')->count());
-        $this->getJson('/v1/outage/status?date='.$now->setTimezone('Asia/Aden')->toDateString())
-            ->assertOk()->assertJsonPath('synchronized', true);
+        $readUrl = route('outage.status', [
+            'date' => $now->copy()->subMinutes(15)->setTimezone('Asia/Aden')->toDateString(),
+            'session_id' => $sessionId,
+        ]);
+        $this->getJson($readUrl)->assertOk()->assertJsonPath('synchronized', true)
+            ->assertJsonPath('sessions.0.id', $sessionId)->assertJsonPath('sessions.0.issued_tickets', 1)
+            ->assertJsonPath('sessions.0.waiting', 1);
     }
 }

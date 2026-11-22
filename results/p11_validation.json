@@ -1,6 +1,6 @@
 {
   "phase": "P11",
-  "status": "implementation_complete_ci_pending_runner_availability",
+  "status": "local_backend_and_restore_passed_hosted_acceptance_pending",
   "test_source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40",
   "started_at": "2026-11-22",
   "timezone": "Asia/Aden",
@@ -28,24 +28,24 @@
     },
     {
       "id": "T11B",
-      "status": "synthetic_acceptance_passed_on_previous_source_pending_final_source_ci",
-      "evidence": "Independent synthetic pg_restore with 15 table counts and foreign-key checks; restored booking and replay passed",
+      "status": "passed_locally_on_current_pull_request_source",
+      "evidence": "Independent PostgreSQL restore, matched counts and relations across 15 tables, and a separately executed booking attendance replay test with 17 assertions.",
       "run_id": 44967503096
     }
   ],
   "ci": {
     "initial_end_to_end_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967503096",
-    "initial_run_only_issue": "Pint formatting outage controller; all runtime/unit/browser/restore steps passed",
+    "initial_run_only_issue": "Pint failed in the historical workflow. The restored-database test guard was subsequently found to skip the attendance test even with the intended environment flag.",
     "final_source_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967861200",
-    "final_source_run_status": "Fourth attempt of GitHub Actions run 44967861200 also failed before runner assignment; runner_name empty and zero steps executed. Final-source CI not verified. Possible account billing/usage/runners issue requires owner's GitHub UI diagnosis.",
+    "final_source_run_status": "Attempt 5 stopped before runner assignment. This run predates the outage and restored-database fixes in the current PR head.",
     "full_final_verification": false,
-    "final_source_runner_attempts": 4,
+    "final_source_runner_attempts": 5,
     "blocker_user_action": "In GitHub, inspect Actions > run 44967861200 > failed job banner and Settings > Billing and licensing > Actions usage/spending limit; check Settings > Actions > General permissions and whether hosted runners are available. Do not change billing or visibility automatically.",
     "confirmed_runner_blocker": "GitHub Actions user-visible annotation: The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings.",
     "confirmed_blocker_type": "account_billing_or_spending_limit",
     "blocker_confirmed_from": "GitHub Actions annotations screenshot provided by repository account owner, 2026-11-22",
     "code_test_failed_during_latest_job": false,
-    "next_required_action": "Account owner: Settings > Billing & Licensing > Overview, Usage, Budgets and alerts, Payment information. Fix failed payment if shown or evaluate exhausted Actions budget. Then rerun PR #5 checks. Do not raise spend limits without owner approval."
+    "next_required_action": "Restore hosted runner access for this private repository, then rerun the full P11 and P06–P10 checks on the current PR head."
   },
   "limits": [
     "No production hosting, no live patient data, no physical phone test",
@@ -55,5 +55,26 @@
     "No outgoing paid messages, payments or actual public deployment",
     "External security/pentest/backup exercises required before live patient data"
   ],
-  "next_action": "Owner verifies exact pre-runner failure banner and usage allowance, then re-run final P11 CI; do not merge P11 or start P12 until final checks pass."
+  "next_action": "Resolve hosted runner billing access, run all checks on the current PR head, then review P11 and resume P12.",
+  "local_verification_2026_11_23": {
+    "base_commit": "4adba04b079cd40e87268c07429e4d66e8c965a7",
+    "snapshot_verified_against_git_tree": true,
+    "php": "8.4.28",
+    "postgresql": "17.12",
+    "node": "24.22.3",
+    "locked_dependencies_build_pint": "passed",
+    "phpunit_foundation": {
+      "passed": 215,
+      "assertions": 2167,
+      "restore_smoke_run_separately": true
+    },
+    "restored_database": {
+      "tables_verified": 15,
+      "relational_checks": "passed",
+      "smoke_tests_passed": 1,
+      "assertions": 17
+    },
+    "browser_regression_on_current_head": "required",
+    "dataset": "synthetic"
+  }
 }
