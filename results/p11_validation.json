@@ -40,7 +40,12 @@
     "final_source_run_status": "Fourth attempt of GitHub Actions run 44967861200 also failed before runner assignment; runner_name empty and zero steps executed. Final-source CI not verified. Possible account billing/usage/runners issue requires owner's GitHub UI diagnosis.",
     "full_final_verification": false,
     "final_source_runner_attempts": 4,
-    "blocker_user_action": "In GitHub, inspect Actions > run 44967861200 > failed job banner and Settings > Billing and licensing > Actions usage/spending limit; check Settings > Actions > General permissions and whether hosted runners are available. Do not change billing or visibility automatically."
+    "blocker_user_action": "In GitHub, inspect Actions > run 44967861200 > failed job banner and Settings > Billing and licensing > Actions usage/spending limit; check Settings > Actions > General permissions and whether hosted runners are available. Do not change billing or visibility automatically.",
+    "confirmed_runner_blocker": "GitHub Actions user-visible annotation: The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings.",
+    "confirmed_blocker_type": "account_billing_or_spending_limit",
+    "blocker_confirmed_from": "GitHub Actions annotations screenshot provided by repository account owner, 2026-11-22",
+    "code_test_failed_during_latest_job": false,
+    "next_required_action": "Account owner: Settings > Billing & Licensing > Overview, Usage, Budgets and alerts, Payment information. Fix failed payment if shown or evaluate exhausted Actions budget. Then rerun PR #5 checks. Do not raise spend limits without owner approval."
   },
   "limits": [
     "No production hosting, no live patient data, no physical phone test",
