@@ -37,7 +37,7 @@ class OutageController extends Controller
             abort_unless($context->doctorId, 403);
             $sessions->where('s.doctor_id', $context->doctorId);
         }
-        if (! empty($data['session_id'])) {
+        if (isset($data['session_id']) && $data['session_id'] !== '') {
             $sessions->where('s.id', $data['session_id']);
         }
         $rows = $sessions->orderBy('s.starts_at')->orderBy('s.id')->limit(50)->get([
