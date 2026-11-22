@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "repository": "hosamalqodaymy-rgb/nobteek",
-  "branch": "work/p10-operations-20261122",
-  "task": "P10: التنبيهات والتقارير وإدارة المنصة",
-  "status": "P10_implemented_synthetic_automated_verified_pending_review_merge",
+  "branch": "work/p11-resilience-20261122",
+  "task": "تنفيذ P11 وفحوص الانقطاع والاستعادة والتعافي والأمان",
+  "status": "P11_implemented_final_runner_unavailable_pending_PR5",
   "baseline": "NOBTEEK-P06-1.0",
   "source_release_commit": "860da7309f2ba94799cf59bbba2267e365752a35",
   "source_archive_sha256": "2421848d2d1b0d1545287aaa6b9a6e739d99f3378cbcb06bf1d158d9eb03ac8d",
@@ -369,8 +369,8 @@
     "php_runtime_available": false,
     "full_browser_retest_this_session": false
   },
-  "next_action": "Review PR #4 and merge P10 after final CI, then start P11 only when authorized",
-  "next_development_stage": "P11",
+  "next_action": "Retry final P11 CI and regressions, mark PR #5 ready upon green, await merge approval",
+  "next_development_stage": "P12_after_P11_merge",
   "browser_gaps": [
     "physical phone native browser and keyboard when a device is available"
   ],
@@ -396,7 +396,7 @@
     }
   ],
   "readable_handoff": "docs/RESUME_AR.md",
-  "verification_report": "results/p10_validation.json",
+  "verification_report": "results/p11_validation.json",
   "browser_verification": {
     "report": "results/p06_browser_ci_validation.json",
     "checks_passed": 24,
@@ -498,15 +498,14 @@
       "browser_checks_passed": 15
     }
   },
-  "current_work_branch": "work/p10-operations-20261122",
+  "current_work_branch": "work/p11-resilience-20261122",
   "integration": {
-    "branch": "work/p10-operations-20261122",
+    "branch": "work/p11-resilience-20261122",
     "target": "main",
     "merged": false,
-    "pull_request": 4,
-    "pr_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/4",
-    "source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
-    "latest_code_verified_in_ci": true
+    "pr_number": 5,
+    "pr_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/5",
+    "final_ci_passed": false
   },
   "checks_this_session_scope": "Original source-import flags remain historical and unchanged. P07 merge evidence and P08 implementation/merge evidence are preserved separately. P09 and its current regression measurements are recorded in results/p09_validation.json against runtime commit cf47ec7eb5208dea2eeeff3e18a7f7bf325913c2 and tree 70a27d9e77e4ad217d19bcec881a716f92910975; later documentation-only commits do not reattribute those measurements.",
   "previous_integration": {
@@ -557,7 +556,7 @@
     }
   },
   "original_import_task": "استعادة نسخة P00–P06 وحفظها والتحقق منها",
-  "current_runtime_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
+  "current_runtime_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40",
   "current_runtime_tree": "70a27d9e77e4ad217d19bcec881a716f92910975",
   "main_head_at_p09_review": "6eea719bea1a5b9ec86a563c7c608827a98a79ae",
   "next_development_stage_status": "not_started",
@@ -608,7 +607,7 @@
     "financial_phase": "P13",
     "deployment_log_redaction_required": "Before deployment, redact secrets in the canonical /v1/tickets/{secret} path and Authorization headers from upstream access/request logs. Browser ticket reads use the fragment URL and bearer-header endpoint; application error redaction does not establish upstream log redaction."
   },
-  "current_verification_report": "results/p10_validation.json",
+  "current_verification_report": "results/p11_validation.json",
   "current_limitations": [
     "No real physical phone or server-connected phone verification has been completed.",
     "No production deployment or hosting has been completed.",

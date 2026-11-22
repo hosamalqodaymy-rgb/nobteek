@@ -1,0 +1,150 @@
+name: Nobteek P11 resilience and restored snapshot
+on:
+  push:
+    branches: [main, 'work/p11-*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  resilience:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nobteek_ci_only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nobteek_test_ci
+      DB_USERNAME: nobteek_test
+      DB_PASSWORD: nobteek_ci_only
+      NOBTEEK_DEMO_SEED: "true"
+    defaults:
+      run:
+        working-directory: application
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, dom, curl, zip, pdo_pgsql
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - name: Identify isolated postgres service container
+        run: echo "NOBTEEK_PG_CONTAINER=${{ job.services.postgres.id }}" >> "$GITHUB_ENV"
+      - name: Install locked dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci --no-audit --no-fund
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+      - name: Create isolated test and restore databases
+        env:
+          PGPASSWORD: nobteek_ci_only
+        run: |
+          psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE nobteek_test LOGIN PASSWORD 'nobteek_ci_only' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+          CREATE DATABASE nobteek_test_ci OWNER nobteek_test;
+          CREATE DATABASE nobteek_test_restore OWNER nobteek_test;
+          CREATE DATABASE nobteek_test_browser OWNER nobteek_test;
+          SQL
+      - name: Build and test offline, tenant, transport, and security
+        run: |
+          npm run build
+          php artisan migrate --seed --force --no-interaction
+          php artisan test --compact --filter=P11OutageTest
+      - name: Dump and independently restore synthetic snapshot
+        run: |
+          set -euo pipefail
+          umask 077
+          dump="$RUNNER_TEMP/p11-synthetic-backup.dump"
+          docker exec "$NOBTEEK_PG_CONTAINER" pg_dump -U postgres -d nobteek_test_ci --format=custom --no-owner --no-acl > "$dump"
+          test -s "$dump"
+          docker exec -i "$NOBTEEK_PG_CONTAINER" pg_restore -U nobteek_test -d nobteek_test_restore --no-owner --no-acl --exit-on-error < "$dump"
+          python3 ../tools/p11_verify_restore.py
+      - name: Exercise restored booking and duplicate response replay
+        env:
+          DB_DATABASE: nobteek_test_restore
+          NOBTEEK_DEMO_SEED: "false"
+          NOBTEEK_RESTORE_SMOKE: "true"
+        run: |
+          php artisan test --compact --filter=P11RestoreSmokeTest
+      - name: Observe synthetic queue and report latency
+        run: |
+          python3 ../tools/p11_performance_probe.py
+      - name: Create ephemeral browser credentials
+        run: |
+          python3 - <<'PY'
+          import base64, os, secrets, datetime
+          now = datetime.datetime.now(datetime.timezone.utc)
+          clock = now.replace(minute=(now.minute // 15)*15, second=0, microsecond=0).strftime('%Y-%m-%dT%H:%M:%SZ')
+          values = {'NOBTEEK_BROWSER_CLOCK':clock, 'NOBTEEK_BROWSER_PASSWORD':secrets.token_urlsafe(32),
+                    'NOBTEEK_BROWSER_MFA_SECRET':base64.b32encode(secrets.token_bytes(20)).decode(),
+                    'NOBTEEK_BROWSER_TOOLS':os.path.join(os.environ['RUNNER_TEMP'],'nobteek-browser-tools')}
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              for k,v in values.items():
+                  if k in ('NOBTEEK_BROWSER_PASSWORD','NOBTEEK_BROWSER_MFA_SECRET'): print('::add-mask::'+v)
+                  f.write(k+'='+v+'\n')
+          PY
+      - name: Install pinned Playwright Chromium
+        working-directory: .
+        run: |
+          npm install --prefix "$NOBTEEK_BROWSER_TOOLS" --no-package-lock --no-audit --no-fund playwright@1.65.0
+          "$NOBTEEK_BROWSER_TOOLS/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Prepare isolated P11 browser database and local test server
+        env:
+          DB_DATABASE: nobteek_test_browser
+          SESSION_DRIVER: file
+          CACHE_STORE: array
+          QUEUE_CONNECTION: sync
+          MAIL_MAILER: array
+        run: |
+          php artisan migrate --seed --force --no-interaction
+          php ../tools/prepare_p10_browser.php
+          mkdir -p ../results/p11-ci
+          PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8000 -t public ../tools/p07_test_server.php > ../results/p11-ci/server.log 2>&1 &
+          echo "NOBTEEK_P11_BROWSER_SERVER_PID=$!" >> "$GITHUB_ENV"
+          for attempt in {1..40}; do
+            if curl --fail --silent http://127.0.0.1:8000/login > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Verify offline-to-online reconciliation in real Chromium
+        working-directory: .
+        env:
+          DB_DATABASE: nobteek_test_browser
+        run: node tools/validate_p11_browser.cjs
+      - name: Stop isolated P11 browser server
+        if: always()
+        run: |
+          if [ -n "${NOBTEEK_P11_BROWSER_SERVER_PID:-}" ]; then kill "$NOBTEEK_P11_BROWSER_SERVER_PID" || true; fi
+      - name: Verify PHP formatting and no uncommitted source changes
+        run: |
+          vendor/bin/pint --test app/Http/Controllers/OutageController.php app/Http/Middleware/PrivateSecurityHeaders.php routes/web.php tests/Feature/P11OutageTest.php tests/Feature/P11RestoreSmokeTest.php
+          git diff --exit-code
+      - name: Remove private snapshot
+        if: always()
+        run: rm -f "$RUNNER_TEMP/p11-synthetic-backup.dump"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nobteek-p11-synthetic-evidence
+          retention-days: 14
+          if-no-files-found: warn
+          path: results/p11-ci/

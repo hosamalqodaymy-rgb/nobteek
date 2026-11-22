@@ -23,6 +23,7 @@ createInertiaApp({
     if (name === 'Doctor') return import('./pages/Doctor').then(module => module.default);
     if (name === 'Ticket') return import('./pages/Ticket').then(module => module.default);
     if (name === 'WaitingRoom') return import('./pages/WaitingRoom').then(module => module.default);
+    if (name === 'Outage') return import('./pages/Outage').then(module=>module.default);
     if (name === 'Operations') return import('./pages/Operations').then(module => module.default);
     if (name === 'PlatformOperations') return import('./pages/PlatformOperations').then(module => module.default);
     if (name === 'Information') return import('./pages/Information').then(module => module.default);
