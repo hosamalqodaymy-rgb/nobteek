@@ -18,7 +18,7 @@ export default function PlatformOperations({ cases, security_events, clinic_summ
     } catch { setError('انقطع الاتصال. حدّث القائمة قبل إعادة الإجراء حتى لا تتكرر المحاولة.'); }
     finally { setBusy(''); }
   }
-  return <AccountLayout title="دعم وتدقيق المنصة">
+  return <AccountLayout title="دعم وتدقيق المنصة"><div className="p10-platform">
     <div className="page-heading"><p className="eyebrow">مدير المنصة</p><h1>دعم العيادات والتدقيق</h1><p className="muted">متابعة تشغيلية دون الوصول إلى بيانات المرضى أو تفعيل الاشتراكات المالية.</p>
       <div className="actions"><a className="btn btn--secondary" href={links['platform.clinics']}>قائمة العيادات</a><a className="btn btn--secondary" href={links.platform}>إدارة الحسابات</a></div></div>
     {error && <p className="account-alert account-error" role="alert">{error}</p>}{notice && <p className="account-alert account-success" role="status">{notice}</p>}
@@ -29,5 +29,5 @@ export default function PlatformOperations({ cases, security_events, clinic_summ
     <section className="account-card"><h2>سجل أمان المنصة</h2><p className="muted">أنواع الأحداث وأوقاتها فقط، دون معلومات المرضى أو الأسرار أو بيانات دخول الحسابات.</p>
       {security_events.length ? <ul className="team-list">{security_events.map((item, i) => <li key={i}><div><strong>{item.event_type}</strong><p className="muted">{new Date(item.at).toLocaleString('ar-YE', { timeZone: 'Asia/Aden' })}</p></div></li>)}</ul> : <p>لا توجد أحداث أمان.</p>}
     </section>
-  </AccountLayout>;
+  </div></AccountLayout>;
 }
