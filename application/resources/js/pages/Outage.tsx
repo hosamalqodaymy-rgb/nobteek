@@ -12,7 +12,8 @@ export default function Outage({date,server_time,sessions,status_url,reception_u
   const [connected,setConnected] = useState(typeof navigator==='undefined' ? true : navigator.onLine);
   const [error,setError] = useState('');
   const [busy,setBusy] = useState(false);
-  const [clock,setClock] = useState(Date.now());
+  const [clock,setClock] = useState(()=>performance.now());
+  const [lastConfirmedAt,setLastConfirmedAt] = useState(()=>performance.now());
   const [checked,setChecked] = useState<string[]>([]);
   async function refresh() {
     if (!navigator.onLine || busy) { setConnected(false); setError('الاتصال غير مؤكد. لا تنفذ أي حفظ أو إصدار تذكرة.'); return; }
@@ -22,18 +23,18 @@ export default function Outage({date,server_time,sessions,status_url,reception_u
       if (!response.ok) throw new Error('server');
       const payload=await response.json() as Snapshot;
       if (!payload.synchronized || !Array.isArray(payload.sessions)) throw new Error('invalid');
-      setSnapshot(payload);setConnected(true);setError('');
+      setSnapshot(payload);setLastConfirmedAt(performance.now());setClock(performance.now());setConnected(true);setError('');
     } catch {setConnected(false);setError('تعذر التحقق من الخادم وقاعدة البيانات. آخر بيانات محفوظة بالصفحة قديمة؛ لا تصدر تذاكر بناءً عليها.');}
     finally {setBusy(false);}
   }
   useEffect(()=>{
     const online=()=>{setConnected(false);setError('عاد اتصال الجهاز؛ تحقّق من الخادم قبل المطابقة.');};
     const offline=()=>{setConnected(false);setError('الاتصال منقطع؛ توقفت العمليات الإلكترونية. استخدم السجل الورقي مؤقتًا.');};
-    const interval=window.setInterval(()=>setClock(Date.now()),5000);
+    const interval=window.setInterval(()=>setClock(performance.now()),5000);
     window.addEventListener('online',online);window.addEventListener('offline',offline);
     return ()=>{window.clearInterval(interval);window.removeEventListener('online',online);window.removeEventListener('offline',offline);};
   },[]);
-  const stale=clock-Date.parse(snapshot.server_time)>30000;
+  const stale=clock-lastConfirmedAt>30000;
   const valid=connected&&!stale&&!error;
   const tasks=[
     'تسجيل وقت وصول المراجع واسم المراجع ورقم الهاتف على الورق فقط، دون إدخاله في حقل غير مصرح أو تخزينه على الجهاز.',
