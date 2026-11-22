@@ -4,7 +4,7 @@
 
 دُمجت P11 في `main` عبر [طلب الدمج #5](https://github.com/hosamalqodaymy-rgb/nobteek/pull/5) بعد نجاح فحوص GitHub الثمانية. تعديل الدمج `b17df99e5a25f355a7c1edc1e49efca7b927cb12`.
 
-بدأت P12 باختبار رحلة المراجع على محاكاة هاتف والطاقم على حاسوب لعيادتين وثلاثة أطباء. سجل التحقق في [تقرير P12](../results/p12_validation.json). خطوات التدريب والتسليم والرجوع في [دليل P12](P12_ACCEPTANCE_AR.md). استخدام البيانات صناعي، والتجربة على هاتف فعلي موثقة كبند قبول منفصل.
+اجتازت نسخة P12 فحص [GitHub Actions](https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/45085251699) بمحاكاة هاتف WebKit وحاسوب Chromium لعيادتين وثلاثة أطباء. الفحص على التعديل `6043bc9eecef771a59ceec8e34d1cc43648e4504` في [طلب الدمج #6](https://github.com/hosamalqodaymy-rgb/nobteek/pull/6). سجل القبول في [تقرير P12](../results/p12_validation.json). خطوات التدريب والتسليم والرجوع في [دليل P12](P12_ACCEPTANCE_AR.md). استخدام البيانات صناعي، والتجربة على هاتف فعلي موثقة كبند قبول منفصل.
 
 ---
 
