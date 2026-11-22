@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9",
   "as_of": "2026-11-22",
-  "status": "P10_operations_implemented_automated_verified_pending_review_merge_and_physical_device",
+  "status": "P11_implemented_synthetic_acceptance_prelim_pass_final_runner_unavailable_pending_merge",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -579,7 +579,7 @@
         }
       ],
       "next": "توصل واجهة الإرسال الحقيقية في المرحلة الأخيرة دون تغيير أحداث الزيارة.",
-      "status": "implemented_synthetic_automated_verified_pending_merge",
+      "status": "implemented_verified_merged",
       "started_on": "2026-11-22",
       "completed_on": "2026-11-22",
       "implementation_status": "internal_notifications_simulator_owner_daily_report_csv_support_and_platform_triage_implemented",
@@ -588,11 +588,13 @@
       "integration": {
         "branch": "work/p10-operations-20261122",
         "target": "main",
-        "merged": false,
+        "merged": true,
         "pull_request": 4,
         "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/4",
         "tested_source_commit": "8dfd052c516cad6e9a777facc99eb1958a153b2c",
-        "source_release": "NOBTEEK-P10-1.0"
+        "source_release": "NOBTEEK-P10-1.0",
+        "status": "merged",
+        "merge_commit": "bdb33406943488692fdcc8b116e98a990525b2eb"
       }
     },
     {
@@ -612,18 +614,38 @@
         {
           "id": "T11A",
           "expected": "العودة بعد انقطاع أو إعادة إرسال لا تفقد دورا ولا تؤكد حفظا لم يصل للخادم.",
-          "status": "not_run",
-          "evidence": null
+          "status": "preliminary_pass_final_ci_pending",
+          "evidence": {
+            "file": "results/p11_validation.json",
+            "synthetic_only": true,
+            "run_id": 44967503096,
+            "source_commit": "5e81b17186f2dc7b1efb235ac999062a39312e44"
+          }
         },
         {
           "id": "T11B",
           "expected": "استعادة نسخة في بيئة منفصلة ثم مطابقة الأعداد والعلاقات واختبار رحلة حجز.",
-          "status": "not_run",
-          "evidence": null
+          "status": "preliminary_pass_final_ci_pending",
+          "evidence": {
+            "file": "results/p11_validation.json",
+            "synthetic_only": true,
+            "run_id": 44967503096,
+            "source_commit": "5e81b17186f2dc7b1efb235ac999062a39312e44"
+          }
         }
       ],
       "next": "تثبت وسائل الحماية قبل بيانات حقيقية، وتكرر على الاستضافة النهائية.",
-      "status": "not_started"
+      "status": "implemented_final_ci_pending",
+      "started_on": "2026-11-22",
+      "implementation_status": "offline_manual_reconciliation_backup_restore_smoke_private_logging_synthetic_perf",
+      "integration": {
+        "branch": "work/p11-resilience-20261122",
+        "merged": false,
+        "pull_request": 5,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/5",
+        "draft": true,
+        "source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40"
+      }
     },
     {
       "id": "P12",
@@ -1021,8 +1043,8 @@
       "url": "https://www.itu.int/dms_pub/itu-t/oth/02/02/T02020000E70004PDFE.pdf"
     }
   ],
-  "baseline_id": "NOBTEEK-P10-1.0",
-  "next_stage": "P11",
+  "baseline_id": "NOBTEEK-P11-1.0-RC",
+  "next_stage": "P11-final-ci-then-P12",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -1293,5 +1315,11 @@
     "pending_merge": true,
     "notification_delivery_enabled": false,
     "financial_billing_enabled": false
+  },
+  "p11_baseline": {
+    "source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40",
+    "report": "results/p11_validation.json",
+    "full_ci_pass": false,
+    "pr": 5
   }
 }

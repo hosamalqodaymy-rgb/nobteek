@@ -1,0 +1,52 @@
+{
+  "phase": "P11",
+  "status": "implementation_complete_ci_pending_runner_availability",
+  "test_source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40",
+  "started_at": "2026-11-22",
+  "timezone": "Asia/Aden",
+  "branch": "work/p11-resilience-20261122",
+  "pr_number": 5,
+  "pr_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/5",
+  "merged": false,
+  "draft": true,
+  "features": [
+    "Owner/reception/doctor authorized read-only outage status counters without patient PII",
+    "Arabic paper-fallback/reconciliation guidance, explicitly no electronic queue or booking when disconnected",
+    "Safe stale-data indication using elapsed monotonic time and manual server verification after reconnection",
+    "Private response headers, HTTPS-only HSTS, disabled sensitive browser capabilities",
+    "Synthetic pg_dump and independent pg_restore, exact table counts and relationship validation",
+    "Real test booking-arrival and idempotent replay on restored synthetic database",
+    "Synthetic SQL latency sampling with no production SLO claim",
+    "Arabic incident/restore/security operational runbook and privacy-safe example Nginx log format"
+  ],
+  "acceptance": [
+    {
+      "id": "T11A",
+      "status": "synthetic_acceptance_passed_on_previous_source_pending_final_source_ci",
+      "evidence": "P11 outage PHPUnit and 6 Chromium checks (reception sign-in, live read, offline, return, privacy, responsive) passed on 5e81b17186f2dc7b1efb235ac999062a39312e44",
+      "run_id": 44967503096
+    },
+    {
+      "id": "T11B",
+      "status": "synthetic_acceptance_passed_on_previous_source_pending_final_source_ci",
+      "evidence": "Independent synthetic pg_restore with 15 table counts and foreign-key checks; restored booking and replay passed",
+      "run_id": 44967503096
+    }
+  ],
+  "ci": {
+    "initial_end_to_end_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967503096",
+    "initial_run_only_issue": "Pint formatting outage controller; all runtime/unit/browser/restore steps passed",
+    "final_source_run": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/44967861200",
+    "final_source_run_status": "runner_startup_failure_without_execution_steps; one retry attempted, same runner startup failure",
+    "full_final_verification": false
+  },
+  "limits": [
+    "No production hosting, no live patient data, no physical phone test",
+    "No provider-level encrypted offsite backups or actual alerting configured",
+    "RPO/RTO and real p95/p99 performance targets not adopted or certified",
+    "No automatic data deletion policy introduced",
+    "No outgoing paid messages, payments or actual public deployment",
+    "External security/pentest/backup exercises required before live patient data"
+  ],
+  "next_action": "Retry final GitHub workflows when runners start; verify Pint, P06-P10 regressions, and mark PR #5 ready only after green"
+}
