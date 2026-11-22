@@ -34,8 +34,8 @@ class OutageController extends Controller
             ->where('s.starts_at', '>=', $begin->toIso8601String())
             ->where('s.starts_at', '<', $end->toIso8601String());
         if ($role === 'doctor') {
-            abort_unless($context->doctorId(), 403);
-            $sessions->where('s.doctor_id', $context->doctorId());
+            abort_unless($context->doctorId, 403);
+            $sessions->where('s.doctor_id', $context->doctorId);
         }
         if (! empty($data['session_id'])) {
             $sessions->where('s.id', $data['session_id']);
