@@ -27,14 +27,20 @@ class P11RestoreSmokeTest extends TestCase
         $bookingId = $fixture['BOOK_C1'];
         $windowId = $fixture['W1_C'];
         $now = now();
-        DB::table('clinic_sessions')->where('id', $sessionId)->update([
-            'starts_at' => $now->copy()->subMinutes(15),
-            'ends_at' => $now->copy()->addHours(2), 'state' => 'open',
-        ]);
-        DB::table('arrival_windows')->where('id', $windowId)->update([
-            'starts_at' => $now->copy()->subMinutes(15),
-            'ends_at' => $now->copy()->addHour(), 'capacity' => 3,
-        ]);
+        DB::transaction(function () use ($fixture, $sessionId, $windowId, $now): void {
+            DB::table('clinic_sessions')->where('id', $sessionId)->update([
+                'starts_at' => $now->copy()->subMinutes(15),
+                'ends_at' => $now->copy()->addHours(2), 'state' => 'open',
+            ]);
+            DB::table('arrival_windows')->where('id', $windowId)->update([
+                'starts_at' => $now->copy()->subMinutes(15),
+                'ends_at' => $now->copy()->addHour(), 'capacity' => 3,
+            ]);
+            DB::table('arrival_windows')->where('id', $fixture['W2_C'])->update([
+                'starts_at' => $now->copy()->addHour(),
+                'ends_at' => $now->copy()->addHours(2),
+            ]);
+        });
         $doctor = User::findOrFail($fixture['DOCTOR_C']);
         $doctor->forceFill(['login_enabled' => true, 'access_suspended' => false])->save();
         $user = User::findOrFail($fixture['RECEPTION_A']);
