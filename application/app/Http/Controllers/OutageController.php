@@ -60,6 +60,7 @@ class OutageController extends Controller
             })->where('b.clinic_id', $context->clinicId())->whereIn('b.session_id', $ids)
             ->where('b.state', 'confirmed')->whereNull('v.id')->groupBy('b.session_id')
             ->selectRaw('b.session_id, count(*) AS not_arrived')->pluck('not_arrived', 'session_id');
+
         return [
             'date' => $date,
             'server_time' => now()->utc()->toIso8601String(),
@@ -83,6 +84,7 @@ class OutageController extends Controller
     public function index(Request $request): Response|JsonResponse
     {
         $data = $this->snapshot($request);
+
         return $request->expectsJson() ? response()->json($data) : Inertia::render('Outage', [
             ...$data,
             'status_url' => route('outage.status'),
