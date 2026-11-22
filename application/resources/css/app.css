@@ -52,3 +52,10 @@
 @media(max-width:650px){.public-workspace{padding-inline:16px}.public-workspace .account-card,.ticket-recovery,.ticket-recovery-receipt{padding-inline:16px}.public-workspace .account-alert,.private-ticket-link .account-alert{padding-inline:12px}.public-workspace .ticket-waiting,.public-workspace .ticket-number{padding-inline:12px}.public-workspace .btn,.ticket-recovery .btn,.private-ticket-link .btn{padding-inline:12px}.public-workspace .account-field input,.public-workspace .account-field select{padding-inline:8px}.private-ticket-link .actions>.btn{width:100%}.room-numbers{gap:12px}.room-numbers li{padding-inline:12px}}
 
 @media(max-width:650px){.booking-workspace .account-card{padding-inline:16px}.booking-workspace .account-alert{padding-inline:12px}.booking-workspace .btn{padding-inline:12px;overflow-wrap:normal;word-break:normal;white-space:normal}.booking-workspace .account-field input,.booking-workspace .account-field select{padding-inline:8px}}
+
+/* P10 platform support must reflow at 360px with 200% text. */
+.p10-platform,.p10-platform .account-card,.p10-platform .team-list li,.p10-platform .page-heading,.p10-platform .actions{min-width:0;max-width:100%}
+.p10-platform .team-list li>div{min-width:0;flex:1 1 100%}
+.p10-platform .team-list strong,.p10-platform .team-list p,.p10-platform h1,.p10-platform h2,.p10-platform h3{overflow-wrap:anywhere}
+.p10-platform .btn{max-width:100%;white-space:normal;overflow-wrap:normal;word-break:normal;text-align:center}
+@media(max-width:650px){.p10-platform .account-card{padding-inline:12px}.p10-platform .btn{padding-inline:8px}}
