@@ -1,0 +1,131 @@
+{
+  "phase": "P12",
+  "status": "local_synthetic_acceptance_passed_hosted_and_device_review_pending",
+  "p11_main_baseline": "b17df99e5a25f355a7c1edc1e49efca7b927cb12",
+  "local_verification": {
+    "phase": "P12",
+    "syntheticOnly": true,
+    "physicalPhoneTested": false,
+    "engines": {
+      "desktop": "chromium",
+      "mobile": "chromium"
+    },
+    "checks": [
+      {
+        "name": "booking_to_completed_visit_A",
+        "passed": true
+      },
+      {
+        "name": "booking_to_completed_visit_C",
+        "passed": true
+      },
+      {
+        "name": "booking_to_completed_visit_B",
+        "passed": true
+      },
+      {
+        "name": "clinic_and_doctor_isolation",
+        "passed": true
+      },
+      {
+        "name": "notifications_are_simulated_only",
+        "passed": true
+      }
+    ],
+    "layouts": [
+      {
+        "label": "mobile-ticket-A",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-A",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-A",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-A",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "mobile-ticket-C",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-C",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-C",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-C",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "mobile-ticket-B",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-B",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-B",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-B",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      }
+    ],
+    "blockedExternalRequests": 0,
+    "passed": true
+  },
+  "local_disabled_internal_outbox_only": true,
+  "hosted_verification_workflow": ".github/workflows/p12-release.yml",
+  "real_device_test": "pending",
+  "paid_integrations_enabled": false,
+  "production_deployment": false,
+  "uses_real_patient_data": false,
+  "training_and_rollback": "docs/P12_ACCEPTANCE_AR.md"
+}
