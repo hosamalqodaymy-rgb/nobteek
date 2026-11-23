@@ -25,10 +25,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias(['mfa' => RequireMfa::class, 'clinic' => ResolveClinicContext::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontFlash(['current_password', 'password', 'password_confirmation', 'code', 'recovery_code', 'grant_token', 'preview_token', 'display_name', 'contact_phone', 'secret', 'ticket_secret', 'ticket_url']);
+        $exceptions->dontFlash(['current_password', 'password', 'password_confirmation', 'code', 'recovery_code', 'grant_token', 'preview_token', 'display_name', 'contact_phone', 'secret', 'ticket_secret', 'ticket_url', 'transfer_reference', 'verified_transfer_reference', 'refund_reference']);
         $exceptions->report(function (Throwable $error) {
             if (request()->is('v1/tickets/*')) {
                 Log::error('Private ticket request failed.', ['error_type' => $error::class, 'request_id' => request()->attributes->get('security_request_id')]);
+
+                return false;
+            }
+            if (request()->routeIs('billing.*', 'platform.billing.*', 'platform.billing')) {
+                Log::error('Private billing request failed.', ['error_type' => $error::class, 'request_id' => request()->attributes->get('security_request_id')]);
 
                 return false;
             }

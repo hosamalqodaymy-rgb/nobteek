@@ -685,13 +685,14 @@
         }
       ],
       "next": "منتج قابل للتجربة المضبوطة، ثم يبدأ آخر جزء وظيفي وهو التحصيل.",
-      "status": "hosted_synthetic_acceptance_passed_pending_operational_review",
+      "status": "merged",
       "started_on": "2026-11-23",
       "integration": {
         "pull_request": 6,
         "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/6",
         "tested_source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504",
-        "merged": false
+        "merged": true,
+        "merge_commit": "c069ac6762b1ea2212eff2c80653bb9f90e89fd6"
       }
     },
     {
@@ -710,24 +711,38 @@
         {
           "id": "T13A",
           "expected": "الإيصال قيد المراجعة لا يفعّل اشتراكا، والموافقة المكررة تمدد مرة واحدة فقط.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed_synthetic",
+          "evidence": {
+            "file": "application/tests/Feature/BillingP13Test.php",
+            "synthetic_only": true
+          }
         },
         {
           "id": "T13B",
           "expected": "انتهاء الاشتراك لا يوقف زيارة بدأت، والتجديد أو الاسترداد لا يكرر الأثر.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed_synthetic",
+          "evidence": {
+            "file": "application/tests/Feature/BillingP13Test.php",
+            "synthetic_only": true
+          }
         },
         {
           "id": "T13C",
           "expected": "يمر سيناريو دفع مرفوض أو ناقص أو مكرر أو بوابة متعذرة مع سجل مالي متطابق.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed_synthetic",
+          "evidence": {
+            "file": "application/tests/Feature/BillingP13Test.php",
+            "synthetic_only": true
+          }
         }
       ],
       "next": "إطلاق مدفوع محدود عند اكتمال التحقق والتشغيل والسياسات، ثم قياس الاستخدام والتجديد.",
-      "status": "not_started"
+      "status": "implemented_synthetic_pending_review",
+      "started_on": "2026-11-23",
+      "integration": {
+        "branch": "work/p13-subscriptions-20261124",
+        "merged": false
+      }
     }
   ],
   "screens": [

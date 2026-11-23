@@ -157,6 +157,7 @@ class BookingCommands
             if ($previous = $this->replay($session->clinic_id, $actor, $key, $fingerprint)) {
                 return $previous;
             }
+            app(ClinicBilling::class)->requireNewIntake($session->clinic_id);
             $this->available($session, $data['window_id'], false);
             if (isset($data['patient_id'])) {
                 abort_unless($actor['kind'] === 'staff', 403);
