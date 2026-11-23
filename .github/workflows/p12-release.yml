@@ -1,0 +1,113 @@
+name: Nobteek P12 operational acceptance
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release-acceptance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: nobteek_ci_only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "false"
+      APP_URL: http://127.0.0.1:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nobteek_test_browser
+      DB_USERNAME: nobteek_test
+      DB_PASSWORD: nobteek_ci_only
+      NOBTEEK_DEMO_SEED: "true"
+      SESSION_DRIVER: file
+      CACHE_STORE: array
+      MAIL_MAILER: array
+      QUEUE_CONNECTION: sync
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, dom, curl, zip, pdo_pgsql
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: application/.node-version
+          cache: npm
+          cache-dependency-path: application/package-lock.json
+      - name: Build the release candidate from the committed lockfiles
+        working-directory: application
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          composer validate --strict
+          npm ci --no-audit --no-fund
+          npm run build
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+          vendor/bin/pint --test ../tools/prepare_p12_browser.php
+      - name: Create an isolated synthetic database
+        env:
+          PGPASSWORD: nobteek_ci_only
+        run: |
+          psql -h "$DB_HOST" -p "$DB_PORT" -U postgres -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE nobteek_test LOGIN PASSWORD 'nobteek_ci_only' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+          CREATE DATABASE nobteek_test_browser OWNER nobteek_test;
+          SQL
+      - name: Generate disposable credentials and a test clock
+        run: |
+          python3 - <<'PY'
+          import base64, datetime, os, secrets
+
+          now = datetime.datetime.now(datetime.timezone.utc)
+          clock = now.replace(minute=(now.minute // 15) * 15, second=0, microsecond=0)
+          values = {
+              'NOBTEEK_BROWSER_CLOCK': clock.strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'NOBTEEK_BROWSER_PASSWORD': secrets.token_urlsafe(32),
+              'NOBTEEK_BROWSER_MFA_SECRET': base64.b32encode(secrets.token_bytes(20)).decode(),
+              'NOBTEEK_BROWSER_TOOLS': os.path.join(os.environ['RUNNER_TEMP'], 'nobteek-browser-tools'),
+          }
+          with open(os.environ['GITHUB_ENV'], 'a') as environment:
+              for name, value in values.items():
+                  if name in ('NOBTEEK_BROWSER_PASSWORD', 'NOBTEEK_BROWSER_MFA_SECRET'):
+                      print('::add-mask::' + value)
+                  environment.write(name + '=' + value + '\n')
+          PY
+      - name: Install Chromium and WebKit for desktop and mobile acceptance
+        run: |
+          npm install --prefix "$NOBTEEK_BROWSER_TOOLS" --no-package-lock --no-audit --no-fund playwright@1.65.0
+          "$NOBTEEK_BROWSER_TOOLS/node_modules/.bin/playwright" install --with-deps chromium webkit
+      - name: Run P12 with two clinics and three doctors
+        working-directory: application
+        run: |
+          php artisan migrate --seed --force --no-interaction
+          php ../tools/prepare_p12_browser.php
+          setsid env PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8000 -t public ../tools/p07_test_server.php > "$RUNNER_TEMP/nobteek-p12-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill -- "$(( -server_pid ))" 2>/dev/null || true' EXIT
+          curl --fail --silent --retry 30 --retry-connrefused --retry-delay 1 http://127.0.0.1:8000/up
+          node ../tools/validate_p12_browser.cjs
+      - name: Verify all queued events remained internal and disabled
+        env:
+          PGPASSWORD: nobteek_ci_only
+        run: |
+          count=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USERNAME" -d "$DB_DATABASE" -XAt -v ON_ERROR_STOP=1 -c "SELECT COUNT(*) FROM outbox_messages WHERE status <> 'disabled' OR channel <> 'internal'")
+          test "$count" = 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nobteek-p12-operational-acceptance
+          path: results/p12-ci/browser.json
+          retention-days: 14
+          if-no-files-found: warn

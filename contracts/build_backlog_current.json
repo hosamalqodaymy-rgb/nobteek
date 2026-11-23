@@ -1,7 +1,7 @@
 {
   "schema_version": "1.9",
   "as_of": "2026-11-22",
-  "status": "P11_implemented_synthetic_acceptance_prelim_pass_final_runner_unavailable_pending_merge",
+  "status": "P12_automated_acceptance_passed_review_pending",
   "product": {
     "name_ar": "نوبتيك",
     "name_en": "Nobteek",
@@ -614,37 +614,38 @@
         {
           "id": "T11A",
           "expected": "العودة بعد انقطاع أو إعادة إرسال لا تفقد دورا ولا تؤكد حفظا لم يصل للخادم.",
-          "status": "preliminary_pass_final_ci_pending",
+          "status": "passed",
           "evidence": {
             "file": "results/p11_validation.json",
             "synthetic_only": true,
-            "run_id": 44967503096,
-            "source_commit": "5e81b17186f2dc7b1efb235ac999062a39312e44"
+            "run_id": 45081506933,
+            "source_commit": "ac0c08e9e943b09dc3b2dfa96bf9bd065fba07d8"
           }
         },
         {
           "id": "T11B",
           "expected": "استعادة نسخة في بيئة منفصلة ثم مطابقة الأعداد والعلاقات واختبار رحلة حجز.",
-          "status": "preliminary_pass_final_ci_pending",
+          "status": "passed",
           "evidence": {
             "file": "results/p11_validation.json",
             "synthetic_only": true,
-            "run_id": 44967503096,
-            "source_commit": "5e81b17186f2dc7b1efb235ac999062a39312e44"
+            "run_id": 45081506933,
+            "source_commit": "ac0c08e9e943b09dc3b2dfa96bf9bd065fba07d8"
           }
         }
       ],
       "next": "تثبت وسائل الحماية قبل بيانات حقيقية، وتكرر على الاستضافة النهائية.",
-      "status": "implemented_final_ci_pending",
+      "status": "merged_automated_synthetic_acceptance_passed",
       "started_on": "2026-11-22",
       "implementation_status": "offline_manual_reconciliation_backup_restore_smoke_private_logging_synthetic_perf",
       "integration": {
         "branch": "work/p11-resilience-20261122",
-        "merged": false,
+        "merged": true,
         "pull_request": 5,
         "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/5",
-        "draft": true,
-        "source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40"
+        "draft": false,
+        "source_commit": "ac0c08e9e943b09dc3b2dfa96bf9bd065fba07d8",
+        "merge_commit": "b17df99e5a25f355a7c1edc1e49efca7b927cb12"
       }
     },
     {
@@ -663,18 +664,35 @@
         {
           "id": "T12A",
           "expected": "تمر الرحلات الكاملة والاختبارات الحرجة دون تعارض حجز أو كشف بيانات أو تعطيل دور.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed_synthetic",
+          "evidence": {
+            "file": "results/p12_validation.json",
+            "synthetic_only": true,
+            "run_id": 45085251699,
+            "source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504"
+          }
         },
         {
           "id": "T12B",
           "expected": "تشغل النسخة دون أي مزود دفع أو إرسال مدفوع وتبقى المحاكاة واضحة.",
-          "status": "not_run",
-          "evidence": null
+          "status": "passed_synthetic",
+          "evidence": {
+            "file": "results/p12_validation.json",
+            "synthetic_only": true,
+            "run_id": 45085251699,
+            "source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504"
+          }
         }
       ],
       "next": "منتج قابل للتجربة المضبوطة، ثم يبدأ آخر جزء وظيفي وهو التحصيل.",
-      "status": "not_started"
+      "status": "hosted_synthetic_acceptance_passed_pending_operational_review",
+      "started_on": "2026-11-23",
+      "integration": {
+        "pull_request": 6,
+        "pull_request_url": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/6",
+        "tested_source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504",
+        "merged": false
+      }
     },
     {
       "id": "P13",
@@ -1044,7 +1062,7 @@
     }
   ],
   "baseline_id": "NOBTEEK-P11-1.0-RC",
-  "next_stage": "P11-final-ci-then-P12",
+  "next_stage": "P12",
   "implementation_baseline": {
     "id": "NOBTEEK-P00-1.0",
     "phase": "P00",
@@ -1221,7 +1239,7 @@
     "financial_phase": "P13",
     "merge_commit_sha": "950b1089c8b0ff6519ef011188f193fcd8067185"
   },
-  "next_stage_gate": "P09_pull_request_3_merged_into_main",
+  "next_stage_gate": "P12_operational_acceptance_review",
   "main_baseline_id": "NOBTEEK-P09-1.0",
   "patient_baseline": {
     "id": "NOBTEEK-P09-1.0",
@@ -1317,9 +1335,18 @@
     "financial_billing_enabled": false
   },
   "p11_baseline": {
-    "source_commit": "57516bd3731b3c7eb857c4c84a03c7330a7c4e40",
+    "source_commit": "ac0c08e9e943b09dc3b2dfa96bf9bd065fba07d8",
     "report": "results/p11_validation.json",
-    "full_ci_pass": false,
-    "pr": 5
+    "full_ci_pass": true,
+    "pr": 5,
+    "merge_commit": "b17df99e5a25f355a7c1edc1e49efca7b927cb12"
+  },
+  "p12_baseline": {
+    "source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504",
+    "report": "results/p12_validation.json",
+    "full_ci_pass": true,
+    "run_id": 45085251699,
+    "pr": 6,
+    "physical_phone_tested": false
   }
 }

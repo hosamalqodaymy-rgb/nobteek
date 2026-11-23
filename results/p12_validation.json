@@ -1,0 +1,161 @@
+{
+  "phase": "P12",
+  "status": "hosted_synthetic_acceptance_passed_pending_operational_review",
+  "p11_main_baseline": "b17df99e5a25f355a7c1edc1e49efca7b927cb12",
+  "local_verification": {
+    "phase": "P12",
+    "syntheticOnly": true,
+    "physicalPhoneTested": false,
+    "engines": {
+      "desktop": "chromium",
+      "mobile": "chromium"
+    },
+    "checks": [
+      {
+        "name": "booking_to_completed_visit_A",
+        "passed": true
+      },
+      {
+        "name": "booking_to_completed_visit_C",
+        "passed": true
+      },
+      {
+        "name": "booking_to_completed_visit_B",
+        "passed": true
+      },
+      {
+        "name": "clinic_and_doctor_isolation",
+        "passed": true
+      },
+      {
+        "name": "notifications_are_simulated_only",
+        "passed": true
+      }
+    ],
+    "layouts": [
+      {
+        "label": "mobile-ticket-A",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-A",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-A",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-A",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "mobile-ticket-C",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-C",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-C",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-C",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "mobile-ticket-B",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "mobile-ticket-B",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 412,
+        "content": 412
+      },
+      {
+        "label": "desktop-doctor-B",
+        "textScale": 100,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      },
+      {
+        "label": "desktop-doctor-B",
+        "textScale": 200,
+        "direction": "rtl",
+        "viewport": 1440,
+        "content": 1440
+      }
+    ],
+    "blockedExternalRequests": 0,
+    "passed": true
+  },
+  "local_disabled_internal_outbox_only": true,
+  "hosted_verification_workflow": ".github/workflows/p12-release.yml",
+  "real_device_test": "pending",
+  "paid_integrations_enabled": false,
+  "production_deployment": false,
+  "uses_real_patient_data": false,
+  "training_and_rollback": "docs/P12_ACCEPTANCE_AR.md",
+  "pull_request": "https://github.com/hosamalqodaymy-rgb/nobteek/pull/6",
+  "tested_source_commit": "6043bc9eecef771a59ceec8e34d1cc43648e4504",
+  "hosted_verification": {
+    "run_id": 45085251699,
+    "run_url": "https://github.com/hosamalqodaymy-rgb/nobteek/actions/runs/45085251699",
+    "artifact_id": 14778653430,
+    "github_actions_workflows_passed": 8,
+    "regression_workflow_run_ids": [
+      45085251581,
+      45085251645,
+      45085251605,
+      45085251608,
+      45085251626,
+      45085251545,
+      45085251635
+    ],
+    "checks_passed": 5,
+    "layout_cases": 12,
+    "max_text_scale_percent": 200,
+    "desktop_browser": "Chromium",
+    "mobile_browser": "WebKit (iPhone 13 emulation)",
+    "clinics": 2,
+    "doctors": 3,
+    "attempted_external_requests": 0,
+    "outbox_only_disabled_internal_events": true,
+    "acceptance": {
+      "T12A": "passed_synthetic",
+      "T12B": "passed_synthetic"
+    }
+  }
+}
