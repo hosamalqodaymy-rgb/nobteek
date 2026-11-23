@@ -21,6 +21,7 @@ COPY tools/prepare_p06_browser.php tools/prepare_p08_browser.php tools/prepare_p
 COPY --from=frontend /src/application/public/build application/public/build
 WORKDIR /srv/nobteek/application
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
+    && install -d -o www-data -g www-data /srv/nobteek/results \
     && chown -R www-data:www-data storage bootstrap/cache
 COPY deploy/p12-preview/apache.conf /etc/apache2/sites-available/000-default.conf
 COPY deploy/p12-preview/start.sh /usr/local/bin/nobteek-p12-start

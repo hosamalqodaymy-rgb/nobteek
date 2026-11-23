@@ -37,6 +37,7 @@ if [[ "$(runuser -u www-data -- "$pg_bin/psql" -XAt -d nobteek_test_browser -c '
     runuser -u www-data -- php artisan db:seed --force --no-interaction
 fi
 runuser -u www-data -- php ../tools/prepare_p12_browser.php
+[[ "$(runuser -u www-data -- "$pg_bin/psql" -XAt -d nobteek_test_browser -c "SELECT COUNT(*) FROM users WHERE login_enabled AND username IN ('demo_owner_a','demo_owner_b','demo_reception_a','demo_reception_b','demo_doctor_a','demo_doctor_b','demo_doctor_c')")" == 7 ]]
 
 export APP_ENV=production NOBTEEK_DEMO_SEED=false
 sed -i 's/^Listen 80$/Listen 10000/' /etc/apache2/ports.conf
