@@ -38,6 +38,7 @@ if [[ "$(runuser -u www-data -- "$pg_bin/psql" -XAt -d nobteek_test_browser -c '
 fi
 runuser -u www-data -- php ../tools/prepare_p12_browser.php
 
+export APP_ENV=production NOBTEEK_DEMO_SEED=false
 sed -i 's/^Listen 80$/Listen 10000/' /etc/apache2/ports.conf
 sed -i "s/__P12_ACCESS_MARKER__/$NOBTEEK_PREVIEW_ACCESS/" /etc/apache2/sites-available/000-default.conf
 apache2ctl -t
