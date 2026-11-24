@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import symbol from '../../../../design/assets/symbol-primary.svg';
 
 export type Shared = {
+  billing_link?: string | null;
+  platform_billing_link?: string | null;
   [key: string]: unknown;
   brand: { name: string; tagline: string };
   auth: { display_name: string; username: string; platform_admin: boolean } | null;

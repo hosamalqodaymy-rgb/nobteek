@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClinicAccessController;
 use App\Http\Controllers\ClinicSetupController;
@@ -62,7 +63,19 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/platform/operations', [PlatformOperationsController::class, 'index'])->name('platform.operations');
         Route::post('/platform/support/{support}/resolve', [PlatformOperationsController::class, 'resolve'])->whereUuid('support')->name('platform.support.resolve');
         Route::post('/platform/clinics', [PlatformClinicController::class, 'create'])->name('platform.clinic.create')->middleware('throttle:10,1');
+        Route::get('/platform/billing', [BillingController::class, 'platformPage'])->name('platform.billing');
+        Route::post('/platform/billing/plans', [BillingController::class, 'plan'])->middleware('throttle:30,1')->name('platform.billing.plan');
+        Route::post('/platform/billing/trials', [BillingController::class, 'trial'])->middleware('throttle:30,1')->name('platform.billing.trial');
+        Route::get('/platform/billing/proofs/{proof}', [BillingController::class, 'platformDownload'])->whereUuid('proof')->middleware('throttle:30,1')->name('platform.billing.proof.download');
+        Route::post('/v1/payment-proofs/{proof}/approve', [BillingController::class, 'approve'])->whereUuid('proof')->middleware('throttle:60,1')->name('platform.billing.proof.approve');
+        Route::post('/v1/payment-proofs/{proof}/reject', [BillingController::class, 'reject'])->whereUuid('proof')->middleware('throttle:60,1')->name('platform.billing.proof.reject');
+        Route::post('/v1/billing/invoices/{invoice}/refund', [BillingController::class, 'refund'])->whereUuid('invoice')->middleware('throttle:30,1')->name('platform.billing.refund');
         Route::middleware('clinic')->group(function (): void {
+            Route::get('/workspace/billing', [BillingController::class, 'ownerPage'])->name('billing.index');
+            Route::post('/v1/billing/invoices', [BillingController::class, 'issue'])->middleware('throttle:30,1')->name('billing.issue');
+            Route::post('/v1/billing/invoices/{invoice}/void', [BillingController::class, 'void'])->whereUuid('invoice')->middleware('throttle:30,1')->name('billing.void');
+            Route::post('/v1/billing/invoices/{invoice}/proofs', [BillingController::class, 'submit'])->whereUuid('invoice')->middleware('throttle:15,1')->name('billing.proof.submit');
+            Route::get('/v1/billing/proofs/{proof}', [BillingController::class, 'ownerDownload'])->whereUuid('proof')->middleware('throttle:30,1')->name('billing.proof.download');
             Route::get('/workspace/operations', [OperationsController::class, 'index'])->name('operations.index');
             Route::get('/workspace/outage', [OutageController::class, 'index'])->name('outage.index');
             Route::get('/v1/outage/status', [OutageController::class, 'status'])->middleware('throttle:90,1')->name('outage.status');

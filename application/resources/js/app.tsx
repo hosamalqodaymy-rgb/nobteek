@@ -26,6 +26,7 @@ createInertiaApp({
     if (name === 'Outage') return import('./pages/Outage').then(module=>module.default);
     if (name === 'Operations') return import('./pages/Operations').then(module => module.default);
     if (name === 'PlatformOperations') return import('./pages/PlatformOperations').then(module => module.default);
+    if (name === 'Billing') return import('./pages/Billing').then(module => module.default);
     if (name === 'Information') return import('./pages/Information').then(module => module.default);
     const pages = { Welcome, Account, Workspace, Team, Platform, Error: ErrorPage, PlatformClinics, ClinicSettings, SessionList, SessionDetail, BookingList, PublicBooking, Reception };
     if (name in pages) return pages[name as keyof typeof pages];

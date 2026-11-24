@@ -171,6 +171,7 @@ class ReceptionCommands
             if ($previous = $this->replay($key, $fingerprint)) {
                 return $previous;
             }
+            app(ClinicBilling::class)->requireNewIntake($session->clinic_id);
             $this->accepting($session);
             $window = $this->window($session, $data['window_id']);
             abort_unless(now()->gte(CarbonImmutable::parse($window->starts_at)) && now()->lt(CarbonImmutable::parse($window->ends_at)), 409, 'اختر نافذة وصول جارية للحضور المباشر.');

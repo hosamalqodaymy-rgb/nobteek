@@ -6,6 +6,11 @@ return [
     'baseline' => 'NOBTEEK-P06-1.0',
     'business_rules' => 'NOBTEEK-P00-1.0',
     'design' => 'NOBTEEK-P01-1.0',
+    'billing' => [
+        'enabled' => env('NOBTEEK_MANUAL_BILLING', false),
+        'enforce_access' => env('NOBTEEK_BILLING_ENFORCE_ACCESS', false),
+        'grace_days' => env('NOBTEEK_BILLING_GRACE_DAYS', 7),
+    ],
     'external_payments' => false,
     'paid_messaging' => false,
     'real_patient_data' => false,
