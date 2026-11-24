@@ -24,6 +24,72 @@ class BillingP13Test extends DoctorTestCase
         config(['nobteek.billing.enabled' => true]);
     }
 
+    public function test_pilot_is_scoped_and_leaves_prices_visible_until_a_transfer_destination_is_configured(): void
+    {
+        config(['nobteek.billing.pilot.enabled' => true]);
+        $this->owner();
+        $this->getJson('/workspace/billing')->assertNotFound();
+        config(['nobteek.billing.pilot.clinic_id' => $this->id('CLINIC_A')]);
+
+        $this->get('/workspace/billing')->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Billing')->where('pilot', true)
+            ->where('plans.0.currency', 'YER')->where('plans.0.amount_minor', 5000)->has('plans.0.methods', 0)
+            ->where('plans.1.currency', 'SAR')->where('plans.1.amount_minor', 3500)->has('plans.1.methods', 0)
+            ->where('plans.2.currency', 'USD')->where('plans.2.amount_minor', 1000)->has('plans.2.methods', 0));
+        $this->postJson('/v1/billing/invoices', [
+            'plan_code' => 'pilot-monthly-yer', 'payment_method' => 'kuraimi', 'request_key' => (string) Str::uuid(),
+        ])->assertUnprocessable();
+        $this->assertDatabaseCount('billing_invoices', 0);
+
+        $this->signIn('OWNER_B', true);
+        $this->get('/workspace')->assertInertia(fn (AssertableInertia $page) => $page->where('memberships.0.can_bill', false));
+        $this->getJson('/workspace/billing')->assertNotFound();
+    }
+
+    public function test_pilot_snapshots_the_selected_destination_and_requires_the_invoice_currency_at_approval(): void
+    {
+        config([
+            'nobteek.billing.pilot.enabled' => true,
+            'nobteek.billing.pilot.clinic_id' => $this->id('CLINIC_A'),
+            'nobteek.billing.pilot.recipient' => 'مستلم اختباري',
+            'nobteek.billing.pilot.methods.kuraimi' => ['number' => '0000000001', 'currencies' => 'YER, SAR'],
+            'nobteek.billing.pilot.methods.jeeb' => ['number' => '0000000002', 'currencies' => 'YER'],
+            'nobteek.billing.pilot.methods.flousak' => ['number' => '0000000003', 'currencies' => 'USD'],
+            'nobteek.billing.pilot.methods.jawali' => ['number' => '0000000004', 'currencies' => 'USD'],
+        ]);
+        $this->owner();
+        $this->get('/workspace/billing')->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('plans.0.methods.0.code', 'kuraimi')->where('plans.0.methods.1.code', 'jeeb')
+            ->missing('plans.0.methods.0.number')->missing('plans.0.methods.0.recipient')
+            ->has('plans.1.methods', 1)
+            ->where('plans.2.methods.0.code', 'flousak')->where('plans.2.methods.1.code', 'jawali'));
+
+        $key = (string) Str::uuid();
+        $checkout = ['plan_code' => 'pilot-monthly-sar', 'request_key' => $key];
+        $this->postJson('/v1/billing/invoices', $checkout)->assertUnprocessable();
+        $this->postJson('/v1/billing/invoices', [...$checkout, 'payment_method' => 'jeeb'])->assertUnprocessable();
+        $invoice = $this->postJson('/v1/billing/invoices', [...$checkout, 'payment_method' => 'kuraimi'])->assertCreated()->json('id');
+        $this->assertDatabaseHas('billing_invoices', ['id' => $invoice, 'currency' => 'SAR', 'amount_minor' => 3500]);
+        $stored = DB::table('billing_invoices')->where('id', $invoice)->value('payment_destination_ciphertext');
+        $this->assertStringNotContainsString('0000000001', $stored);
+
+        config(['nobteek.billing.pilot.methods.kuraimi.number' => '0000000099']);
+        $this->get('/workspace/billing')->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('invoices.data.0.payment_destination.number', '0000000001')->where('invoices.data.0.payment_destination.recipient', 'مستلم اختباري')
+            ->missing('invoices.data.0.payment_destination_ciphertext'));
+        $this->postJson('/v1/billing/invoices', [...$checkout, 'payment_method' => 'kuraimi'])->assertOk()->assertJsonPath('id', $invoice);
+        $this->postJson('/v1/billing/invoices', [...$checkout, 'payment_method' => 'jeeb'])->assertConflict();
+
+        $proof = $this->proof($invoice, amount: 3500)->assertCreated()->json('id');
+        $this->signIn('PLATFORM', true);
+        $approval = '/v1/payment-proofs/'.$proof.'/approve';
+        $verified = ['verified_amount_minor' => 3500, 'verified_transfer_reference' => 'SYNTHETIC-TRANSFER-1'];
+        $this->postJson($approval, $verified)->assertConflict();
+        $this->postJson($approval, [...$verified, 'verified_currency' => 'YER'])->assertConflict();
+        $this->postJson($approval, [...$verified, 'verified_currency' => 'SAR'])->assertOk();
+        $this->assertDatabaseCount('billing_receipts', 1);
+    }
+
     private function createPlan(): void
     {
         $this->signIn('PLATFORM', true);

@@ -10,6 +10,17 @@ return [
         'enabled' => env('NOBTEEK_MANUAL_BILLING', false),
         'enforce_access' => env('NOBTEEK_BILLING_ENFORCE_ACCESS', false),
         'grace_days' => env('NOBTEEK_BILLING_GRACE_DAYS', 7),
+        'pilot' => [
+            'enabled' => env('NOBTEEK_BILLING_PILOT', false),
+            'clinic_id' => env('NOBTEEK_BILLING_PILOT_CLINIC_ID'),
+            'recipient' => env('NOBTEEK_BILLING_RECIPIENT'),
+            'methods' => [
+                'kuraimi' => ['number' => env('NOBTEEK_BILLING_KURAIMI_NUMBER'), 'currencies' => env('NOBTEEK_BILLING_KURAIMI_CURRENCIES')],
+                'jeeb' => ['number' => env('NOBTEEK_BILLING_JEEB_NUMBER'), 'currencies' => env('NOBTEEK_BILLING_JEEB_CURRENCIES')],
+                'flousak' => ['number' => env('NOBTEEK_BILLING_FLOUSAK_NUMBER'), 'currencies' => env('NOBTEEK_BILLING_FLOUSAK_CURRENCIES')],
+                'jawali' => ['number' => env('NOBTEEK_BILLING_JAWALI_NUMBER'), 'currencies' => env('NOBTEEK_BILLING_JAWALI_CURRENCIES')],
+            ],
+        ],
     ],
     'external_payments' => false,
     'paid_messaging' => false,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BillingPilot;
 use App\Services\ClinicAuthority;
 use App\Services\ClinicBilling;
 use App\Services\SecurityAudit;
@@ -11,6 +12,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -23,7 +25,7 @@ class BillingController extends Controller
 
     private const MONEY = ['required', 'integer', 'min:1', 'max:999999999999'];
 
-    public function __construct(private ClinicBilling $billing, private ClinicAuthority $authority, private SecurityAudit $audit) {}
+    public function __construct(private ClinicBilling $billing, private ClinicAuthority $authority, private SecurityAudit $audit, private BillingPilot $pilot) {}
 
     private function clinic(): string
     {
@@ -31,7 +33,10 @@ class BillingController extends Controller
         $context = app(TenantContext::class);
         abort_unless($context->role() === 'owner', 403);
 
-        return $context->clinicId();
+        $clinic = $context->clinicId();
+        abort_unless($this->pilot->includesClinic($clinic), 404);
+
+        return $clinic;
     }
 
     private function platform(Request $request): void
@@ -46,7 +51,8 @@ class BillingController extends Controller
 
         return Inertia::render('Billing', [
             'mode' => 'owner',
-            'plans' => DB::table('billing_plans')->orderBy('code')->get(),
+            'plans' => $this->pilot->enabled() ? $this->pilot->rates() : $this->customPlans(),
+            'pilot' => $this->pilot->enabled(),
             'access' => $this->billing->entitlement($clinic),
             'access_enforced' => config('nobteek.billing.enforce_access'),
             'invoices' => $this->invoices($clinic),
@@ -62,13 +68,21 @@ class BillingController extends Controller
 
         return Inertia::render('Billing', [
             'mode' => 'platform',
-            'plans' => DB::table('billing_plans')->orderBy('code')->get(),
+            'plans' => $this->pilot->enabled() ? $this->pilot->rates() : $this->customPlans(),
+            'pilot' => $this->pilot->enabled(),
             'invoices' => $this->invoices(null),
-            'clinics' => DB::table('clinics')->where('operational_state', 'active')->orderBy('display_name')->get(['id', 'display_name']),
-            'plan_url' => route('platform.billing.plan'),
+            'clinics' => DB::table('clinics')->where('operational_state', 'active')
+                ->when($this->pilot->enabled(), fn (Builder $query) => $query->where('id', config('nobteek.billing.pilot.clinic_id')))
+                ->orderBy('display_name')->get(['id', 'display_name']),
+            'plan_url' => $this->pilot->enabled() ? null : route('platform.billing.plan'),
             'trial_url' => route('platform.billing.trial'),
             'period_days' => ClinicBilling::PERIOD_DAYS,
         ]);
+    }
+
+    private function customPlans(): Collection
+    {
+        return DB::table('billing_plans')->whereNotIn('code', $this->pilot->codes())->orderBy('code')->get();
     }
 
     private function invoices(?string $clinic): array
@@ -80,7 +94,7 @@ class BillingController extends Controller
             ->when($clinic, fn (Builder $query, string $id) => $query->where('i.clinic_id', $id))
             ->orderByRaw("case when i.state = 'pending' then 0 when i.state = 'issued' then 1 else 2 end")
             ->orderByDesc('i.issued_at')->orderBy('i.id')
-            ->paginate(20, ['i.id', 'i.plan_name', 'i.currency', 'i.amount_minor', 'i.state', 'i.issued_at',
+            ->paginate(20, ['i.id', 'i.plan_name', 'i.currency', 'i.amount_minor', 'i.state', 'i.issued_at', 'i.payment_destination_ciphertext',
                 'c.display_name as clinic_name', 'r.approved_at', 'r.starts_at', 'r.ends_at', 'f.completed_at as refunded_at']);
 
         $proofs = DB::table('billing_payment_proofs')->whereIn('invoice_id', $rows->getCollection()->pluck('id'))
@@ -91,6 +105,10 @@ class BillingController extends Controller
             foreach (['issued_at', 'approved_at', 'starts_at', 'ends_at', 'refunded_at'] as $date) {
                 $invoice->{$date} = $invoice->{$date} ? CarbonImmutable::parse($invoice->{$date})->toIso8601String() : null;
             }
+            if (in_array($invoice->state, ['issued', 'pending'], true)) {
+                $invoice->payment_destination = $this->billing->paymentDestination($invoice->payment_destination_ciphertext);
+            }
+            unset($invoice->payment_destination_ciphertext);
             $invoice->proofs = $proofs->get($invoice->id, collect())->map(function ($proof) use ($clinic) {
                 $proof->download_url = route($clinic ? 'billing.proof.download' : 'platform.billing.proof.download', ['proof' => $proof->id]);
                 if (! $clinic && $proof->state === 'submitted') {
@@ -115,7 +133,10 @@ class BillingController extends Controller
     public function issue(Request $request): JsonResponse
     {
         $clinic = $this->clinic();
-        $data = $request->validate(['plan_code' => ['required', 'string', 'max:40'], 'request_key' => ['required', 'uuid']]);
+        $data = $request->validate([
+            'plan_code' => ['required', 'string', 'max:40'], 'request_key' => ['required', 'uuid'],
+            'payment_method' => ['nullable', 'string', 'max:16'],
+        ]);
         $data['request_key'] = strtolower($data['request_key']);
         $result = $this->billing->issue($request, $clinic, $data);
 
@@ -175,6 +196,7 @@ class BillingController extends Controller
         $this->platform($request);
         $data = $request->validate([
             'verified_amount_minor' => self::MONEY,
+            'verified_currency' => ['nullable', 'string', 'regex:/^[A-Z]{3}$/D'],
             'verified_transfer_reference' => ['required', 'string', 'regex:'.self::REFERENCE],
         ]);
 
@@ -200,6 +222,7 @@ class BillingController extends Controller
     public function plan(Request $request): JsonResponse
     {
         $this->platform($request);
+        abort_if($this->pilot->enabled(), 403);
         $data = $request->validate([
             'code' => ['required', 'string', 'regex:/^[a-z0-9-]{2,40}$/D'],
             'name' => ['required', 'string', 'max:120'],
@@ -208,6 +231,7 @@ class BillingController extends Controller
         ]);
         $result = DB::transaction(function () use ($request, $data): array {
             $actor = $this->authority->platform($request);
+            abort_if(in_array($data['code'], $this->pilot->codes(), true), 422);
             $created = DB::table('billing_plans')->insertOrIgnore($data) === 1;
             $existing = DB::table('billing_plans')->where('code', $data['code'])->firstOrFail();
             abort_unless($existing->name === $data['name'] && $existing->currency === $data['currency']
@@ -228,6 +252,7 @@ class BillingController extends Controller
         $data = $request->validate(['clinic_id' => ['required', 'uuid'], 'days' => ['required', 'integer', 'min:1', 'max:90']]);
         $result = DB::transaction(function () use ($request, $data): array {
             $actor = $this->authority->platform($request);
+            abort_unless($this->pilot->includesClinic($data['clinic_id']), 404);
             $this->billing->lockClinic($data['clinic_id']);
             $existing = DB::table('billing_enrollments')->where('clinic_id', $data['clinic_id'])->first();
             if ($existing) {

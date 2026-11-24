@@ -16,7 +16,7 @@ class ClinicBilling
 
     public const REJECTION_REASONS = ['partial_amount', 'duplicate_transfer', 'invalid_proof'];
 
-    public function __construct(private ClinicAuthority $authority, private SecurityAudit $audit) {}
+    public function __construct(private ClinicAuthority $authority, private SecurityAudit $audit, private BillingPilot $pilot) {}
 
     private function paidTerms(string $clinic): Builder
     {
@@ -51,7 +51,7 @@ class ClinicBilling
 
     public function requireNewIntake(string $clinic): void
     {
-        if (! config('nobteek.billing.enabled') || ! config('nobteek.billing.enforce_access')) {
+        if (! config('nobteek.billing.enabled') || ! config('nobteek.billing.enforce_access') || ! $this->pilot->includesClinic($clinic)) {
             return;
         }
 
@@ -71,23 +71,43 @@ class ClinicBilling
             $this->authority->actor($request, ['owner']);
             $this->lockClinic($clinic);
             $invoice = DB::table('billing_invoices')->where('clinic_id', $clinic)->where('request_key', $data['request_key'])->first();
+            $method = $data['payment_method'] ?? null;
             if ($invoice) {
-                abort_unless($invoice->plan_code === $data['plan_code'], 409, 'استخدم محاولة جديدة لاختيار باقة مختلفة.');
+                $previousDestination = $this->paymentDestination($invoice->payment_destination_ciphertext);
+                abort_unless($invoice->plan_code === $data['plan_code'] && ($previousDestination['code'] ?? null) === $method,
+                    409, 'استخدم محاولة جديدة لاختيار باقة أو طريقة تحويل مختلفة.');
 
                 return ['id' => $invoice->id, 'state' => $invoice->state, 'replayed' => true];
             }
 
             $open = DB::table('billing_invoices')->where('clinic_id', $clinic)->whereIn('state', ['issued', 'pending'])->exists();
             abort_if($open, 409, 'أكمل الفاتورة الحالية أو ألغها قبل إصدار فاتورة جديدة.');
+            $destination = null;
+            if ($this->pilot->enabled()) {
+                [$rate, $destination] = $this->pilot->checkout($data['plan_code'], $method);
+                DB::table('billing_plans')->insertOrIgnore($rate);
+            } else {
+                abort_if($method !== null || in_array($data['plan_code'], $this->pilot->codes(), true), 404);
+            }
             $plan = DB::table('billing_plans')->where('code', $data['plan_code'])->sharedLock()->firstOrFail();
+            if ($destination) {
+                abort_unless((int) $plan->amount_minor === $rate['amount_minor'] && $plan->currency === $rate['currency'],
+                    409, 'تعذر إصدار الفاتورة. راجع إعداد سعر الاشتراك.');
+            }
             $id = (string) Str::uuid();
             DB::table('billing_invoices')->insert([
                 'id' => $id, 'clinic_id' => $clinic, 'plan_code' => $plan->code, 'plan_name' => $plan->name,
                 'currency' => $plan->currency, 'amount_minor' => $plan->amount_minor, 'request_key' => $data['request_key'], 'issued_at' => now(),
+                'payment_destination_ciphertext' => $destination ? Crypt::encryptString(json_encode($destination, JSON_THROW_ON_ERROR)) : null,
             ]);
 
             return ['id' => $id, 'state' => 'issued', 'replayed' => false];
         }, 3);
+    }
+
+    public function paymentDestination(?string $ciphertext): ?array
+    {
+        return $ciphertext ? json_decode(Crypt::decryptString($ciphertext), true, flags: JSON_THROW_ON_ERROR) : null;
     }
 
     private function invoice(string $clinic, string $id): stdClass
@@ -153,6 +173,10 @@ class ClinicBilling
             $state = $approve ? 'approved' : 'rejected';
 
             if ($approve) {
+                if ($invoice->payment_destination_ciphertext) {
+                    abort_unless(($data['verified_currency'] ?? null) === $invoice->currency,
+                        409, 'تحقّق من وصول المبلغ بنفس عملة الفاتورة.');
+                }
                 abort_unless(strtoupper($data['verified_transfer_reference']) === $proof->transfer_reference, 409, 'مرجع التحويل المثبت مختلف عن المرجع المرسل.');
                 abort_unless((int) $data['verified_amount_minor'] === (int) $invoice->amount_minor
                     && (int) $proof->amount_minor === (int) $invoice->amount_minor, 409, 'المبلغ المثبت يجب أن يطابق قيمة الفاتورة.');
