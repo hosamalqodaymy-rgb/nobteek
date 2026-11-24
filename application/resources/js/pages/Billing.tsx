@@ -3,13 +3,15 @@ import { type FormEvent, useRef, useState } from 'react';
 import { AccountLayout, type Shared } from '../components/AccountLayout';
 import { postForm, postJSON } from '../components/SessionTransport';
 
-type Plan = { code: string; name: string; currency: string; amount_minor: number };
+type PaymentMethod = { code: string; label: string };
+type PaymentDestination = PaymentMethod & { recipient: string; number: string };
+type Plan = { code: string; name: string; currency: string; amount_minor: number; methods?: PaymentMethod[] };
 type Proof = { id: string; state: string; amount_minor: number; transfer_reference: string; rejection_reason: string | null; download_url: string; approve_url?: string; reject_url?: string };
-type Invoice = { id: string; plan_name: string; currency: string; amount_minor: number; state: string; clinic_name: string; issued_at: string; approved_at: string | null; starts_at: string | null; ends_at: string | null; refunded_at: string | null; proofs: Proof[]; submit_url?: string; void_url?: string; refund_url?: string };
+type Invoice = { id: string; plan_name: string; currency: string; amount_minor: number; state: string; clinic_name: string; issued_at: string; approved_at: string | null; starts_at: string | null; ends_at: string | null; refunded_at: string | null; proofs: Proof[]; payment_destination?: PaymentDestination | null; submit_url?: string; void_url?: string; refund_url?: string };
 type Invoices = { data: Invoice[]; prev_page_url: string | null; next_page_url: string | null };
 type OwnerProps = { mode: 'owner'; access: { state: string; enrolled: boolean; covered_until: string | null; grace_until: string | null }; access_enforced: boolean; has_open_invoice: boolean; issue_url: string };
-type PlatformProps = { mode: 'platform'; clinics: { id: string; display_name: string }[]; plan_url: string; trial_url: string };
-type Props = (OwnerProps | PlatformProps) & { plans: Plan[]; invoices: Invoices; period_days: number };
+type PlatformProps = { mode: 'platform'; clinics: { id: string; display_name: string }[]; plan_url: string | null; trial_url: string };
+type Props = (OwnerProps | PlatformProps) & { plans: Plan[]; invoices: Invoices; period_days: number; pilot: boolean };
 type Send = (url: string, body: FormData | Record<string, unknown>, success: string) => Promise<boolean>;
 
 const states: Record<string, string> = {
@@ -22,8 +24,11 @@ const reasons: Record<string, string> = {
 };
 const referencePattern = String.raw`[A-Za-z0-9][A-Za-z0-9_\/\-]{3,79}`;
 
+const pilotCurrencies = { YER: 'ريال يمني قديم', SAR: 'ريال سعودي', USD: 'دولار أمريكي' };
+
 function currencyFormat(currency: string) {
-  return new Intl.NumberFormat('ar-YE', { style: 'currency', currency });
+  const fractionDigits = currency === 'YER' ? 0 : ['SAR', 'USD'].includes(currency) ? 2 : undefined;
+  return new Intl.NumberFormat('ar-YE', { style: 'currency', currency, minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits });
 }
 
 function money(minor: number, currency: string) {
@@ -44,13 +49,14 @@ function date(value: string) {
   return new Intl.DateTimeFormat('ar-YE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Aden' }).format(new Date(value));
 }
 
-function ProofReview({ proof, currency, busy, send }: { proof: Proof; currency: string; busy: boolean; send: Send }) {
+function ProofReview({ proof, currency, destination, busy, send }: { proof: Proof; currency: string; destination?: PaymentDestination | null; busy: boolean; send: Send }) {
   function approve(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
     void send(proof.approve_url!, {
       verified_amount_minor: amountMinor(String(fields.get('amount')), currency),
       verified_transfer_reference: fields.get('reference'),
+      ...(destination ? { verified_currency: fields.get('currency') } : {}),
     }, 'تم اعتماد التحويل وتسجيل فترة الاشتراك.');
   }
 
@@ -63,6 +69,9 @@ function ProofReview({ proof, currency, busy, send }: { proof: Proof; currency: 
   return <div className="actions">
     <form className="secure-form" onSubmit={approve}>
       <label className="account-field">مرجع التحويل بعد التحقق<input name="reference" dir="ltr" pattern={referencePattern} required /></label>
+      {destination && <label className="account-field">العملة المستلمة<select name="currency" required><option value="">اختر العملة بعد مراجعة الحساب</option>
+        {Object.entries(pilotCurrencies).map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+      </select></label>}
       <label className="account-field">المبلغ المستلم بعد التحقق ({currency})<input name="amount" inputMode="decimal" required /></label>
       <button className="btn" disabled={busy}>اعتماد التحويل</button>
     </form>
@@ -93,6 +102,12 @@ function InvoiceCard({ invoice, platform, busy, send }: { invoice: Invoice; plat
     {platform && <p>{invoice.clinic_name}</p>}
     <p><span className="state-pill">{states[invoice.state]}</span> <time dateTime={invoice.issued_at}>{date(invoice.issued_at)}</time></p>
     <p className="muted">رقم الفاتورة <bdi>{invoice.id}</bdi></p>
+    {invoice.payment_destination && <div>
+      <h4>بيانات التحويل</h4>
+      <p>{invoice.payment_destination.label} · <bdi dir="ltr">{invoice.payment_destination.number}</bdi></p>
+      <p>اسم المستلم {invoice.payment_destination.recipient}</p>
+      {invoice.submit_url && <p>حوّل {money(invoice.amount_minor, invoice.currency)} بنفس عملة الفاتورة، ثم ارفع إثبات التحويل.</p>}
+    </div>}
     {invoice.approved_at && invoice.starts_at && invoice.ends_at && <div>
       <h4>إيصال الاشتراك</h4><p>الاعتماد في {date(invoice.approved_at)}. فترة الاشتراك من {date(invoice.starts_at)} إلى {date(invoice.ends_at)}.</p>
       {invoice.refunded_at && <p>سُجل الاسترداد في {date(invoice.refunded_at)}.</p>}
@@ -101,7 +116,7 @@ function InvoiceCard({ invoice, platform, busy, send }: { invoice: Invoice; plat
       <p><strong>{states[proof.state]}</strong> · {money(proof.amount_minor, invoice.currency)} · <bdi>{proof.transfer_reference}</bdi></p>
       {proof.rejection_reason && <p>{reasons[proof.rejection_reason]}</p>}
       <a className="nav-link" href={proof.download_url} download>تنزيل إثبات التحويل</a>
-      {proof.approve_url && proof.reject_url && <ProofReview proof={proof} currency={invoice.currency} busy={busy} send={send} />}
+      {proof.approve_url && proof.reject_url && <ProofReview proof={proof} currency={invoice.currency} destination={invoice.payment_destination} busy={busy} send={send} />}
     </div></li>)}</ul>}
     {invoice.submit_url && <form className="secure-form" onSubmit={submit}>
       <label className="account-field">مرجع التحويل<input name="transfer_reference" dir="ltr" pattern={referencePattern} required /></label>
@@ -126,7 +141,10 @@ export default function Billing(props: Props) {
   const [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
   const [notice, setNotice] = useState<{ text: string; failed: boolean } | null>(null);
-  const attempt = useRef<{ code: string; key: string } | null>(null);
+  const attempt = useRef<{ code: string; method: string | null; key: string } | null>(null);
+  const [planCode, setPlanCode] = useState('');
+  const activePlan = props.plans.find(plan => plan.code === planCode);
+  const hasPaymentMethods = props.plans.some(plan => plan.methods?.length);
   const title = props.mode === 'owner' ? 'اشتراك العيادة' : 'إدارة الاشتراكات';
 
   const send: Send = async (url, body, success) => {
@@ -154,9 +172,13 @@ export default function Billing(props: Props) {
 
   function issue(event: FormEvent<HTMLFormElement>, url: string) {
     event.preventDefault();
-    const code = String(new FormData(event.currentTarget).get('plan_code'));
-    if (attempt.current?.code !== code) attempt.current = { code, key: crypto.randomUUID() };
-    void send(url, { plan_code: code, request_key: attempt.current.key }, 'تم إصدار الفاتورة.').then(saved => {
+    const fields = new FormData(event.currentTarget);
+    const code = String(fields.get('plan_code'));
+    const method = fields.get('payment_method') as string | null;
+    if (attempt.current?.code !== code || attempt.current.method !== method) {
+      attempt.current = { code, method, key: crypto.randomUUID() };
+    }
+    void send(url, { plan_code: code, payment_method: method, request_key: attempt.current.key }, 'تم إصدار الفاتورة.').then(saved => {
       if (saved) attempt.current = null;
     });
   }
@@ -179,20 +201,25 @@ export default function Billing(props: Props) {
       {props.access.state === 'grace' && props.access.grace_until && <p>نهاية فترة السماح {date(props.access.grace_until)}</p>}
       {props.access.enrolled && props.access.state === 'restricted' && props.access_enforced && <p>الحجوزات الجديدة معلقة. يمكنك متابعة الحجوزات والزيارات المسجلة.</p>}
       {props.plans.length === 0 ? <p>لا توجد باقات متاحة حاليًا.</p> : !props.has_open_invoice && <form className="secure-form" onSubmit={event => issue(event, props.issue_url)}>
-        <label className="account-field">اختر باقة لمدة {props.period_days} يومًا<select name="plan_code" required><option value="">اختر الباقة</option>
-          {props.plans.map(plan => <option key={plan.code} value={plan.code}>{plan.name} · {money(plan.amount_minor, plan.currency)}</option>)}</select></label>
-        <button className="btn" disabled={busy}>إصدار فاتورة</button>
+        {props.pilot && !hasPaymentMethods && <p>إعداد استقبال التحويلات قيد التجهيز.</p>}
+        <label className="account-field">اختر باقة لمدة {props.period_days} يومًا<select name="plan_code" value={planCode} onChange={event => setPlanCode(event.target.value)} required><option value="">اختر الباقة</option>
+          {props.plans.map(plan => <option key={plan.code} value={plan.code} disabled={props.pilot && !plan.methods?.length}>{plan.name} · {money(plan.amount_minor, plan.currency)}{props.pilot && !plan.methods?.length ? ' · قريبًا' : ''}</option>)}</select></label>
+        {props.pilot && activePlan?.methods?.length ? <label className="account-field">طريقة التحويل<select key={activePlan.code} name="payment_method" required>
+          <option value="">اختر طريقة التحويل</option>
+          {activePlan.methods.map(method => <option key={method.code} value={method.code}>{method.label}</option>)}
+        </select></label> : null}
+        <button className="btn" disabled={busy || (props.pilot && !activePlan?.methods?.length)}>إصدار فاتورة</button>
       </form>}
     </section> : <div className="clinic-grid">
       <section className="account-card"><h2>باقات {props.period_days} يومًا</h2>
         <ul>{props.plans.map(plan => <li key={plan.code}>{plan.name} · {money(plan.amount_minor, plan.currency)}</li>)}</ul>
-        <form className="secure-form" onSubmit={event => createPlan(event, props.plan_url)}>
+        {props.plan_url && <form className="secure-form" onSubmit={event => createPlan(event, props.plan_url!)}>
           <label className="account-field">رمز الباقة<input name="code" dir="ltr" pattern={String.raw`[a-z0-9\-]{2,40}`} required /></label>
           <label className="account-field">اسم الباقة<input name="name" maxLength={120} required /></label>
           <label className="account-field">رمز العملة المكوّن من ثلاثة أحرف<input name="currency" dir="ltr" pattern="[A-Za-z]{3}" required /></label>
           <label className="account-field">سعر الاشتراك<input name="price" inputMode="decimal" required /></label>
           <button className="btn" disabled={busy}>إضافة باقة</button>
-        </form>
+        </form>}
       </section>
       <section className="account-card"><h2>بدء فترة تجربة</h2><form className="secure-form" onSubmit={event => {
         event.preventDefault();

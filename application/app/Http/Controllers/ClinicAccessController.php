@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use App\Services\AccountSecurity;
+use App\Services\BillingPilot;
 use App\Services\SecurityAudit;
 use App\Support\TenantContext;
 use Illuminate\Http\RedirectResponse;
@@ -21,12 +22,17 @@ class ClinicAccessController extends Controller
     public function memberships(Request $request): Collection
     {
         return DB::table('memberships as m')->join('clinics as c', 'c.id', '=', 'm.clinic_id')->where('m.user_id', $request->user()->id)
-            ->where('m.active', true)->where('c.operational_state', 'active')->orderBy('c.display_name')->get(['m.id', 'm.role', 'c.display_name']);
+            ->where('m.active', true)->where('c.operational_state', 'active')->orderBy('c.display_name')->get(['m.id', 'm.clinic_id', 'm.role', 'c.display_name']);
     }
 
-    public function dashboard(Request $request): Response
+    public function dashboard(Request $request, BillingPilot $pilot): Response
     {
-        return Inertia::render('Workspace', ['memberships' => $this->memberships($request), 'selectedMembership' => $request->session()->get('membership_id')]);
+        $memberships = $this->memberships($request)->map(fn ($membership) => [
+            'id' => $membership->id, 'role' => $membership->role, 'display_name' => $membership->display_name,
+            'can_bill' => $membership->role === 'owner' && $pilot->includesClinic($membership->clinic_id),
+        ]);
+
+        return Inertia::render('Workspace', ['memberships' => $memberships, 'selectedMembership' => $request->session()->get('membership_id')]);
     }
 
     public function select(Request $request): RedirectResponse
