@@ -14,7 +14,7 @@ class PublicBookingController extends Controller
     public function show(Request $request, string $clinic, BookingGuests $guests): Response
     {
         $record = DB::table('clinics')->where('id', $clinic)->where('operational_state', 'active')->firstOrFail();
-        if (! $request->user()) {
+        if (BookingGuests::isGuest($request)) {
             $guests->issue($request);
         }
         $sessions = DB::table('clinic_sessions as s')->join('doctors as d', function ($join): void {

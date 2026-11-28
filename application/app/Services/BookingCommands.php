@@ -52,7 +52,7 @@ class BookingCommands
     /** Lock order: actor or guest, sessions sorted by id, booking, arrival window, visit. */
     private function actor(Request $request): array
     {
-        if ($request->user()) {
+        if (! BookingGuests::isGuest($request)) {
             $this->authority->actor($request, ['owner', 'reception']);
             $context = app(TenantContext::class);
 

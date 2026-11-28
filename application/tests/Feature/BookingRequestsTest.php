@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\ClinicOperationsTestCase;
@@ -21,6 +23,21 @@ class BookingRequestsTest extends ClinicOperationsTestCase
     {
         $this->user('DOCTOR_A');
         $this->get('/clinics/'.$this->id('CLINIC_A').'/book')->assertOk();
+    }
+
+    public function test_signed_in_community_patient_keeps_the_public_booking_scope(): void
+    {
+        config(['nobteek.community_enabled' => true]);
+        $patient = User::factory()->create([
+            'community_role' => 'patient', 'login_enabled' => true, 'password' => Hash::make(self::PASSWORD),
+        ])->fresh();
+        $this->actingAs($patient)->withSession(['security_version' => $patient->security_version]);
+        $this->guest();
+        $this->postJson('/v1/booking-requests', [...$this->payload(), 'source' => 'walk_in'], $this->headers())->assertUnprocessable();
+        $id = $this->postJson('/v1/booking-requests', $this->payload(), $this->headers())
+            ->assertCreated()->assertJsonPath('state', 'pending')->json('id');
+        $this->assertDatabaseHas('audit_events', ['entity_id' => $id, 'actor_kind' => 'guest', 'actor_membership_id' => null]);
+        $this->getJson('/v1/patients')->assertNotFound();
     }
 
     public function test_web_request_is_pending_without_reserving_capacity_or_creating_visit(): void

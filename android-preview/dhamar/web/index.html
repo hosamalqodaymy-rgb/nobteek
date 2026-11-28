@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نوبتيك · اكتشف ذمار</title>
+  <link rel="stylesheet" href="styles/brand.generated.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="discovery.css">
+  <script src="discovery/demo.js" defer></script>
+  <script src="discovery.js" defer></script>
+  <script src="booking.js" defer></script>
+  <script src="clinic.js" defer></script>
+  <script src="connection.js" defer></script>
+  <script src="support.js" defer></script>
+  <script src="platform.js" defer></script>
+  <script src="hiring.js" defer></script>
+  <script src="jobs.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="brand">
+    <div class="brand-inner">
+      <div class="brand-identity">
+        <button class="header-icon quiet" id="preview-back" type="button" data-action="preview-back" aria-label="رجوع" hidden></button>
+        <span class="brand-home"><img src="logo-ar.png" width="284" height="92" alt="نوبتيك"></span>
+      </div>
+      <div class="brand-controls">
+        <span id="preview-city" class="preview-city"></span>
+        <a class="header-icon quiet route-link" id="show-notifications" data-route href="#queen/notifications" aria-label="التنبيهات" hidden></a>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <div class="content">
+      <div id="page-heading" class="page-heading"></div>
+      <p id="notice" class="notice"><span class="marker" aria-hidden="true">i</span><span>نسخة تجريبية تُحفظ على جهازك. استخدم أسماء وهمية وملفات اختبار.</span></p>
+      <div id="feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div id="screen"></div>
+    </div>
+  </main>
+  <nav id="workspace-nav" class="workspace-nav" aria-label="تنقل مساحة العمل" hidden></nav>
+</body>
+</html>

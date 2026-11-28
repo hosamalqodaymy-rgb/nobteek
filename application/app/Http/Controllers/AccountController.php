@@ -24,14 +24,20 @@ class AccountController extends Controller
 
     public function loginPage(Request $request): Response|RedirectResponse
     {
-        return $request->user() ? to_route('dashboard') : Inertia::render('Account', ['screen' => 'login']);
+        return $request->user() ? to_route('dashboard') : Inertia::render('Account', [
+            'screen' => 'login',
+            'communityLogin' => config('nobteek.community_enabled')
+                && ($request->query('entry') === 'community' || str_starts_with((string) $request->session()->get('url.intended'), url('/community').'/')),
+        ]);
     }
 
     public function login(Request $request): RedirectResponse
     {
         $data = $request->validate(['username' => ['required', 'string', 'max:80'], 'password' => ['required', 'string', 'max:128']]);
 
-        return to_route($this->security->login($request, $data['username'], $data['password']));
+        $destination = $this->security->login($request, $data['username'], $data['password']);
+
+        return $destination === 'dashboard' ? redirect()->intended(route('dashboard')) : to_route($destination);
     }
 
     public function challengePage(Request $request): Response|RedirectResponse
@@ -51,7 +57,7 @@ class AccountController extends Controller
         $data = $request->validate(['code' => ['required', 'string', 'regex:/^\d{6}$/D']]);
         $this->security->challenge($request, $data['code']);
 
-        return to_route('dashboard');
+        return redirect()->intended(route('dashboard'));
     }
 
     public function recoveryPage(): Response

@@ -1,0 +1,436 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.discovery-icon {
+  flex: 0 0 auto;
+  width: 1.18em;
+  height: 1.18em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brand-inner {
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding-block: 8px;
+}
+.brand-identity, .brand-controls, .preview-city {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-identity { min-width: 0; }
+.brand-home { width: clamp(96px, 28vw, 132px); min-height: 48px; }
+.brand-controls { flex-wrap: nowrap; }
+.preview-city {
+  color: var(--color-navy);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.header-icon.quiet {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  border-color: var(--color-border);
+  border-radius: .85rem;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.page-heading-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem .65rem;
+}
+.preview-tag {
+  padding: .1rem .5rem;
+  border-radius: .6rem;
+  background: var(--color-tint);
+  color: var(--color-primary);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.discovery { display: grid; gap: .85rem; }
+.discovery label { margin: 0; }
+.discovery > .card { margin: 0; }
+.discovery-search {
+  display: flex;
+  position: relative;
+  align-items: center;
+  color: var(--color-primary);
+}
+.discovery-search > svg {
+  position: absolute;
+  inset-inline-start: .85rem;
+  pointer-events: none;
+}
+.discovery-search > input {
+  padding-inline-start: 2.7rem;
+  border-color: var(--color-border-control);
+  font-size: .95rem;
+}
+
+.discovery-filters {
+  display: grid;
+  grid-template-columns: .8fr 1fr 1fr;
+  gap: .5rem;
+}
+.discovery-filters select { height: 100%; font-size: .875rem; }
+.today-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: .32rem;
+  min-height: var(--control-min-height);
+  padding-inline: .25rem;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: .875rem;
+  cursor: pointer;
+}
+.today-filter span { margin: 0; }
+.today-filter input {
+  width: 1px;
+  min-height: 0;
+  position: absolute;
+  opacity: 0;
+}
+.today-filter:has(:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-tint);
+}
+.today-filter:has(:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+.discovery-section + .discovery-section { margin-block-start: 1.15rem; }
+.discovery-section h2 { margin-block-end: .6rem; }
+.discovery-highlight {
+  display: grid;
+  gap: .6rem;
+  padding: .9rem 1rem;
+  border-radius: var(--radius-card);
+  background: var(--color-navy);
+  color: var(--color-surface);
+}
+.discovery-feature-time, .discovery-feature-person {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  overflow-wrap: anywhere;
+}
+.discovery-feature-time { justify-content: space-between; flex-wrap: wrap; }
+.discovery-feature-time > strong { font-size: 1.13rem; }
+.specialty-tag {
+  padding: .15rem .55rem;
+  border-radius: .6rem;
+  background: var(--color-tint);
+  color: var(--color-navy);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.discovery-feature-person > span:last-child > span { display: block; color: #dfedf1; font-size: .875rem; }
+.discovery-highlight .discover-highlight-cta {
+  justify-self: start;
+  gap: .45rem;
+  border-color: #a3c7ca;
+  background: #e5f4f1;
+  color: var(--color-navy);
+}
+.discover-highlight-cta:focus-visible { outline-color: white; }
+
+.discovery-clinics, .discovery-hours-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.discovery-clinic {
+  justify-content: initial;
+  gap: .55rem;
+  padding: .65rem;
+}
+.discovery-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.discovery-label .meta { display: block; }
+.discovery-clinic > .discovery-icon, .discovery-person > .discovery-icon:last-child { color: var(--color-primary); }
+.discovery-photo {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: clamp(52px, 18vw, 88px);
+  aspect-ratio: 1.2;
+  border-radius: .65rem;
+  background-color: var(--color-tint);
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  color: var(--color-primary);
+}
+.discovery-cover {
+  width: 100%;
+  height: clamp(120px, 39vw, 208px);
+  border-radius: var(--radius-card);
+}
+.discovery-placeholder .discovery-icon { font-size: 1.4rem; }
+
+.profile-tabs, .discovery-days, .discovery-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .45rem;
+}
+.profile-tabs a, .discovery-days a, .discovery-times a, .discovery-times > span {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: .1rem;
+  min-width: 0;
+  min-height: var(--control-min-height);
+  padding: .35rem .22rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-navy);
+  font-size: .875rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.profile-tabs a[aria-current], .discovery-days a[aria-current], .discovery-times a[aria-current] {
+  border-color: var(--color-primary);
+  background: var(--color-tint);
+  color: var(--color-primary);
+}
+.discovery-times > span { background: var(--color-disabled-bg); color: var(--color-muted); }
+.discovery-days time, .discovery-times small { font-weight: 500; }
+.discovery-info { display: grid; gap: .65rem; margin: 0; }
+.discovery-info dt { color: var(--color-muted); }
+.discovery-info dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.discovery-info > div + div, .discovery-hours + .discovery-hours {
+  padding-block-start: .55rem;
+  border-block-start: 1px solid var(--color-border);
+}
+.discovery-hours-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .2rem .65rem;
+  margin: .2rem 0;
+}
+.discovery-people { display: grid; gap: .55rem; }
+.discovery-person, .discovery-profile, .account-options > a {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--control-min-height);
+  padding: .6rem .75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-navy);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.discovery-profile > div { min-width: 0; }
+.discovery-profile strong { font-size: 1.22rem; }
+.discovery-profile p { margin-block-end: 0; }
+.discovery-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--color-tint);
+  color: var(--color-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.discovery-profile .discovery-avatar { flex-basis: 58px; height: 58px; }
+.photo-avatar { background-image: url(discovery/practitioners.webp); background-size: 200% 200%; }
+.discovery-fixed {
+  position: sticky;
+  inset-block-end: 0;
+  margin-block-start: .8rem;
+  padding: .55rem 0;
+  background: var(--color-background);
+}
+.discovery-fixed > * { width: 100%; }
+
+.account-options { display: grid; gap: .5rem; margin-block-start: 1rem; }
+.account-options strong { flex: 1; min-width: 0; }
+.account-options svg { color: var(--color-primary); }
+.patient-nav a { grid-template-rows: auto auto; gap: .14rem; }
+.patient-nav .discovery-icon { color: var(--color-primary); }
+.large-text .patient-nav { grid-auto-flow: column; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.large-text .discovery-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.large-text .discovery-filters label:first-child { grid-column: span 2; }
+
+@media (min-width: 650px) {
+  .discovery-clinics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+  .discovery-clinics li { margin: 0; min-width: 0; }
+  .large-text .discovery-clinics { grid-template-columns: 1fr; }
+}
+
+.booking-summary { display: grid; gap: .55rem; margin: 0; }
+.booking-summary > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: baseline;
+  gap: .12rem .55rem;
+  border-block-start: 1px solid var(--color-border);
+  padding-block-start: .55rem;
+  overflow-wrap: anywhere;
+}
+.booking-summary svg { grid-row: span 2; color: var(--color-primary); }
+.booking-summary dt, .booking-summary small { color: var(--color-muted); }
+.booking-summary dd { margin: 0; font-weight: 700; }
+.booking-summary small { display: block; font-weight: 500; }
+.booking-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+  margin-block: .7rem;
+  padding: .55rem .7rem;
+  border-radius: var(--radius-control);
+  background: var(--color-tint);
+  color: var(--color-navy);
+}
+.booking-code output { font-family: monospace; font-weight: 700; }
+#booking-resend-hint:empty { display: none; }
+.appointment-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.manage-cancel, .legacy-sign-in { margin-block: .8rem; }
+.manage-cancel summary, .legacy-sign-in summary {
+  min-height: var(--control-min-height);
+  padding-block: .6rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.manage-cancel summary { color: var(--color-danger); }
+
+.facility-steps, .clinic-metrics {
+  display: grid;
+  gap: .45rem;
+}
+.facility-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); list-style: none; padding: 0; margin: 0; }
+.facility-steps li, .clinic-metrics > div {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .25rem;
+  min-width: 0;
+  margin: 0;
+  padding: .4rem .2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-navy);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.facility-steps li { font-size: .8rem; font-weight: 700; }
+.facility-steps [aria-current="step"] { border-color: var(--color-primary); background: var(--color-tint); }
+.facility-steps li > span { font-variant-numeric: tabular-nums; }
+.clinic-time-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+.facility-review {
+  margin-block-start: .9rem;
+  border-block-start: 1px solid var(--color-border);
+}
+.facility-review .checkbox { margin-block: 0 .25rem; }
+.owner-nav { gap: .2rem; padding-inline: clamp(8px, 2vw, 19px); }
+.large-text .facility-review { position: static; }
+.facility-request-data { margin-block: .65rem; }
+.facility-request-data > summary {
+  min-height: var(--control-min-height);
+  padding-block: .5rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+.clinic-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.clinic-metrics strong { font-size: 1.4rem; }
+.clinic-metrics span { color: var(--color-muted); font-size: .84rem; }
+.clinic-queue-ticket { font-size: 2.4rem; line-height: 1; }
+.discovery-highlight h2 { color: white; margin-block-end: 0; }
+.discovery-highlight > .status { justify-self: start; }
+.large-text .clinic-time-row, .large-text .clinic-metrics { grid-template-columns: 1fr; }
+.large-text .facility-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.platform-options small, .notice-link .meta { display: block; font-weight: 500; }
+.platform-options small { color: var(--color-muted); margin-block-start: .12rem; }
+.notice-link { display: block; color: var(--color-navy); text-decoration: none; }
+#support-assign { margin-block-start: .6rem; }
+
+.job-section-heading { margin-block: 1rem .5rem; }
+.job-quick-links {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-block-start: 0;
+}
+.job-quick-links > a {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .25rem;
+  padding-inline: .38rem;
+  text-align: center;
+  font-size: .88rem;
+}
+.job-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; }
+.job-filter-grid label { margin-block: 0; }
+.job-filter-grid select { padding-inline-end: 1.65rem; font-size: .9rem; }
+.job-list { display: grid; gap: .5rem; list-style: none; padding: 0; }
+.job-listing {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .65rem;
+  min-height: var(--control-min-height);
+  padding: .8rem .7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  color: var(--color-navy);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.job-listing small { display: block; color: var(--color-muted); }
+.job-tile-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-control);
+  background: var(--color-tint);
+  color: var(--color-primary);
+}
+.hiring-timeline { margin: .65rem 0 0; padding: 0; list-style: none; }
+.hiring-timeline li {
+  display: flex;
+  align-items: flex-start;
+  gap: .45rem;
+  margin-block: .18rem;
+  padding: .32rem .2rem;
+  color: var(--color-muted);
+}
+.hiring-timeline .reached { color: var(--color-primary); }
+.hiring-timeline [aria-current] { font-weight: 700; }
+.placement-total { font-size: 1.36rem; color: var(--color-primary); }
+.large-text .job-filter-grid { grid-template-columns: 1fr; }
+.large-text .job-quick-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.large-text .patient-nav-jobs { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }

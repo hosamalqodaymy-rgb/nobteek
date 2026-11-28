@@ -71,3 +71,36 @@
 .billing-page .account-field { min-inline-size: 0; }
 .billing-page .account-field input, .billing-page .account-field select { min-inline-size: 0; max-inline-size: 100%; }
 .billing-page .billing-confirmation { display: flex; align-items: baseline; gap: .5rem; }
+
+.account-field textarea {
+  border: 1px solid var(--color-border-control);
+  border-radius: .5rem;
+  padding: .65rem .8rem;
+  width: 100%;
+  min-width: 0;
+  color: var(--color-text);
+  background: white;
+  resize: vertical;
+}
+
+.community-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.community-tabs {
+  margin-block: 0 1.5rem;
+}
+
+.community-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem;
+  margin-block: 1rem;
+}
+
+.community-facts dt { font-weight: 700; }
+.community-facts dd { margin: .25rem 0 0; overflow-wrap: anywhere; }
+.job-card { min-width: 0; }
+.account-field input[type=date] { min-width: 0; }
+.account-card details .secure-form, details.account-card .secure-form { margin-block: .75rem; }

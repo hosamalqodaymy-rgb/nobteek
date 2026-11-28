@@ -53,8 +53,12 @@ class AccountSecurity
             if (Hash::needsRehash($user->password)) {
                 $user->forceFill(['password' => Hash::make($password)])->save();
             }
+            $intended = $request->session()->get('url.intended');
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+            if (is_string($intended) && str_starts_with($intended, url('/community').'/')) {
+                $request->session()->put('url.intended', $intended);
+            }
             if ($user->hasMfa()) {
                 $request->session()->put('pending_login', ['id' => $user->id, 'version' => $user->security_version, 'expires' => now()->addMinutes(5)->timestamp]);
 

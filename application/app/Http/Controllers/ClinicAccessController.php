@@ -6,6 +6,7 @@ use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use App\Services\AccountSecurity;
 use App\Services\BillingPilot;
+use App\Services\CommunityHiring;
 use App\Services\SecurityAudit;
 use App\Support\TenantContext;
 use Illuminate\Http\RedirectResponse;
@@ -25,14 +26,19 @@ class ClinicAccessController extends Controller
             ->where('m.active', true)->where('c.operational_state', 'active')->orderBy('c.display_name')->get(['m.id', 'm.clinic_id', 'm.role', 'c.display_name']);
     }
 
-    public function dashboard(Request $request, BillingPilot $pilot): Response
+    public function dashboard(Request $request, BillingPilot $pilot, CommunityHiring $hiring): Response
     {
         $memberships = $this->memberships($request)->map(fn ($membership) => [
             'id' => $membership->id, 'role' => $membership->role, 'display_name' => $membership->display_name,
             'can_bill' => $membership->role === 'owner' && $pilot->includesClinic($membership->clinic_id),
         ]);
 
-        return Inertia::render('Workspace', ['memberships' => $memberships, 'selectedMembership' => $request->session()->get('membership_id')]);
+        $hiringRole = config('nobteek.community_enabled') ? $hiring->scope($request, $request->user())['role'] : 'guest';
+
+        return Inertia::render('Workspace', ['memberships' => $memberships, 'selectedMembership' => $request->session()->get('membership_id'),
+            'communitySupportUrl' => config('nobteek.community_enabled') && in_array($request->user()->community_role, ['support', 'patient'], true) ? route('community.support') : null,
+            'communityHiringUrl' => $hiringRole !== 'guest' ? route('community.jobs.manage') : null,
+        ]);
     }
 
     public function select(Request $request): RedirectResponse

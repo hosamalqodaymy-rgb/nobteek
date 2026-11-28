@@ -6,6 +6,7 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\ClinicSession;
 use App\Services\BookingCommands;
+use App\Services\BookingGuests;
 use App\Services\SessionCommands;
 use App\Support\TenantContext;
 use App\Support\YemeniPhone;
@@ -23,7 +24,7 @@ class BookingController extends Controller
 {
     private function requestData(Request $request): array
     {
-        $staff = (bool) $request->user();
+        $staff = ! BookingGuests::isGuest($request);
         if ($staff) {
             Gate::authorize('viewAny', Booking::class);
         }

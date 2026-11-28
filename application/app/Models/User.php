@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function requiresMfa(): bool
     {
-        return $this->platform_role === 'platform_admin' || DB::table('memberships')
+        return $this->platform_role === 'platform_admin' || $this->community_role === 'support' || DB::table('memberships')
             ->where('user_id', $this->id)->where('active', true)->where('role', 'owner')->exists();
     }
 }

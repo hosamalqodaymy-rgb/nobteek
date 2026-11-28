@@ -9,6 +9,14 @@ use Illuminate\Support\Str;
 
 class BookingGuests
 {
+    public static function isGuest(Request $request): bool
+    {
+        $user = $request->user();
+
+        return ! $user || (config('nobteek.community_enabled') && $user->community_role === 'patient' && $user->platform_role === null
+            && ! DB::table('memberships')->where('user_id', $user->id)->where('active', true)->exists());
+    }
+
     public function issue(Request $request): void
     {
         $id = $request->session()->get('booking_guest_id');

@@ -3,6 +3,7 @@
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\PrivateSecurityHeaders;
 use App\Http\Middleware\RequireMfa;
+use App\Http\Middleware\RequirePreviewAccess;
 use App\Http\Middleware\ResolveClinicContext;
 use App\Http\Middleware\VerifyAccountSession;
 use Illuminate\Foundation\Application;
@@ -21,11 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustHosts(subdomains: false);
-        $middleware->web(append: [PrivateSecurityHeaders::class, VerifyAccountSession::class, HandleInertiaRequests::class]);
+        $middleware->web(append: [PrivateSecurityHeaders::class, RequirePreviewAccess::class, VerifyAccountSession::class, HandleInertiaRequests::class]);
         $middleware->alias(['mfa' => RequireMfa::class, 'clinic' => ResolveClinicContext::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontFlash(['current_password', 'password', 'password_confirmation', 'code', 'recovery_code', 'grant_token', 'preview_token', 'display_name', 'contact_phone', 'secret', 'ticket_secret', 'ticket_url', 'transfer_reference', 'verified_transfer_reference', 'refund_reference']);
+        $exceptions->dontFlash(['current_password', 'password', 'password_confirmation', 'code', 'recovery_code', 'grant_token', 'preview_token', 'display_name', 'contact_phone', 'secret', 'ticket_secret', 'ticket_url', 'transfer_reference', 'verified_transfer_reference', 'refund_reference', 'body', 'bio', 'cv_name', 'offer_details', 'interview_location']);
         $exceptions->report(function (Throwable $error) {
             if (request()->is('v1/tickets/*')) {
                 Log::error('Private ticket request failed.', ['error_type' => $error::class, 'request_id' => request()->attributes->get('security_request_id')]);
@@ -34,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             if (request()->routeIs('billing.*', 'platform.billing.*', 'platform.billing')) {
                 Log::error('Private billing request failed.', ['error_type' => $error::class, 'request_id' => request()->attributes->get('security_request_id')]);
+
+                return false;
+            }
+            if (request()->is('community/*')) {
+                Log::error('Community request failed.', ['error_type' => $error::class, 'request_id' => request()->attributes->get('security_request_id')]);
 
                 return false;
             }

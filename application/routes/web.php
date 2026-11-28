@@ -5,6 +5,9 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClinicAccessController;
 use App\Http\Controllers\ClinicSetupController;
+use App\Http\Controllers\CommunityHiringController;
+use App\Http\Controllers\CommunitySupportController;
+use App\Http\Controllers\DhamarPreviewController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\OutageController;
@@ -25,11 +28,21 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Inertia\Inertia;
 
+Route::get('/qa-access', [DhamarPreviewController::class, 'qaAccess'])->name('dhamar.preview.access');
+Route::post('/qa-access', [DhamarPreviewController::class, 'enterQa'])->middleware('throttle:10,1')->name('dhamar.preview.enter');
+Route::prefix('preview/dhamar')->middleware('throttle:120,1')->group(function (): void {
+    Route::get('/index.html', [DhamarPreviewController::class, 'show'])->name('dhamar.preview');
+    Route::get('/catalog', [DhamarPreviewController::class, 'catalog'])->name('dhamar.preview.catalog');
+    Route::get('/{asset}', [DhamarPreviewController::class, 'asset'])->where('asset', '.+')->name('dhamar.preview.asset');
+});
+
 Route::get('/clinics/{clinic}/book', [PublicBookingController::class, 'show'])->whereUuid('clinic')->middleware('throttle:120,1')->name('public.booking');
 Route::post('/v1/booking-requests', [BookingController::class, 'create'])->middleware([ResolveBookingActor::class, 'throttle:30,1'])->name('bookings.request');
 Route::get('/ticket', [TicketController::class, 'show'])->name('public.ticket');
 Route::get('/help', [TicketController::class, 'help'])->name('public.help');
 Route::get('/privacy', [TicketController::class, 'privacy'])->name('public.privacy');
+Route::get('/community/jobs', [CommunityHiringController::class, 'index'])->middleware(['mfa', 'throttle:120,1'])->name('community.jobs');
+Route::get('/community/jobs/{advert}', [CommunityHiringController::class, 'advert'])->whereUuid('advert')->middleware(['mfa', 'throttle:120,1'])->name('community.jobs.advert');
 Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, PreventRequestForgery::class, VerifyAccountSession::class, HandleInertiaRequests::class])
     ->middleware('throttle:120,1')->group(function (): void {
         Route::get('/v1/tickets/current', [TicketController::class, 'current'])->name('public.ticket.current');
@@ -56,6 +69,13 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/account/confirm', [AccountController::class, 'confirm'])->name('account.confirm');
     Route::middleware('mfa')->group(function (): void {
         Route::get('/workspace', [ClinicAccessController::class, 'dashboard'])->name('dashboard');
+        Route::get('/community/support/{ticket?}', [CommunitySupportController::class, 'index'])->whereUuid('ticket')->name('community.support');
+        Route::post('/community/support', [CommunitySupportController::class, 'store'])->middleware('throttle:30,1');
+        Route::post('/community/support/{ticket}', [CommunitySupportController::class, 'update'])->whereUuid('ticket')->middleware('throttle:60,1');
+        Route::get('/community/jobs/manage', [CommunityHiringController::class, 'manage'])->name('community.jobs.manage');
+        Route::get('/community/jobs/manage/{application}', [CommunityHiringController::class, 'application'])->whereUuid('application')->name('community.jobs.case');
+        Route::get('/community/jobs/{advert}/apply', [CommunityHiringController::class, 'apply'])->whereUuid('advert')->name('community.jobs.apply');
+        Route::post('/community/jobs/manage', [CommunityHiringController::class, 'store'])->middleware('throttle:60,1')->name('community.jobs.store');
         Route::post('/workspace/select', [ClinicAccessController::class, 'select'])->name('clinic.select');
         Route::get('/platform/accounts', [TeamController::class, 'platform'])->name('platform');
         Route::post('/platform/accounts/{user}/access', [TeamController::class, 'accountLink'])->whereUuid('user')->name('platform.account.link')->middleware('throttle:10,1');
